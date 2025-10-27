@@ -1,0 +1,155 @@
+import Link from "next/link";
+import Image from "next/image";
+import { Instagram, Linkedin, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const Footer = () => {
+  return (
+    <footer className="w-full border-t bg-background pb-[68px] md:pb-0">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Logo & Brand Column */}
+          <div className="space-y-4">
+            <Link href="/" className="inline-flex items-center gap-2">
+              <Image
+                src="/logo@2x.png"
+                alt="Hunt Logo"
+                width={32}
+                height={32}
+                className="h-8 w-8 rounded-lg"
+                unoptimized
+              />
+              <span className="text-xl font-bold">Hunt</span>
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              Tu plataforma de tickets para eventos
+            </p>
+          </div>
+
+          {/* Company Column */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold">HUNT</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/sobre-nosotros"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Sobre nosotros
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/eventos"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Eventos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="https://wa.me/573228597640"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Contáctanos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="https://zaap.bio/hunt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Descarga la app
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Resources Column */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold">Recursos</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/resources/terms-and-conditions"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Términos y condiciones
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/resources/privacy"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Política de privacidad
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="https://wa.me/573228597640"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Danos retroalimentación
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Social Media Column */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold">Síguenos</h3>
+            <div className="flex gap-2">
+              <Link
+                href="https://www.instagram.com/hunt____tickets/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Instagram className="h-5 w-5" />
+                  <span className="sr-only">Instagram</span>
+                </Button>
+              </Link>
+              <Link
+                href="https://www.linkedin.com/company/hunt-tickets-co/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Linkedin className="h-5 w-5" />
+                  <span className="sr-only">LinkedIn</span>
+                </Button>
+              </Link>
+              <Link
+                href="https://wa.me/573228597640"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <MessageCircle className="h-5 w-5" />
+                  <span className="sr-only">WhatsApp</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12 border-t pt-8">
+          <p className="text-center text-sm text-muted-foreground">
+            © {new Date().getFullYear()} Hunt Tickets. Todos los derechos
+            reservados.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
+export { Footer };
