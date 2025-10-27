@@ -22,7 +22,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     return (
       <div
         className={cn(
-          "flex w-16 h-8 p-1 rounded-full",
+          "flex w-20 h-10 p-1 rounded-full",
           "bg-zinc-950 border border-zinc-800",
           className
         )}
@@ -35,7 +35,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   return (
     <div
       className={cn(
-        "relative flex w-16 h-8 p-1 rounded-full cursor-pointer transition-all duration-300",
+        "relative flex w-20 h-10 p-1 rounded-full cursor-pointer transition-all duration-300",
         isDark
           ? "bg-zinc-950 border border-zinc-800"
           : "bg-white border border-zinc-200",
@@ -53,8 +53,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
       {/* Background icons - always visible */}
-      <div className="absolute inset-0 flex items-center justify-between px-1">
-        <div className="flex justify-center items-center w-6 h-6">
+      <div className="absolute inset-0 flex items-center justify-between px-1.5">
+        <div className="flex justify-center items-center w-8 h-8">
           <Moon
             className={cn(
               "w-4 h-4 transition-colors duration-300",
@@ -63,7 +63,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
             strokeWidth={1.5}
           />
         </div>
-        <div className="flex justify-center items-center w-6 h-6">
+        <div className="flex justify-center items-center w-8 h-8">
           <Sun
             className={cn(
               "w-4 h-4 transition-colors duration-300",
@@ -77,10 +77,10 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       {/* Sliding circle with active icon */}
       <div
         className={cn(
-          "absolute flex justify-center items-center w-6 h-6 rounded-full transition-all duration-300 ease-in-out",
+          "absolute flex justify-center items-center w-8 h-8 rounded-full transition-all duration-300 ease-in-out",
           isDark
             ? "left-1 bg-zinc-800"
-            : "left-[calc(100%-1.75rem)] bg-gray-200"
+            : "left-[calc(100%-2.25rem)] bg-gray-200"
         )}
       >
         {isDark ? (

@@ -101,10 +101,10 @@ export function AuthButton() {
     </DropdownMenu>
   ) : (
     <div className="flex gap-3">
-      <Button asChild variant={"ghost"} className="px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-xs sm:text-sm font-medium bg-black/50 hover:bg-black/70 text-white border border-white/20 backdrop-blur-sm">
+      <Button asChild variant={"ghost"} className="px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-xs sm:text-sm font-medium bg-background/50 hover:bg-background/70 text-foreground border border-border backdrop-blur-sm">
         <Link href="/login">Ingresar</Link>
       </Button>
-      <Button asChild variant={"ghost"} className="px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-xs sm:text-sm font-medium bg-white hover:bg-gray-100 text-black">
+      <Button asChild variant={"ghost"} className="px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-xs sm:text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
         <Link href="/sign-up">Registrarse</Link>
       </Button>
     </div>

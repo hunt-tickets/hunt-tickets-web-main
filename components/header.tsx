@@ -46,13 +46,13 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-1">
             <Link
               href="/eventos"
-              className="px-3 py-2 text-sm font-medium text-foreground/80 transition-all duration-200 hover:bg-muted hover:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground rounded-md"
+              className="px-4 py-2 text-sm font-medium text-foreground/80 transition-all duration-200 hover:bg-muted hover:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground rounded-full"
             >
               Eventos
             </Link>
             <Link
               href="/sobre-nosotros"
-              className="px-3 py-2 text-sm font-medium text-foreground/80 transition-all duration-200 hover:bg-muted hover:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground rounded-md"
+              className="px-4 py-2 text-sm font-medium text-foreground/80 transition-all duration-200 hover:bg-muted hover:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground rounded-full"
             >
               Sobre Nosotros
             </Link>
@@ -78,12 +78,12 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem asChild>
-                <Link href="/eventos" className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
+                <Link href="/eventos" className="relative flex w-full cursor-pointer select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
                   Eventos
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/sobre-nosotros" className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
+                <Link href="/sobre-nosotros" className="relative flex w-full cursor-pointer select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
                   Sobre Nosotros
                 </Link>
               </DropdownMenuItem>
