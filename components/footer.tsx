@@ -1,25 +1,21 @@
+"use client";
+
 import Link from "next/link";
-import Image from "next/image";
 import { Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
+
   return (
     <footer className="w-full border-t bg-background pb-[68px] md:pb-0">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Logo & Brand Column */}
           <div className="space-y-4">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <Image
-                src="/logo@2x.png"
-                alt="Hunt Logo"
-                width={32}
-                height={32}
-                className="h-8 w-8 rounded-lg"
-                unoptimized
-              />
-              <span className="text-xl font-bold">Hunt</span>
+            <Link href="/" className="inline-flex items-center">
+              <span className="text-2xl font-bold tracking-tight transition-all duration-300 ease-out hover:tracking-wide inline-block" style={{ fontFamily: 'LOT, sans-serif' }}>
+                HUNT
+              </span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Tu plataforma de tickets para eventos

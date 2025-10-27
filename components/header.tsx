@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { ThemeSwitcher } from "./theme-switcher";
+import { ThemeToggle } from "./ui/theme-toggle";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,16 +35,11 @@ export function Header() {
         <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="flex items-center space-x-2 transition-opacity hover:opacity-80"
+            className="flex items-center"
           >
-            <Image
-              src="/logo@2x.png"
-              alt="Hunt Logo"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-lg"
-              unoptimized
-            />
+            <span className="text-2xl font-bold tracking-tight transition-all duration-300 ease-out hover:tracking-wide" style={{ fontFamily: 'LOT, sans-serif' }}>
+              HUNT
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -68,12 +62,12 @@ export function Header() {
         {/* Right side - Desktop */}
         <div className="hidden md:flex items-center gap-2">
           <AuthButton />
-          <ThemeSwitcher />
+          <ThemeToggle />
         </div>
 
         {/* Right side - Mobile */}
         <div className="flex md:hidden items-center gap-2">
-          <ThemeSwitcher />
+          <ThemeToggle />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

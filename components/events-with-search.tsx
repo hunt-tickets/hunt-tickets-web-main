@@ -4,10 +4,10 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { EventCard } from "@/components/event-card";
-import { SearchBar } from "@/components/search-bar";
-import { CityFilter } from "@/components/city-filter";
+import { EnhancedSearchBar } from "@/components/enhanced-search-bar";
+import { EnhancedCityFilter } from "@/components/enhanced-city-filter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp } from "lucide-react";
+import { Filter } from "lucide-react";
 import type { EventFull } from "@/lib/supabase/types";
 import { formatEventDate, formatPrice } from "@/lib/utils/format";
 
@@ -126,15 +126,15 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
 
   return (
     <>
-      {/* Search and Filter Bar - compact layout */}
-      <div className="mb-4 sm:mb-6 space-y-3">
-        {/* Search and filter in one row on larger screens */}
+      {/* Search and Filter Bar */}
+      <div className="space-y-4 mb-8">
+        {/* Search and filter row */}
         <div className="flex flex-col sm:flex-row gap-3 w-full">
-          <div className="flex-1 h-20">
-            <SearchBar searchQuery={searchQuery} onSearchChange={handleSearch} />
+          <div className="flex-1">
+            <EnhancedSearchBar searchQuery={searchQuery} onSearchChange={handleSearch} />
           </div>
-          <div className="sm:w-64 h-20">
-            <CityFilter
+          <div className="w-full sm:w-64 lg:w-72">
+            <EnhancedCityFilter
               cities={cities}
               selectedCity={selectedCity}
               onCityChange={handleCityChange}
@@ -142,33 +142,42 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
           </div>
         </div>
 
-        {/* Active filters indicator - more compact */}
+        {/* Active filters indicator */}
         {(searchQuery || selectedCity) && (
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-white/70">
-            <span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm text-white/60">
               {filteredEvents.length} de {events.length} eventos
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={resetFilters}
-              className="h-auto p-0 hover:bg-transparent hover:underline text-xs sm:text-sm text-white/70 hover:text-white"
+              className="text-sm text-white/70 hover:text-white transition-colors"
             >
               Limpiar filtros
-            </Button>
+            </button>
           </div>
         )}
       </div>
 
       {/* Show message if no events found after filtering */}
       {filteredEvents.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-white/70 mb-4">
+        <div className="text-center py-16 sm:py-20">
+          <div className="inline-flex p-4 bg-white/5 rounded-2xl border border-white/10 mb-6">
+            <Filter className="h-12 w-12 text-white/60" />
+          </div>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
             No se encontraron eventos
-            {selectedCity && ` en ${selectedCity}`}
-            {searchQuery && ` con "${searchQuery}"`}
+          </h3>
+          <p className="text-white/60 mb-6 max-w-md mx-auto">
+            {selectedCity && `No hay eventos disponibles en ${selectedCity}`}
+            {searchQuery && !selectedCity && `No hay eventos que coincidan con "${searchQuery}"`}
+            {searchQuery && selectedCity && ` que coincidan con "${searchQuery}"`}
           </p>
-          <Button onClick={resetFilters}>Mostrar todos los eventos</Button>
+          <button
+            onClick={resetFilters}
+            className="px-6 py-3 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-full text-white font-medium transition-all duration-300"
+          >
+            Mostrar todos los eventos
+          </button>
         </div>
       ) : (
         <>
