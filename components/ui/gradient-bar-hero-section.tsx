@@ -6,27 +6,6 @@ import { FaWhatsapp, FaGooglePlay, FaApple } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 
-type AvatarProps = {
-  imageSrc: string;
-  delay: number;
-};
-
-const Avatar: React.FC<AvatarProps> = ({ imageSrc, delay }) => {
-  return (
-    <div
-      className="relative h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg animate-fadeIn"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <img
-        src={imageSrc}
-        alt="User avatar"
-        className="h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-    </div>
-  );
-};
-
 const WaitlistForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -72,7 +51,7 @@ const WaitlistForm: React.FC = () => {
         </div>
       ) : (
         <div className="bg-green-500/20 border border-green-500/30 text-green-600 dark:text-green-300 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-center animate-fadeIn text-sm sm:text-base">
-          Thanks! We'll notify you when we launch.
+          Thanks! We&apos;ll notify you when we launch.
         </div>
       )}
     </div>
