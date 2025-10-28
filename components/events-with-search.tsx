@@ -1,19 +1,16 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { EventCard } from "@/components/event-card";
 import { EnhancedSearchBar } from "@/components/enhanced-search-bar";
 import { EnhancedCityFilter } from "@/components/enhanced-city-filter";
 import { Filter } from "lucide-react";
 import type { EventFull } from "@/lib/supabase/types";
-import { formatEventDate, formatPrice } from "@/lib/utils/format";
 
 interface EventsWithSearchProps {
   // All events from server
   events: EventFull[];
-  // Number of events to display in grid (excluding featured)
+  // Number of events to display in grid
   limit?: number;
 }
 
@@ -120,8 +117,10 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
     setSelectedCity(null);
   };
 
-  // Get the featured event (first one) and the rest for the grid
-  const [featuredEvent, ...gridEvents] = filteredEvents;
+  // Prepare events for grid - if only 1 event, duplicate it 3 times
+  const gridEvents = filteredEvents.length === 1
+    ? [filteredEvents[0], filteredEvents[0], filteredEvents[0]]
+    : filteredEvents;
 
   return (
     <>
@@ -179,85 +178,24 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
           </button>
         </div>
       ) : (
-        <>
-          {/* Featured Event - Hero Card wrapped in Link for navigation */}
-          {featuredEvent && (
-            <div className="mb-6 sm:mb-8">
-              <Link href={`/eventos/${featuredEvent.id}`} className="block max-w-md">
-                <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden group cursor-pointer bg-white/8 border border-white/10 hover:border-white/20 backdrop-blur-sm">
-                {/* Event image with hover effect using Next.js Image for optimization */}
-                <Image
-                  src={featuredEvent.flyer || "/placeholder.svg"}
-                  alt={featuredEvent.name}
-                  fill
-                  sizes="100vw"
-                  priority
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                />
-
-                {/* Date badge in top right corner */}
-                <div className="absolute top-4 right-4 z-10">
-                  <div className="bg-black/40 backdrop-blur-sm border border-gray-400/50 rounded-xl px-4 py-4 text-center">
-                    <div className="text-2xl font-bold text-white leading-none">
-                      {new Date(featuredEvent.date).getDate()}
-                    </div>
-                    <div className="text-sm text-white/90 uppercase leading-none mt-1">
-                      {new Date(featuredEvent.date).toLocaleDateString('es-ES', { month: 'short' })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gradient overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-                {/* Event information overlay */}
-                <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8 lg:p-12">
-                  {/* Event title */}
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white text-balance mb-2 sm:mb-3">
-                    {featuredEvent.name}
-                  </h2>
-
-                  {/* Event details */}
-                  <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-1 sm:gap-3 lg:gap-4 text-white/90 text-xs sm:text-sm lg:text-base mb-3 sm:mb-4">
-                    <span className="flex items-center gap-2">
-                      <span>
-                        {featuredEvent.venue_name}, {featuredEvent.venue_city}
-                      </span>
-                    </span>
-                    {featuredEvent.tickets && featuredEvent.tickets.length > 0 && (
-                      <span className="flex items-center gap-2">
-                        <span>
-                          Desde $
-                          {formatPrice(
-                            Math.min(...featuredEvent.tickets.map((t) => t.price))
-                          )}
-                        </span>
-                      </span>
-                    )}
-                  </div>
-
-                </div>
-              </div>
-            </Link>
-            </div>
-          )}
-
-          {/* Grid of Popular Events */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-16 sm:pb-24">
-            {gridEvents.slice(0, limit).map((event) => (
-              <EventCard
-                key={event.id}
-                id={event.id}
-                title={event.name}
-                date={formatEventDate(event.date)}
-                location={`${event.venue_name}, ${event.venue_city}`}
-                image={event.flyer}
-                category={event.description ? "Música" : "Evento"}
-                // attendees={0}
-              />
-            ))}
-          </div>
-        </>
+        /* Grid of Popular Events - 3 columns layout */
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 pb-16 sm:pb-24">
+          {gridEvents.slice(0, limit).map((event, index) => (
+            <EventCard
+              key={`${event.id}-${index}`}
+              id={event.id}
+              title={event.name}
+              date={event.date}
+              location={`${event.venue_name}, ${event.venue_city}`}
+              image={event.flyer}
+              price={
+                event.tickets && event.tickets.length > 0
+                  ? Math.min(...event.tickets.map((t) => t.price))
+                  : undefined
+              }
+            />
+          ))}
+        </div>
       )}
     </>
   );

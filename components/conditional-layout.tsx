@@ -16,7 +16,10 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
                       pathname?.startsWith("/error") ||
                       pathname?.startsWith("/sign-up-success");
 
-  if (isAuthRoute) {
+  // Hide header and footer for admin routes
+  const isAdminRoute = pathname?.includes("/administrador");
+
+  if (isAuthRoute || isAdminRoute) {
     return <>{children}</>;
   }
 

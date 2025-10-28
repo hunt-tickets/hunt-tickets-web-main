@@ -4,7 +4,7 @@ import { EventsWithSearch } from "@/components/events-with-search";
 interface PopularEventsProps {
   // City ID to fetch popular events for
   cityId?: string;
-  // Number of events to display in the grid (excluding featured)
+  // Number of events to display in the grid
   limit?: number;
 }
 

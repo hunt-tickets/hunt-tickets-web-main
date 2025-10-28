@@ -83,10 +83,10 @@ export default async function ProfilePage() {
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Mi Perfil
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
+              MI PERFIL
             </h1>
-            <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+            <p className="text-[#404040] mt-1 text-sm sm:text-base">
               Información de tu cuenta y sesiones activas
             </p>
           </div>
@@ -118,7 +118,7 @@ export default async function ProfilePage() {
 
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         {/* Profile Header Card */}
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-3 bg-background/50 backdrop-blur-sm border-[#303030]">
           <CardContent className="pt-6">
             <div className="flex items-start gap-6">
               <div className="flex-1 space-y-4">
@@ -164,7 +164,7 @@ export default async function ProfilePage() {
         </Card>
 
         {/* Personal Information Card */}
-        <Card>
+        <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
@@ -230,7 +230,7 @@ export default async function ProfilePage() {
         </Card>
 
         {/* Document Information Card */}
-        <Card>
+        <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Fingerprint className="h-5 w-5" />
@@ -288,7 +288,7 @@ export default async function ProfilePage() {
         </Card>
 
         {/* Account Activity Card */}
-        <Card>
+        <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
@@ -350,7 +350,7 @@ export default async function ProfilePage() {
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
         {/* Identities Card */}
         {user.identities && user.identities.length > 0 && (
-          <Card>
+          <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Key className="h-5 w-5" />
@@ -388,7 +388,7 @@ export default async function ProfilePage() {
 
         {/* Producer Information Card */}
         {isProducer && producerData && (
-          <Card>
+          <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <UserCircle className="h-5 w-5" />
@@ -420,7 +420,7 @@ export default async function ProfilePage() {
 
         {/* Session Information Card */}
         {session && (
-          <Card>
+          <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
@@ -476,7 +476,7 @@ export default async function ProfilePage() {
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {/* App Metadata */}
           {user.app_metadata && Object.keys(user.app_metadata).length > 0 && (
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden bg-background/50 backdrop-blur-sm border-[#303030]">
               <CardHeader>
                 <CardTitle>Metadata de la Aplicación</CardTitle>
                 <CardDescription>
@@ -493,7 +493,7 @@ export default async function ProfilePage() {
 
           {/* User Metadata */}
           {user.user_metadata && Object.keys(user.user_metadata).length > 0 && (
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden bg-background/50 backdrop-blur-sm border-[#303030]">
               <CardHeader>
                 <CardTitle>Metadata del Usuario</CardTitle>
                 <CardDescription>

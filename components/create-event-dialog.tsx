@@ -25,7 +25,7 @@ import { createEvent, type EventFormState } from "@/lib/actions/events";
 import { CreateEventSubmitButton } from "@/components/create-event-submit-button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, AlertCircle, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { HoverButton } from "@/components/ui/hover-glow-button";
 
 interface VenueOption {
   id: string;
@@ -33,8 +33,6 @@ interface VenueOption {
 }
 
 interface CreateEventDialogProps {
-  variant?: "default" | "outline" | "ghost";
-  size?: "default" | "sm" | "lg" | "icon";
   className?: string;
   eventVenues?: VenueOption[];
 }
@@ -80,8 +78,6 @@ function StatusSelect({
 }
 
 export function CreateEventDialog({
-  variant = "default",
-  size = "default",
   className,
   eventVenues = [],
 }: CreateEventDialogProps) {
@@ -116,15 +112,17 @@ export function CreateEventDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button
-        variant={variant}
-        size={size}
+      <HoverButton
         onClick={() => setOpen(true)}
-        className={cn("gap-2", className)}
+        className={`flex items-center gap-2 px-6 py-3 rounded-full whitespace-nowrap text-sm font-medium bg-primary text-primary-foreground ${className}`}
+        glowColor="#000000"
+        backgroundColor="transparent"
+        textColor="inherit"
+        hoverTextColor="inherit"
       >
         <Plus className="h-4 w-4" />
         Crear Evento
-      </Button>
+      </HoverButton>
       <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[75vh] sm:max-h-[85vh] overflow-y-auto overflow-x-hidden p-5 sm:p-6">
         <DialogHeader className="space-y-1.5 pb-3">
           <DialogTitle className="text-lg sm:text-xl font-semibold">

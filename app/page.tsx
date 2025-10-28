@@ -21,7 +21,7 @@ export default function Page() {
           <PopularEvents
             // Optionally pass a cityId to filter events by city
             // cityId="some-city-id"
-            limit={6} // Display 6 events in the grid (plus 1 featured)
+            limit={6} // Display 6 events in the grid
           />
         </div>
       </section>

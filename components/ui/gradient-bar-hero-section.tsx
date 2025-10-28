@@ -5,6 +5,7 @@ import { Instagram } from 'lucide-react';
 import { FaWhatsapp, FaGooglePlay, FaApple } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
 import { GLSLHills } from '@/components/ui/glsl-hills';
+import { HoverButton } from '@/components/ui/hover-glow-button';
 
 const WaitlistForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,27 +28,31 @@ const WaitlistForm: React.FC = () => {
     <div className="relative z-10 w-full flex justify-center">
       {!isSubmitted ? (
         <div className="flex flex-col sm:flex-row gap-3 items-center">
-          <button
+          <HoverButton
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`px-6 sm:px-8 py-3 sm:py-4 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-sm sm:text-base font-medium ${
-              isSubmitting
-                ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-            }`}
+            className="px-6 sm:px-8 py-3 sm:py-4 rounded-full whitespace-nowrap text-sm sm:text-base font-medium bg-primary text-primary-foreground"
+            glowColor="#000000"
+            backgroundColor="transparent"
+            textColor="inherit"
+            hoverTextColor="inherit"
           >
             {isSubmitting ? (
               <div className="h-4 w-4 sm:h-5 sm:w-5 border-2 border-muted-foreground border-t-primary-foreground rounded-full animate-spin"></div>
             ) : (
               'Descubrir eventos'
             )}
-          </button>
+          </HoverButton>
 
-          <button
-            className="px-6 sm:px-8 py-3 sm:py-4 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-sm sm:text-base font-medium bg-background/50 hover:bg-background/70 text-foreground border border-border backdrop-blur-sm"
+          <HoverButton
+            className="px-6 sm:px-8 py-3 sm:py-4 rounded-full whitespace-nowrap text-sm sm:text-base font-medium bg-background/50 text-foreground border border-[#303030] backdrop-blur-sm"
+            glowColor="#ffffff"
+            backgroundColor="transparent"
+            textColor="inherit"
+            hoverTextColor="inherit"
           >
             Soy Productor
-          </button>
+          </HoverButton>
         </div>
       ) : (
         <div className="bg-green-500/20 border border-green-500/30 text-green-600 dark:text-green-300 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-center animate-fadeIn text-sm sm:text-base">
@@ -119,10 +124,10 @@ export const Component: React.FC = () => {
         </h1>
 
         <div className="mb-6 sm:mb-10 px-4">
-          <p className="text-[clamp(1rem,3vw,1.5rem)] text-muted-foreground leading-relaxed animate-fadeIn animation-delay-200">
+          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#404040] leading-relaxed animate-fadeIn animation-delay-200">
             Descubre, compara y compra los tickets que van con tu estilo.
           </p>
-          <p className="text-[clamp(1rem,3vw,1.5rem)] text-muted-foreground leading-relaxed animate-fadeIn animation-delay-300">
+          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#404040] leading-relaxed animate-fadeIn animation-delay-300">
             En Hunt tú mandas.
           </p>
         </div>

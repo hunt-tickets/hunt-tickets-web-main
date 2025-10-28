@@ -1,25 +1,27 @@
 import React, { ReactNode } from "react";
-import { BackToButton } from "@/components/back-to-button";
+import { AdminSidebar } from "@/components/admin-sidebar";
 
 interface AdministradorLayoutProps {
   children: ReactNode;
+  params: Promise<{
+    userId: string;
+  }>;
 }
 
-const AdministradorLayout = ({ children }: AdministradorLayoutProps) => {
+const AdministradorLayout = async ({ children, params }: AdministradorLayoutProps) => {
+  const { userId } = await params;
+
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <BackToButton />
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            Administrar Eventos
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-            Crea y gestiona eventos
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Sidebar */}
+      <AdminSidebar userId={userId} />
+
+      {/* Main Content - with left margin to accommodate fixed sidebar */}
+      <main className="lg:ml-72 min-h-screen">
+        <div className="px-6 sm:px-8 lg:px-12 py-8 lg:py-12 pt-20 lg:pt-12">
+          {children}
         </div>
-      </div>
-      {children}
+      </main>
     </div>
   );
 };
