@@ -21,9 +21,9 @@ export const HuntDatePicker = ({ value, onChange, placeholder = "Selecciona una 
   return (
     <DatePicker.Root
       name={name}
-      value={value ? [value] : undefined}
-      min={minDate.toISOString().split('T')[0]}
-      max={maxDate.toISOString().split('T')[0]}
+      value={value ? ([value] as unknown as Parameters<typeof DatePicker.Root>[0]['value']) : undefined}
+      min={minDate.toISOString().split('T')[0] as unknown as Parameters<typeof DatePicker.Root>[0]['min']}
+      max={maxDate.toISOString().split('T')[0] as unknown as Parameters<typeof DatePicker.Root>[0]['max']}
       onValueChange={(details) => {
         if (details.valueAsString && details.valueAsString.length > 0) {
           onChange?.(details.valueAsString[0]);
