@@ -148,37 +148,6 @@ export const AuthSignIn = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    const supabase = createClient();
-    setErrorCountdown(null);
-
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error: unknown) {
-      const errorMsg = error instanceof Error ? error.message : "Error al iniciar sesión con Google";
-
-      // Check if it's a rate limiting error
-      if (errorMsg.includes("For security purposes")) {
-        const match = errorMsg.match(/after (\d+) seconds/);
-        if (match) {
-          const seconds = parseInt(match[1], 10);
-          setErrorCountdown(seconds);
-          setError(`Por seguridad, puedes solicitar esto después de ${seconds} segundos.`);
-        } else {
-          setError(translateError(errorMsg));
-        }
-      } else {
-        setError(translateError(errorMsg));
-      }
-    }
-  };
-
   const handleResendOtp = async (email: string) => {
     const supabase = createClient();
     setIsLoading(true);

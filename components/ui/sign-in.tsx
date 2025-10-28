@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Eye, EyeOff, Mail, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { AnimatedBackground } from './animated-background';
 
@@ -35,7 +35,6 @@ interface SignInPageProps {
   onVerifyOtp?: (email: string, otp: string) => void;
   onResendOtp?: (email: string) => void;
   onGoogleSignIn?: () => void;
-  onResetPassword?: () => void;
   onCreateAccount?: () => void;
   isOtpSent?: boolean;
   isLoading?: boolean;
@@ -75,7 +74,6 @@ export const SignInPage: React.FC<SignInPageProps> = ({
   onVerifyOtp,
   onResendOtp,
   onGoogleSignIn,
-  onResetPassword,
   onCreateAccount,
   isOtpSent = false,
   isLoading = false,

@@ -6,7 +6,6 @@ import Image from "next/image";
 import { EventCard } from "@/components/event-card";
 import { EnhancedSearchBar } from "@/components/enhanced-search-bar";
 import { EnhancedCityFilter } from "@/components/enhanced-city-filter";
-import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import type { EventFull } from "@/lib/supabase/types";
 import { formatEventDate, formatPrice } from "@/lib/utils/format";

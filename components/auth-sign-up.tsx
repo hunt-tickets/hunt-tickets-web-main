@@ -38,7 +38,7 @@ export const AuthSignUp = () => {
 
     try {
       // Generate a temporary password or use email OTP
-      const { data: authData, error: signUpError } = await supabase.auth.signInWithOtp({
+      const { error: signUpError } = await supabase.auth.signInWithOtp({
         email: data.email,
         options: {
           shouldCreateUser: true,

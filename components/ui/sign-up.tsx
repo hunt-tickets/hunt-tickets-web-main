@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, ArrowLeft, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Check } from 'lucide-react';
 import Link from 'next/link';
 import { SimpleDatePicker } from './simple-date-picker';
 import { NeuralNetworkBackground } from './neural-network-background';
@@ -217,7 +217,6 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({
                   value={birthday}
                   onChange={setBirthday}
                   placeholder="Selecciona tu fecha de nacimiento"
-                  required
                 />
               </div>
 

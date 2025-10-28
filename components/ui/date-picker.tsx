@@ -8,10 +8,9 @@ interface DatePickerProps {
   onChange?: (value: string) => void;
   placeholder?: string;
   name?: string;
-  required?: boolean;
 }
 
-export const HuntDatePicker = ({ value, onChange, placeholder = "Selecciona una fecha", name, required }: DatePickerProps) => {
+export const HuntDatePicker = ({ value, onChange, placeholder = "Selecciona una fecha", name }: DatePickerProps) => {
   // Calculate max date (12 years ago from today)
   const today = new Date();
   const maxDate = new Date(today.getFullYear() - 12, today.getMonth(), today.getDate());

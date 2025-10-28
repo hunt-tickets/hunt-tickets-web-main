@@ -8,10 +8,9 @@ interface SimpleDatePickerProps {
   onChange?: (value: string) => void;
   placeholder?: string;
   name?: string;
-  required?: boolean;
 }
 
-export const SimpleDatePicker = ({ value, onChange, placeholder = "Selecciona una fecha", name, required }: SimpleDatePickerProps) => {
+export const SimpleDatePicker = ({ value, onChange, placeholder = "Selecciona una fecha", name }: SimpleDatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value ? new Date(value) : null);
   const [viewDate, setViewDate] = useState(new Date());
@@ -38,6 +37,7 @@ export const SimpleDatePicker = ({ value, onChange, placeholder = "Selecciona un
       setViewDate(new Date(maxDate));
     }
     setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

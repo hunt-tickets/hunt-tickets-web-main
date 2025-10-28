@@ -158,7 +158,7 @@ extend({ CPPNShaderMaterial });
 
 function ShaderPlane() {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const materialRef = useRef<any>(null!);
+  const materialRef = useRef<THREE.ShaderMaterial & { iTime: number; iResolution: THREE.Vector2 }>(null!);
 
   useFrame((state) => {
     if (!materialRef.current) return;
@@ -203,6 +203,6 @@ export function NeuralNetworkBackground() {
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    cPPNShaderMaterial: any;
+    cPPNShaderMaterial: object;
   }
 }

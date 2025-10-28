@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Instagram, Menu, X, Mail } from 'lucide-react';
+import { Instagram } from 'lucide-react';
 import { FaWhatsapp, FaGooglePlay, FaApple } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
 import { GLSLHills } from '@/components/ui/glsl-hills';
@@ -23,28 +23,6 @@ const Avatar: React.FC<AvatarProps> = ({ imageSrc, delay }) => {
         className="h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-    </div>
-  );
-};
-
-const TrustElements: React.FC = () => {
-  const avatars = [
-    "https://images.pexels.com/photos/2726111/pexels-photo-2726111.jpeg?auto=compress&cs=tinysrgb&w=100",
-    "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=100",
-    "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=100",
-    "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=100",
-  ];
-
-  return (
-    <div className="inline-flex items-center space-x-3 bg-background/60 backdrop-blur-sm rounded-full py-2 px-3 sm:py-2 sm:px-4 text-xs sm:text-sm border border-border/40">
-      <div className="flex -space-x-2 sm:-space-x-3">
-        {avatars.map((avatar, index) => (
-          <Avatar key={index} imageSrc={avatar} delay={index * 200} />
-        ))}
-      </div>
-      <p className="text-foreground animate-fadeIn whitespace-nowrap" style={{ animationDelay: '800ms' }}>
-        <span className="text-foreground font-medium">2.4K</span> currently on the waitlist
-      </p>
     </div>
   );
 };
@@ -147,7 +125,8 @@ export const Component: React.FC = () => {
         setIsTyping(true);
       }
     }
-  }, [displayedText, isTyping, currentWordIndex, words]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [displayedText, isTyping, currentWordIndex]);
 
   return (
     <section className="relative h-full w-full overflow-hidden">

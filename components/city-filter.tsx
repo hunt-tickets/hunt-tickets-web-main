@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, ChevronDown } from "lucide-react";
+import { MapPin } from "lucide-react";
 import {
   Select,
   SelectContent,
