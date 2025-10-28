@@ -33,7 +33,7 @@ export default function TermsAndConditionsPage() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80;
+      const offset = 100;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - offset;
 
@@ -47,7 +47,7 @@ export default function TermsAndConditionsPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100;
+      const scrollPosition = window.scrollY + 120;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = document.getElementById(sections[i].id);
@@ -63,22 +63,23 @@ export default function TermsAndConditionsPage() {
   }, []);
 
   const TableOfContents = ({ mobile = false }: { mobile?: boolean }) => (
-    <nav className={mobile ? "" : ""}>
+    <nav className={mobile ? "" : "bg-background/80 backdrop-blur-lg rounded-2xl p-6 shadow-lg"} style={mobile ? {} : { border: '1px solid #303030' }}>
       {!mobile && (
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
           Tabla de Contenido
         </h3>
       )}
-      <ul className="space-y-2">
+      <ul className="space-y-1.5">
         {sections.map((section) => (
           <li key={section.id}>
             <button
               onClick={() => scrollToSection(section.id)}
-              className={`text-left text-sm transition-colors w-full py-1.5 px-3 rounded-md ${
+              className={`text-left text-sm transition-all w-full py-2.5 px-4 rounded-lg ${
                 activeSection === section.id
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ? "bg-[#303030]/20 text-foreground font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
+              style={activeSection === section.id ? { border: '1px solid #303030' } : {}}
             >
               {section.title}
             </button>
@@ -89,15 +90,14 @@ export default function TermsAndConditionsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16">
       {/* Mobile Header */}
-      <header className="lg:hidden sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-4">
-            {/* Mobile menu */}
+      <header className="lg:hidden sticky top-16 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center justify-between px-4 md:px-6">
+          <div className="flex items-center gap-3">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="h-9 w-9">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
@@ -114,7 +114,7 @@ export default function TermsAndConditionsPage() {
               </SheetContent>
             </Sheet>
             <div>
-              <h1 className="text-lg font-bold md:text-xl">Hunt Tickets</h1>
+              <h1 className="text-base font-bold">Hunt Tickets</h1>
               <p className="text-xs text-muted-foreground hidden sm:block">
                 Términos y Condiciones
               </p>
@@ -123,123 +123,139 @@ export default function TermsAndConditionsPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 md:px-6 lg:grid lg:grid-cols-[280px_1fr] lg:gap-10 xl:gap-16">
+      <div className="container mx-auto px-4 md:px-6 lg:grid lg:grid-cols-[300px_1fr] lg:gap-12 xl:gap-16 py-8 lg:py-12">
         {/* Desktop sidebar */}
-        <aside className="hidden lg:block sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto py-8">
+        <aside className="hidden lg:block sticky top-24 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto">
           <TableOfContents />
         </aside>
 
         {/* Main content */}
-        <main className="py-8 lg:py-12 max-w-3xl">
+        <main className="max-w-4xl">
           {/* Hero section */}
-          <div className="mb-12 space-y-4">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-balance">
-              Términos y condiciones de uso
-            </h1>
-            <p className="text-xl text-muted-foreground">Hunt Tickets</p>
-            <p className="text-sm text-muted-foreground">
-              Fecha de entrada en vigencia: 03 de abril de 2025
-            </p>
+          <div className="mb-16 space-y-6">
+            <div className="space-y-3">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-balance">
+                Términos y condiciones de uso
+              </h1>
+              <p className="text-lg sm:text-xl text-muted-foreground font-medium">
+                Hunt Tickets
+              </p>
+            </div>
+            <div className="inline-block px-4 py-2 rounded-full bg-muted/50" style={{ border: '1px solid #303030' }}>
+              <p className="text-sm text-muted-foreground">
+                Fecha de entrada en vigencia: <span className="font-semibold text-foreground">03 de abril de 2025</span>
+              </p>
+            </div>
           </div>
 
           {/* Introduction */}
-          <div className="prose prose-gray dark:prose-invert max-w-none mb-12">
-            <p className="text-base leading-relaxed">
-              Bienvenido a Hunt Tickets S.A.S. (&ldquo;HUNT&rdquo;,
-              &ldquo;nosotros&rdquo; o &ldquo;la empresa&rdquo;), una plataforma
-              tecnológica que permite descubrir, comprar, gestionar y transferir
-              entradas a eventos, a través de nuestra aplicación móvil, página
-              web y canales habilitados como WhatsApp. Al registrarse, acceder o
-              utilizar nuestros servicios, usted (el &ldquo;Usuario&rdquo;)
-              acepta plenamente estos Términos y Condiciones de Uso. Le
-              recomendamos leerlos cuidadosamente. Si no está de acuerdo, le
-              solicitamos abstenerse de usar la plataforma.
-            </p>
+          <div className="mb-20">
+            <div className="rounded-2xl border border-border bg-muted/30 p-8 lg:p-10">
+              <p className="text-base sm:text-lg leading-relaxed text-foreground">
+                Bienvenido a Hunt Tickets S.A.S. (&ldquo;HUNT&rdquo;,
+                &ldquo;nosotros&rdquo; o &ldquo;la empresa&rdquo;), una plataforma
+                tecnológica que permite descubrir, comprar, gestionar y transferir
+                entradas a eventos, a través de nuestra aplicación móvil, página
+                web y canales habilitados como WhatsApp. Al registrarse, acceder o
+                utilizar nuestros servicios, usted (el &ldquo;Usuario&rdquo;)
+                acepta plenamente estos Términos y Condiciones de Uso. Le
+                recomendamos leerlos cuidadosamente. Si no está de acuerdo, le
+                solicitamos abstenerse de usar la plataforma.
+              </p>
+            </div>
           </div>
 
           {/* Section 1 */}
-          <section id="section-1" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-1" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               1. Identificación del responsable
             </h2>
-            <div className="space-y-3 text-base leading-relaxed">
-              <p>
-                <strong>Razón social:</strong> Hunt Tickets S.A.S.
-              </p>
-              <p>
-                <strong>NIT:</strong> 901881747
-              </p>
-              <p>
-                <strong>Domicilio:</strong> Calle 94 #9-44, Bogotá D.C.,
-                Colombia
-              </p>
-              <p>
-                <strong>Correo de contacto:</strong> info@hunt-tickets.com
-              </p>
-              <p>
-                <strong>WhatsApp oficial:</strong> +57 322 8597640
-              </p>
+            <div className="space-y-4 text-base sm:text-lg leading-relaxed">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="p-5 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
+                  <p className="text-sm text-muted-foreground mb-1">Razón social</p>
+                  <p className="font-semibold text-foreground">Hunt Tickets S.A.S.</p>
+                </div>
+                <div className="p-5 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
+                  <p className="text-sm text-muted-foreground mb-1">NIT</p>
+                  <p className="font-semibold text-foreground">901881747</p>
+                </div>
+                <div className="p-5 rounded-xl bg-card border border-border sm:col-span-2">
+                  <p className="text-sm text-muted-foreground mb-1">Domicilio</p>
+                  <p className="font-semibold text-foreground">Calle 94 #9-44, Bogotá D.C., Colombia</p>
+                </div>
+                <div className="p-5 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
+                  <p className="text-sm text-muted-foreground mb-1">Correo de contacto</p>
+                  <p className="font-semibold text-foreground">info@hunt-tickets.com</p>
+                </div>
+                <div className="p-5 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
+                  <p className="text-sm text-muted-foreground mb-1">WhatsApp oficial</p>
+                  <p className="font-semibold text-foreground">+57 322 8597640</p>
+                </div>
+              </div>
             </div>
           </section>
 
           {/* Section 2 */}
-          <section id="section-2" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-2" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               2. Objeto de la plataforma
             </h2>
-            <div className="space-y-4 text-base leading-relaxed">
-              <p className="font-semibold">
+            <div className="space-y-6 text-base sm:text-lg leading-relaxed">
+              <p className="font-medium text-foreground">
                 HUNT es una solución tecnológica para la comercialización de
                 entradas a eventos públicos y privados. A través de nuestra
                 plataforma, los usuarios pueden:
               </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Comprar boletos de eventos.</li>
-                <li>Recibir entradas en formato digital.</li>
-                <li>Transferir entradas a otros usuarios.</li>
-                <li>
-                  Recibir notificaciones, promociones o recordatorios
-                  personalizados.
-                </li>
+              <ul className="space-y-3">
+                {[
+                  "Comprar boletos de eventos.",
+                  "Recibir entradas en formato digital.",
+                  "Transferir entradas a otros usuarios.",
+                  "Recibir notificaciones, promociones o recordatorios personalizados."
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 p-4 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
+                    <div className="w-2 h-2 rounded-full bg-[#303030] mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </section>
 
           {/* Section 3 */}
-          <section id="section-3" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-3" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               3. Aceptación del usuario
             </h2>
-            <div className="space-y-4 text-base leading-relaxed">
-              <p>Al utilizar HUNT, el Usuario:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>
-                  Declara que es mayor de edad y tiene capacidad legal para
-                  contratar.
-                </li>
-                <li>
-                  Acepta que la información proporcionada es veraz y
-                  actualizada.
-                </li>
-                <li>
-                  Se obliga a utilizar la plataforma de forma lícita y conforme
-                  a estos términos.
-                </li>
+            <div className="space-y-6 text-base sm:text-lg leading-relaxed">
+              <p className="font-medium text-foreground">Al utilizar HUNT, el Usuario:</p>
+              <ul className="space-y-3">
+                {[
+                  "Declara que es mayor de edad y tiene capacidad legal para contratar.",
+                  "Acepta que la información proporcionada es veraz y actualizada.",
+                  "Se obliga a utilizar la plataforma de forma lícita y conforme a estos términos."
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 p-4 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
+                    <div className="w-2 h-2 rounded-full bg-[#303030] mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </section>
 
           {/* Section 4 */}
-          <section id="section-4" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-4" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               4. Tratamiento de datos personales
             </h2>
-            <div className="space-y-6 text-base leading-relaxed">
-              <div>
-                <h3 className="text-lg font-semibold mb-3">
+            <div className="space-y-8 text-base sm:text-lg leading-relaxed">
+              <div className="rounded-2xl bg-card p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
+                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">
                   4.1 Consentimiento informado
                 </h3>
-                <p>
+                <p className="text-muted-foreground">
                   Al registrarse en HUNT, usted autoriza de manera previa,
                   expresa e informada a Hunt Tickets S.A.S. para recolectar,
                   almacenar, usar, circular, analizar, transmitir, y
@@ -248,199 +264,212 @@ export default function TermsAndConditionsPage() {
                 </p>
               </div>
 
-              <div>
-                <h3 className="text-lg font-semibold mb-3">
+              <div className="rounded-2xl bg-card p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
+                <h3 className="text-lg sm:text-xl font-semibold mb-6 text-foreground">
                   4.2 Datos recolectados
                 </h3>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Nombre completo, cédula o documento de identidad</li>
-                  <li>Número de teléfono y dirección de correo electrónico</li>
-                  <li>Fecha de nacimiento, género, ciudad de residencia</li>
-                  <li>Preferencias, eventos comprados o visualizados</li>
-                  <li>Información de dispositivos, IP, ubicación aproximada</li>
-                  <li>
-                    Métodos de pago, transacciones y comportamiento de compra
-                  </li>
+                <ul className="space-y-3">
+                  {[
+                    "Nombre completo, cédula o documento de identidad",
+                    "Número de teléfono y dirección de correo electrónico",
+                    "Fecha de nacimiento, género, ciudad de residencia",
+                    "Preferencias, eventos comprados o visualizados",
+                    "Información de dispositivos, IP, ubicación aproximada",
+                    "Métodos de pago, transacciones y comportamiento de compra"
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#303030] mt-2 flex-shrink-0" />
+                      <span className="text-muted-foreground">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
-              <div>
-                <h3 className="text-lg font-semibold mb-3">
+              <div className="rounded-2xl bg-card p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
+                <h3 className="text-lg sm:text-xl font-semibold mb-6 text-foreground">
                   4.3 Finalidades del tratamiento
                 </h3>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Brindar los servicios contratados</li>
-                  <li>
-                    Mejorar la experiencia de usuario con algoritmos
-                    personalizados
-                  </li>
-                  <li>Detectar usos indebidos o fraudes</li>
-                  <li>
-                    Enviar comunicaciones sobre su cuenta, eventos o promociones
-                  </li>
-                  <li>
-                    Hacer análisis de datos agregados para toma de decisiones de
-                    negocio
-                  </li>
-                  <li>
-                    Compartir información con aliados estratégicos y proveedores
-                    tecnológicos, bajo acuerdos de confidencialidad y protección
-                    de datos.
-                  </li>
+                <ul className="space-y-3">
+                  {[
+                    "Brindar los servicios contratados",
+                    "Mejorar la experiencia de usuario con algoritmos personalizados",
+                    "Detectar usos indebidos o fraudes",
+                    "Enviar comunicaciones sobre su cuenta, eventos o promociones",
+                    "Hacer análisis de datos agregados para toma de decisiones de negocio",
+                    "Compartir información con aliados estratégicos y proveedores tecnológicos, bajo acuerdos de confidencialidad y protección de datos."
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#303030] mt-2 flex-shrink-0" />
+                      <span className="text-muted-foreground">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
-              <div>
-                <h3 className="text-lg font-semibold mb-3">
+              <div className="rounded-2xl bg-[#303030]/10 p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
+                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">
                   4.4 Uso amplio de la data
                 </h3>
-                <p className="mb-3">
-                  HUNT se reserva el derecho a utilizar la información
-                  recolectada para fines comerciales, estadísticos, de análisis,
-                  entrenamiento de modelos de inteligencia artificial,
-                  predicción de comportamiento de compra, publicidad
-                  personalizada y mejoras de producto, siempre respetando los
-                  principios de legalidad, finalidad, libertad, seguridad,
-                  veracidad y acceso.
-                </p>
-                <p>
-                  En ningún caso compartiremos su información con terceros sin
-                  autorización, salvo por mandato legal o contractual necesario
-                  para prestar el servicio.
-                </p>
+                <div className="space-y-4 text-muted-foreground">
+                  <p>
+                    HUNT se reserva el derecho a utilizar la información
+                    recolectada para fines comerciales, estadísticos, de análisis,
+                    entrenamiento de modelos de inteligencia artificial,
+                    predicción de comportamiento de compra, publicidad
+                    personalizada y mejoras de producto, siempre respetando los
+                    principios de legalidad, finalidad, libertad, seguridad,
+                    veracidad y acceso.
+                  </p>
+                  <p>
+                    En ningún caso compartiremos su información con terceros sin
+                    autorización, salvo por mandato legal o contractual necesario
+                    para prestar el servicio.
+                  </p>
+                </div>
               </div>
             </div>
           </section>
 
           {/* Section 5 */}
-          <section id="section-5" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-5" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               5. Propiedad intelectual
             </h2>
-            <p className="text-base leading-relaxed">
-              Todos los contenidos, desarrollos, algoritmos, marcas, diseños,
-              interfaces y códigos fuente usados o desarrollados por HUNT son
-              propiedad exclusiva de Hunt Tickets S.A.S. Queda prohibida su
-              copia, reproducción, modificación o comercialización sin
-              autorización previa por escrito.
-            </p>
+            <div className="rounded-2xl border border-border bg-card p-6 lg:p-8">
+              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
+                Todos los contenidos, desarrollos, algoritmos, marcas, diseños,
+                interfaces y códigos fuente usados o desarrollados por HUNT son
+                propiedad exclusiva de Hunt Tickets S.A.S. Queda prohibida su
+                copia, reproducción, modificación o comercialización sin
+                autorización previa por escrito.
+              </p>
+            </div>
           </section>
 
           {/* Section 6 */}
-          <section id="section-6" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-6" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               6. Cuentas y seguridad
             </h2>
-            <ul className="list-disc pl-6 space-y-2 text-base leading-relaxed">
-              <li>
-                El Usuario es responsable de mantener la confidencialidad de su
-                cuenta y credenciales.
-              </li>
-              <li>
-                En caso de uso indebido o sospecha de fraude, HUNT podrá
-                suspender o eliminar la cuenta.
-              </li>
-              <li>
-                Cualquier actividad desde su cuenta se presume hecha por usted.
-              </li>
+            <ul className="space-y-3">
+              {[
+                "El Usuario es responsable de mantener la confidencialidad de su cuenta y credenciales.",
+                "En caso de uso indebido o sospecha de fraude, HUNT podrá suspender o eliminar la cuenta.",
+                "Cualquier actividad desde su cuenta se presume hecha por usted."
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3 p-5 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  <span className="text-base sm:text-lg text-muted-foreground">{item}</span>
+                </li>
+              ))}
             </ul>
           </section>
 
           {/* Section 7 */}
-          <section id="section-7" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-7" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               7. Limitación de responsabilidad
             </h2>
-            <div className="space-y-4 text-base leading-relaxed">
-              <p>HUNT no se hace responsable por:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>
-                  Cancelaciones, modificaciones o fallas en eventos por parte de
-                  organizadores.
-                </li>
-                <li>
-                  Daños o perjuicios derivados del mal uso de la plataforma por
-                  parte del usuario.
-                </li>
-                <li>
-                  Fallas técnicas, interrupciones del servicio, pérdida de
-                  información por causas ajenas.
-                </li>
+            <div className="space-y-6 text-base sm:text-lg leading-relaxed">
+              <p className="font-medium text-foreground">HUNT no se hace responsable por:</p>
+              <ul className="space-y-3">
+                {[
+                  "Cancelaciones, modificaciones o fallas en eventos por parte de organizadores.",
+                  "Daños o perjuicios derivados del mal uso de la plataforma por parte del usuario.",
+                  "Fallas técnicas, interrupciones del servicio, pérdida de información por causas ajenas."
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 p-5 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
+                    <div className="w-2 h-2 rounded-full bg-[#303030] mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
               </ul>
-              <p className="font-semibold">
-                El uso de la plataforma es bajo su propio riesgo.
-              </p>
+              <div className="rounded-xl bg-[#303030]/10 p-6" style={{ border: '1px solid #303030' }}>
+                <p className="font-semibold text-foreground">
+                  El uso de la plataforma es bajo su propio riesgo.
+                </p>
+              </div>
             </div>
           </section>
 
           {/* Section 8 */}
-          <section id="section-8" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-8" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               8. Modificaciones de los términos
             </h2>
-            <p className="text-base leading-relaxed">
-              Nos reservamos el derecho a modificar estos Términos y Condiciones
-              en cualquier momento. La versión actualizada estará disponible en
-              nuestros canales y se entiende aceptada al continuar usando la
-              plataforma.
-            </p>
-          </section>
-
-          {/* Section 9 */}
-          <section id="section-9" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
-              9. Política de devoluciones y cambios
-            </h2>
-            <p className="text-base leading-relaxed">
-              Las entradas adquiridas a través de HUNT no son reembolsables,
-              salvo que el evento sea cancelado y el organizador autorice la
-              devolución. En tales casos, se aplicarán políticas específicas de
-              reembolso y tiempos de procesamiento, que serán comunicadas
-              oportunamente.
-            </p>
-          </section>
-
-          {/* Section 10 */}
-          <section id="section-10" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
-              10. Jurisdicción y legislación aplicable
-            </h2>
-            <p className="text-base leading-relaxed">
-              Este contrato se rige por las leyes de la República de Colombia.
-              Cualquier conflicto será resuelto ante la jurisdicción ordinaria
-              de la ciudad de Bogotá D.C.
-            </p>
-          </section>
-
-          {/* Section 11 */}
-          <section id="section-11" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
-              11. Contacto y canales de atención
-            </h2>
-            <div className="space-y-3 text-base leading-relaxed">
-              <p>
-                <strong>Correo electrónico:</strong> info@hunt-tickets.com
-              </p>
-              <p>
-                <strong>WhatsApp:</strong> +57 322 8597640
-              </p>
-              <p>
-                <strong>Dirección física:</strong> Calle 94 #9-44, Bogotá D.C.,
-                Colombia
+            <div className="rounded-2xl border border-border bg-card p-6 lg:p-8">
+              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
+                Nos reservamos el derecho a modificar estos Términos y Condiciones
+                en cualquier momento. La versión actualizada estará disponible en
+                nuestros canales y se entiende aceptada al continuar usando la
+                plataforma.
               </p>
             </div>
           </section>
 
+          {/* Section 9 */}
+          <section id="section-9" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
+              9. Política de devoluciones y cambios
+            </h2>
+            <div className="rounded-2xl border border-border bg-card p-6 lg:p-8">
+              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
+                Las entradas adquiridas a través de HUNT no son reembolsables,
+                salvo que el evento sea cancelado y el organizador autorice la
+                devolución. En tales casos, se aplicarán políticas específicas de
+                reembolso y tiempos de procesamiento, que serán comunicadas
+                oportunamente.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 10 */}
+          <section id="section-10" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
+              10. Jurisdicción y legislación aplicable
+            </h2>
+            <div className="rounded-2xl border border-border bg-card p-6 lg:p-8">
+              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
+                Este contrato se rige por las leyes de la República de Colombia.
+                Cualquier conflicto será resuelto ante la jurisdicción ordinaria
+                de la ciudad de Bogotá D.C.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 11 */}
+          <section id="section-11" className="mb-20 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
+              11. Contacto y canales de atención
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="p-6 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
+                <p className="text-sm text-muted-foreground mb-2">Correo electrónico</p>
+                <p className="font-semibold text-primary">info@hunt-tickets.com</p>
+              </div>
+              <div className="p-6 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
+                <p className="text-sm text-muted-foreground mb-2">WhatsApp</p>
+                <p className="font-semibold text-primary">+57 322 8597640</p>
+              </div>
+              <div className="p-6 rounded-xl bg-card border border-border sm:col-span-2">
+                <p className="text-sm text-muted-foreground mb-2">Dirección física</p>
+                <p className="font-semibold text-foreground">Calle 94 #9-44, Bogotá D.C., Colombia</p>
+              </div>
+            </div>
+          </section>
+
           {/* Section 12 */}
-          <section id="section-12" className="mb-16 scroll-mt-20">
-            <h2 className="text-2xl font-bold mb-6 text-balance">
+          <section id="section-12" className="mb-12 scroll-mt-24">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-balance">
               12. Aceptación final
             </h2>
-            <p className="text-base leading-relaxed">
-              Al continuar con el uso de HUNT, usted manifiesta haber leído,
-              comprendido y aceptado estos Términos y Condiciones de forma
-              libre, voluntaria y expresa.
-            </p>
+            <div className="rounded-2xl bg-[#303030]/10 p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
+              <p className="text-base sm:text-lg leading-relaxed text-foreground font-medium">
+                Al continuar con el uso de HUNT, usted manifiesta haber leído,
+                comprendido y aceptado estos Términos y Condiciones de forma
+                libre, voluntaria y expresa.
+              </p>
+            </div>
           </section>
         </main>
       </div>

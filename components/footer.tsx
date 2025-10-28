@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const Footer = () => {
 
   return (
-    <footer className="w-full border-t bg-background pb-[68px] md:pb-0">
+    <footer className="w-full border-t dark:border-t-[#303030] bg-background pb-[68px] md:pb-0">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Logo & Brand Column */}
@@ -136,7 +136,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 border-t pt-8">
+        <div className="mt-12 border-t dark:border-t-[#303030] pt-8">
           <p className="text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} Hunt Tickets. Todos los derechos
             reservados.

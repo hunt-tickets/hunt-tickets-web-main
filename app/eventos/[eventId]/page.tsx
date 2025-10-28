@@ -223,8 +223,8 @@ export default async function EventPage({ params }: EventPageProps) {
                         <Image
                           src={producer.logo}
                           alt={producer.name}
-                          fill
-                          sizes="40px"
+                          width={40}
+                          height={40}
                           className="object-cover"
                         />
                       </div>

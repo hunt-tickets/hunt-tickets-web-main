@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Amarante } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { ConditionalLayout } from "@/components/conditional-layout";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -58,11 +57,9 @@ export default function RootLayout({
               className: 'sm:bottom-4 sm:right-4 top-4 right-4',
             }}
           />
-          {/* Header component visible on all pages */}
-          <Header />
-          {children}
-          {/* Footer component visible on all pages */}
-          <Footer />
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
         </ThemeProvider>
       </body>
     </html>

@@ -402,6 +402,8 @@ export default async function ProfilePage() {
                   <Image
                     src={producerData.logo}
                     alt={producerData.name}
+                    width={64}
+                    height={64}
                     className="h-16 w-16 rounded-lg object-cover"
                   />
                 )}

@@ -41,7 +41,6 @@ export function LoginForm({
       });
       if (error) throw error;
       setOtpSent(true);
-      setMessage("Revisa tu correo para el código de verificación");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {

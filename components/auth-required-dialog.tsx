@@ -79,7 +79,6 @@ export function AuthRequiredDialog({
       }
 
       setLoginOtpSent(true);
-      setMessage("Revisa tu correo para el código de verificación");
     } catch {
       setError("Error al enviar el código. Por favor intenta de nuevo.");
     } finally {

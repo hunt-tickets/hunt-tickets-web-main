@@ -1,57 +1,58 @@
-"use client";
+"use client"
 
-import React, { useState } from 'react';
+import { MeshGradient } from "@paper-design/shaders-react"
+import { useEffect, useState } from "react"
 
-const AnimatedBackground: React.FC = () => {
-  const [numBars] = useState(15);
+interface AnimatedBackgroundProps {
+  colors?: string[]
+  distortion?: number
+  swirl?: number
+  speed?: number
+  offsetX?: number
+  veilOpacity?: string
+}
 
-  const calculateHeight = (index: number, total: number) => {
-    const position = index / (total - 1);
-    const maxHeight = 60;
-    const minHeight = 20;
+export function AnimatedBackground({
+  colors = ["#000000", "#1a1a1a", "#2d2d2d", "#1a1a1a", "#000000", "#0a0a0a"],
+  distortion = 0.8,
+  swirl = 0.6,
+  speed = 0.42,
+  offsetX = 0.08,
+  veilOpacity = "bg-black/40",
+}: AnimatedBackgroundProps) {
+  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 })
+  const [mounted, setMounted] = useState(false)
 
-    const center = 0.5;
-    const distanceFromCenter = Math.abs(position - center);
-    const heightPercentage = Math.pow(distanceFromCenter * 2, 1.5);
-
-    return minHeight + (maxHeight - minHeight) * heightPercentage;
-  };
+  useEffect(() => {
+    setMounted(true)
+    const update = () =>
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    update()
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden opacity-30">
-      <div
-        className="flex h-full"
-        style={{
-          width: '100%',
-          transform: 'translateZ(0)',
-          backfaceVisibility: 'hidden',
-          WebkitFontSmoothing: 'antialiased',
-        }}
-      >
-        {Array.from({ length: numBars }).map((_, index) => {
-          const height = calculateHeight(index, numBars);
-          return (
-            <div
-              key={index}
-              style={{
-                flex: '1 0 calc(100% / 15)',
-                maxWidth: 'calc(100% / 15)',
-                height: '100%',
-                background: 'linear-gradient(to top, #404040, transparent)',
-                transform: `scaleY(${height / 100})`,
-                transformOrigin: 'bottom',
-                transition: 'transform 0.7s ease-in-out',
-                animation: 'pulseBar 3s ease-in-out infinite alternate',
-                animationDelay: `${index * 0.15}s`,
-                outline: '1px solid rgba(0, 0, 0, 0)',
-                boxSizing: 'border-box',
-              }}
-            />
-          );
-        })}
-      </div>
+    <div className="fixed inset-0 w-screen h-screen">
+      {mounted && (
+        <>
+          <MeshGradient
+            width={dimensions.width}
+            height={dimensions.height}
+            colors={colors}
+            distortion={distortion}
+            swirl={swirl}
+            grainMixer={0}
+            grainOverlay={0}
+            speed={speed}
+            offsetX={offsetX}
+          />
+          <div className={`absolute inset-0 pointer-events-none ${veilOpacity}`} />
+        </>
+      )}
     </div>
-  );
-};
-
-export default AnimatedBackground;
+  )
+}
