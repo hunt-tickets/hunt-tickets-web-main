@@ -84,9 +84,9 @@ interface Transaction {
     name: string;
     price: number;
   };
-  profiles: {
-    first_name: string | null;
-    last_name: string | null;
+  user: {
+    name: string | null;
+    lastName: string | null;
     email: string | null;
   } | null;
 }
@@ -1138,8 +1138,8 @@ export function EventTabs({ eventId, financialReport, tickets, producers, allPro
                 t.quantity,
                 t.total,
                 t.source === 'app' ? 'App' : t.source === 'web' ? 'Web' : 'Efectivo',
-                t.profiles ? `${t.profiles.first_name || ''} ${t.profiles.last_name || ''}`.trim() : 'N/A',
-                t.profiles?.email || 'N/A'
+                t.user ? `${t.user.name || ''} ${t.user.lastName || ''}`.trim() : 'N/A',
+                t.user?.email || 'N/A'
               ]);
 
               const csvContent = [
@@ -1230,13 +1230,13 @@ export function EventTabs({ eventId, financialReport, tickets, producers, allPro
                           {transaction.tickets.name}
                         </td>
                         <td className="px-4 py-3 text-sm">
-                          {transaction.profiles ? (
+                          {transaction.user ? (
                             <div>
                               <div className="text-white/90">
-                                {transaction.profiles.first_name} {transaction.profiles.last_name}
+                                {transaction.user.name} {transaction.user.lastName}
                               </div>
                               <div className="text-xs text-white/40">
-                                {transaction.profiles.email}
+                                {transaction.user.email}
                               </div>
                             </div>
                           ) : (

@@ -193,14 +193,15 @@ export async function getAllEventTransactions(eventId: string) {
           status,
           created_at,
           ticket_id,
+          user_id,
           tickets!inner(
             event_id,
             name,
             price
           ),
-          profiles(
-            first_name,
-            last_name,
+          user:profiles!user_id(
+            name,
+            lastName,
             email
           )
         `)
