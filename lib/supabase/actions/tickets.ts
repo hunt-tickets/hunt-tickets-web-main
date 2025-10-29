@@ -210,9 +210,11 @@ export async function getAllEventTransactions(eventId: string) {
         .range(from, from + batchSize - 1);
 
       if (error) {
-        console.error(`Error fetching ${tableName}:`, error);
+        console.error(`❌ Error fetching ${tableName}:`, error);
         break;
       }
+
+      console.log(`✅ ${tableName} - Fetched ${data?.length || 0} records (from ${from} to ${from + batchSize - 1})`);
 
       if (data && data.length > 0) {
         allData = [...allData, ...data.map(t => ({ ...t, source }))];
@@ -227,11 +229,17 @@ export async function getAllEventTransactions(eventId: string) {
   }
 
   // Get all transactions from all sources
+  console.log(`🔍 Fetching transactions for event: ${eventId}`);
   const [appTransactions, webTransactions, cashTransactions] = await Promise.all([
     fetchAllTransactions("transactions", "app"),
     fetchAllTransactions("transactions_web", "web"),
     fetchAllTransactions("transactions_cash", "cash"),
   ]);
+
+  console.log(`📊 Transaction Summary:`);
+  console.log(`   App: ${appTransactions.length} transactions`);
+  console.log(`   Web: ${webTransactions.length} transactions`);
+  console.log(`   Cash: ${cashTransactions.length} transactions`);
 
   // Combine and sort all transactions by date
   const allTransactions = [
@@ -239,6 +247,8 @@ export async function getAllEventTransactions(eventId: string) {
     ...webTransactions,
     ...cashTransactions,
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  console.log(`   Total: ${allTransactions.length} transactions`);
 
   return allTransactions;
 }
