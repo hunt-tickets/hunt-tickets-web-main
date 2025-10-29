@@ -177,6 +177,7 @@ export async function getTicketsSalesAnalytics(eventId: string) {
 
   // Helper function to fetch all transactions with pagination
   async function fetchAllTransactions(tableName: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let allData: any[] = [];
     let from = 0;
     const batchSize = 1000;

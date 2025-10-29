@@ -97,7 +97,7 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
       } else {
         setError(result.message || "Error al crear la entrada");
       }
-    } catch (err) {
+    } catch {
       setError("Error inesperado al crear la entrada");
     } finally {
       setIsLoading(false);

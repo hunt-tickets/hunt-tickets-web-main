@@ -73,6 +73,7 @@ interface TicketType {
 
 interface EventTabsProps {
   eventId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   financialReport: any;
   tickets: Ticket[];
   producers: Producer[];

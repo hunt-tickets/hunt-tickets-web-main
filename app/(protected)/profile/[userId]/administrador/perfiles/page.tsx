@@ -3,11 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Users, Search, UserPlus } from "lucide-react";
+import { Users, UserPlus } from "lucide-react";
 import { HoverButton } from "@/components/ui/hover-glow-button";
 
 interface PerfilesPageProps {

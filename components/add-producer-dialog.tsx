@@ -58,7 +58,7 @@ export function AddProducerDialog({ eventId, availableProducers }: AddProducerDi
       } else {
         setError(result.message || "Error al agregar el productor");
       }
-    } catch (err) {
+    } catch {
       setError("Error inesperado al agregar el productor");
     } finally {
       setIsLoading(false);

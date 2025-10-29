@@ -122,7 +122,7 @@ export function EditTicketSheet({ ticket }: EditTicketSheetProps) {
       } else {
         setError(result.message || "Error al actualizar la entrada");
       }
-    } catch (err) {
+    } catch {
       setError("Error inesperado al actualizar la entrada");
     } finally {
       setIsLoading(false);

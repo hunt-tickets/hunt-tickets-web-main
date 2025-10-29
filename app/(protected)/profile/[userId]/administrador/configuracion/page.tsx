@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Settings, Shield, CreditCard, Bell, Database, Globe } from "lucide-react";
+import { Settings, Shield, CreditCard, Bell } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { HoverButton } from "@/components/ui/hover-glow-button";

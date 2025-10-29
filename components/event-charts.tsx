@@ -120,6 +120,7 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
       axisPointer: {
         type: 'shadow'
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
         return `${params[0].name}: ${formatCurrency(params[0].value)}`;
       }
@@ -222,8 +223,10 @@ export function FinancialBreakdownChart({ grossProfit, boldDeductions, tax4x1000
       axisPointer: {
         type: 'shadow'
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
         let result = 'Ganancia<br/>';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         params.forEach((param: any) => {
           result += `${param.marker} ${param.seriesName}: ${formatCurrency(param.value)}<br/>`;
         });
@@ -397,6 +400,7 @@ export function TicketRevenueDistributionChart({ tickets }: TicketRevenueDistrib
       textStyle: {
         color: '#fff'
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
         const ticket = tickets.find(t => t.name === params.name);
         if (!ticket) return '';
@@ -437,6 +441,7 @@ export function TicketRevenueDistributionChart({ tickets }: TicketRevenueDistrib
         ],
         label: {
           show: true,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           formatter: (params: any) => {
             const ticket = tickets.find(t => t.name === params.name);
             if (!ticket) return '';
@@ -523,6 +528,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
       textStyle: {
         color: '#fff'
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
         const percentage = ((params.value / total) * 100).toFixed(1);
         return `<strong>${params.name}</strong><br/>
@@ -545,6 +551,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
         label: {
           show: true,
           position: 'outside',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           formatter: (params: any) => {
             const percentage = ((params.value / total) * 100).toFixed(0);
             return `{name|${params.name}}\n{value|${params.value}} {percent|(${percentage}%)}`;
