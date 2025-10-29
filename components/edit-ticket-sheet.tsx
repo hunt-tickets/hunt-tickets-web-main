@@ -140,7 +140,7 @@ export function EditTicketSheet({ ticket }: EditTicketSheetProps) {
           <Pencil className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-xl overflow-y-auto bg-background/95 backdrop-blur-xl border-white/10">
+      <SheetContent className="w-full sm:max-w-xl overflow-y-auto bg-background/95 backdrop-blur-xl border-white/10 p-6">
         <SheetHeader className="space-y-3 pb-6">
           <SheetTitle className="text-2xl font-bold">Editar Entrada</SheetTitle>
           <SheetDescription className="text-base text-muted-foreground">
@@ -148,7 +148,7 @@ export function EditTicketSheet({ ticket }: EditTicketSheetProps) {
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 pr-2">
           {/* Información Básica */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Información Básica</h3>
