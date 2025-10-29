@@ -206,6 +206,7 @@ export async function getAllEventTransactions(eventId: string) {
           )
         `)
         .eq("tickets.event_id", eventId)
+        .eq("status", "PAID WITH QR")
         .order("created_at", { ascending: false })
         .range(from, from + batchSize - 1);
 
