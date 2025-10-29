@@ -376,3 +376,97 @@ export async function getEventFinancialReport(
     return null;
   }
 }
+
+export async function getEventProducers(eventId: string) {
+  const supabase = await createClient();
+
+  // First, get the events_producers entries
+  const { data: eventProducers, error: epError } = await supabase
+    .from("events_producers")
+    .select("id, created_at, producer_id")
+    .eq("event_id", eventId);
+
+  if (epError) {
+    console.error("Error fetching events_producers:", epError);
+    return [];
+  }
+
+  if (!eventProducers || eventProducers.length === 0) {
+    return [];
+  }
+
+  // Then get the producers for those producer_ids
+  const producerIds = eventProducers.map(ep => ep.producer_id);
+
+  const { data: producers, error: producersError } = await supabase
+    .from("producers")
+    .select("id, name, logo")
+    .in("id", producerIds);
+
+  if (producersError) {
+    console.error("Error fetching producers:", producersError);
+    return [];
+  }
+
+  // Combine the data
+  return eventProducers.map(ep => {
+    const producer = producers?.find(p => p.id === ep.producer_id);
+    return {
+      id: ep.id,
+      created_at: ep.created_at,
+      producer: producer || {
+        id: ep.producer_id,
+        name: null,
+        logo: null
+      }
+    };
+  });
+}
+
+export async function getAllProducers() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("producers")
+    .select("id, name, logo")
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching all producers:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function addProducerToEvent(eventId: string, producerId: string) {
+  const supabase = await createClient();
+
+  // Check if producer is already added
+  const { data: existing } = await supabase
+    .from("events_producers")
+    .select("id")
+    .eq("event_id", eventId)
+    .eq("producer_id", producerId)
+    .single();
+
+  if (existing) {
+    return { success: false, message: "El productor ya está asignado a este evento" };
+  }
+
+  const { error } = await supabase
+    .from("events_producers")
+    .insert({
+      event_id: eventId,
+      producer_id: producerId
+    });
+
+  if (error) {
+    console.error("Error adding producer to event:", error);
+    return { success: false, message: "Error al agregar el productor" };
+  }
+
+  revalidatePath(`/profile/[userId]/administrador/event/${eventId}`);
+
+  return { success: true, message: "Productor agregado exitosamente" };
+}

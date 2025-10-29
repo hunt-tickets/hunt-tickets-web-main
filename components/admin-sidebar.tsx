@@ -104,24 +104,14 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
                   href={fullHref}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-start gap-3 px-5 py-3.5 rounded-xl transition-all duration-200",
+                    "flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-200",
                     isActive
                       ? "bg-white text-black"
                       : "text-gray-400 hover:text-white hover:bg-white/10"
                   )}
                 >
-                  <Icon className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{item.title}</div>
-                    <div
-                      className={cn(
-                        "text-xs mt-0.5",
-                        isActive ? "text-black/60" : "text-gray-500"
-                      )}
-                    >
-                      {item.description}
-                    </div>
-                  </div>
+                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  <div className="font-medium text-sm">{item.title}</div>
                 </Link>
               );
             })}
