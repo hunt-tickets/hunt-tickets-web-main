@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getEventFinancialReport, getEventProducers, getAllProducers } from "@/lib/actions/events";
-import { getEventTickets, getTicketsSalesAnalytics, getTicketTypes, getAllEventTransactions } from "@/lib/supabase/actions/tickets";
+import { getEventTickets, getTicketsSalesAnalytics, getTicketTypes, getAllEventTransactions, getCompleteEventTransactions } from "@/lib/supabase/actions/tickets";
 import { EventTabs } from "@/components/event-tabs";
 
 interface EventPageProps {
@@ -37,7 +37,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   }
 
   // Fetch event details, financial report, tickets, producers, all available producers, ticket types, and transactions
-  const [eventData, financialReport, tickets, producers, allProducers, ticketsAnalytics, ticketTypes, transactions] = await Promise.all([
+  const [eventData, financialReport, tickets, producers, allProducers, ticketsAnalytics, ticketTypes, transactions, completeTransactions] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, status, variable_fee")
@@ -50,6 +50,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
     getTicketsSalesAnalytics(eventId),
     getTicketTypes(),
     getAllEventTransactions(eventId),
+    getCompleteEventTransactions(eventId),
   ]);
 
   if (eventData.error || !eventData.data) {
@@ -113,6 +114,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
         {/* Event Tabs */}
         <EventTabs
           eventId={eventId}
+          eventName={event.name}
           financialReport={financialReport}
           tickets={tickets || []}
           producers={producers || []}
@@ -121,6 +123,8 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
           ticketsAnalytics={ticketsAnalytics || undefined}
           ticketTypes={ticketTypes || []}
           transactions={transactions || []}
+          completeTransactions={completeTransactions?.transactions || []}
+          isAdmin={completeTransactions?.isAdmin || false}
         />
       </div>
     </div>

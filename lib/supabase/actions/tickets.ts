@@ -254,6 +254,197 @@ export async function getAllEventTransactions(eventId: string) {
   return allTransactions;
 }
 
+export async function getCompleteEventTransactions(eventId: string) {
+  const supabase = await createClient();
+
+  // Check if user is admin
+  const { data: { user } } = await supabase.auth.getUser();
+  let isAdmin = false;
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('admin').eq('id', user.id).single();
+    isAdmin = profile?.admin === true;
+  }
+
+  // Helper function to fetch all transactions with complete data
+  async function fetchCompleteTransactions(tableName: string, source: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let allData: any[] = [];
+    let from = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+
+    const selectQuery = tableName === 'transactions'
+      ? `id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, tracker`
+      : `id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id, ${tableName === 'transactions_web' ? 'order' : ''}`;
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select(selectQuery)
+        .eq('status', 'PAID WITH QR')
+        .order('created_at', { ascending: false })
+        .range(from, from + batchSize - 1);
+
+      if (error) {
+        console.error(`Error fetching ${tableName}:`, error);
+        break;
+      }
+
+      if (data && data.length > 0) {
+        allData = [...allData, ...data.map(t => ({ ...t, source }))];
+        from += batchSize;
+        hasMore = data.length === batchSize;
+      } else {
+        hasMore = false;
+      }
+    }
+
+    return allData;
+  }
+
+  // Get tickets
+  const { data: tickets } = await supabase
+    .from('tickets')
+    .select('id, name')
+    .eq('event_id', eventId);
+
+  if (!tickets || tickets.length === 0) {
+    return { transactions: [], isAdmin };
+  }
+
+  const ticketIds = tickets.map(t => t.id);
+  const ticketMap: Record<string, string> = {};
+  tickets.forEach(t => {
+    ticketMap[t.id] = t.name;
+  });
+
+  // Get all transactions in parallel
+  const [appTxs, webTxs, cashTxs] = await Promise.all([
+    fetchCompleteTransactions('transactions', 'app'),
+    fetchCompleteTransactions('transactions_web', 'web'),
+    fetchCompleteTransactions('transactions_cash', 'cash'),
+  ]);
+
+  // Filter by event tickets
+  const allTxs = [
+    ...appTxs.filter(t => ticketIds.includes(t.ticket_id)),
+    ...webTxs.filter(t => ticketIds.includes(t.ticket_id)),
+    ...cashTxs.filter(t => ticketIds.includes(t.ticket_id)),
+  ];
+
+  // Get unique user IDs and promoter IDs
+  const userIds = new Set<string>();
+  const promoterIds = new Set<string>();
+  allTxs.forEach(tx => {
+    if (tx.user_id) userIds.add(tx.user_id);
+    if (tx.promoter_id) promoterIds.add(tx.promoter_id);
+  });
+
+  const allUserIds = [...userIds, ...promoterIds];
+
+  // Get profiles
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, name, lastName, email')
+    .in('id', allUserIds);
+
+  const profileMap: Record<string, { name: string | null; lastName: string | null; email: string | null }> = {};
+  profiles?.forEach(p => {
+    profileMap[p.id] = p;
+  });
+
+  // Get Bold data if admin
+  let boldDataMap: Record<string, any> = {};
+  if (isAdmin) {
+    const boldReferences = new Set<string>();
+    appTxs.forEach(tx => {
+      if (tx.tracker) boldReferences.add(tx.tracker);
+    });
+    webTxs.forEach(tx => {
+      if (tx.order) boldReferences.add(tx.order);
+    });
+
+    if (boldReferences.size > 0) {
+      const { data: boldData } = await supabase
+        .from('bold_transactions')
+        .select('*')
+        .in('referencia', Array.from(boldReferences));
+
+      boldData?.forEach(bold => {
+        boldDataMap[bold.referencia] = bold;
+      });
+    }
+  }
+
+  // Format transactions
+  const formattedTransactions = allTxs.map(tx => {
+    const userProfile = tx.user_id && profileMap[tx.user_id] ? profileMap[tx.user_id] : null;
+    const promoterProfile = tx.promoter_id && profileMap[tx.promoter_id] ? profileMap[tx.promoter_id] : null;
+    const ticketName = ticketMap[tx.ticket_id] || '';
+    const reference = tx.source === 'app' ? tx.tracker : tx.source === 'web' ? tx.order : null;
+    const bold = isAdmin && reference ? boldDataMap[reference] : null;
+
+    const formatName = (name: string | null, lastName: string | null) => {
+      if (!name && !lastName) return '';
+      const fullName = `${name || ''} ${lastName || ''}`.trim();
+      const words = fullName.split(/\s+/).filter(word => word.length > 0);
+      return words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    };
+
+    return {
+      id: tx.id,
+      created_at: tx.created_at,
+      user_fullname: userProfile ? formatName(userProfile.name, userProfile.lastName) : '',
+      user_email: userProfile?.email || '',
+      ticket_name: ticketName,
+      quantity: tx.quantity,
+      price: tx.price,
+      variable_fee: tx.variable_fee,
+      tax: tx.tax,
+      total: tx.total,
+      status: tx.status,
+      type: tx.source,
+      cash: tx.source === 'cash',
+      order_id: tx.order_id,
+      promoter_fullname: promoterProfile ? formatName(promoterProfile.name, promoterProfile.lastName) : '',
+      promoter_email: promoterProfile?.email || '',
+      ...(isAdmin && bold ? {
+        bold_id: bold.id,
+        bold_fecha: bold.fecha,
+        bold_estado: bold.estado_actual,
+        bold_metodo_pago: bold.metodo_de_pago,
+        bold_valor_compra: bold.valor_de_la_compra,
+        bold_propina: bold.propina,
+        bold_iva: bold.iva,
+        bold_impoconsumo: bold.impoconsumo,
+        bold_valor_total: bold.valor_total,
+        bold_rete_fuente: bold.valor_rete_fuente,
+        bold_rete_iva: bold.valor_rete_iva,
+        bold_rete_ica: bold.valor_rete_ica,
+        bold_comision_porcentaje: bold.comision_bold_porcentaje,
+        bold_comision_fija: bold.comision_bold_fija,
+        bold_total_deduccion: bold.total_deduccion,
+        bold_deposito_cuenta: bold.deposito_en_cuenta_bold,
+        bold_banco: bold.banco,
+        bold_franquicia: bold.franquicia,
+        bold_pais_tarjeta: bold.pais_tarjeta,
+      } : {
+        bold_id: null,
+        bold_fecha: null,
+        bold_estado: null,
+        bold_metodo_pago: null,
+      }),
+    };
+  });
+
+  return {
+    transactions: formattedTransactions.sort((a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    ),
+    isAdmin
+  };
+}
+
 export async function getTicketsSalesAnalytics(eventId: string) {
   const supabase = await createClient();
 

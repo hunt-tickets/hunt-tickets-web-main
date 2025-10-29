@@ -91,8 +91,47 @@ interface Transaction {
   } | null;
 }
 
+interface CompleteTransaction {
+  id: string;
+  created_at: string;
+  user_fullname: string;
+  user_email: string;
+  ticket_name: string;
+  quantity: number;
+  price: number;
+  variable_fee: number;
+  tax: number;
+  total: number;
+  status: string;
+  type: string;
+  cash: boolean;
+  order_id: string;
+  promoter_fullname: string;
+  promoter_email: string;
+  bold_id?: string | null;
+  bold_fecha?: string | null;
+  bold_estado?: string | null;
+  bold_metodo_pago?: string | null;
+  bold_valor_compra?: number | null;
+  bold_propina?: number | null;
+  bold_iva?: number | null;
+  bold_impoconsumo?: number | null;
+  bold_valor_total?: number | null;
+  bold_rete_fuente?: number | null;
+  bold_rete_iva?: number | null;
+  bold_rete_ica?: number | null;
+  bold_comision_porcentaje?: number | null;
+  bold_comision_fija?: number | null;
+  bold_total_deduccion?: number | null;
+  bold_deposito_cuenta?: number | null;
+  bold_banco?: string | null;
+  bold_franquicia?: string | null;
+  bold_pais_tarjeta?: string | null;
+}
+
 interface EventTabsProps {
   eventId: string;
+  eventName: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   financialReport: any;
   tickets: Ticket[];
@@ -102,9 +141,11 @@ interface EventTabsProps {
   ticketsAnalytics?: Record<string, TicketAnalytics>;
   ticketTypes: TicketType[];
   transactions: Transaction[];
+  completeTransactions: CompleteTransaction[];
+  isAdmin: boolean;
 }
 
-export function EventTabs({ eventId, financialReport, tickets, producers, allProducers, variableFee, ticketsAnalytics, ticketTypes, transactions }: EventTabsProps) {
+export function EventTabs({ eventId, eventName, financialReport, tickets, producers, allProducers, variableFee, ticketsAnalytics, ticketTypes, transactions, completeTransactions, isAdmin }: EventTabsProps) {
   const [mounted, setMounted] = useState(false);
   const [selectedTicketType, setSelectedTicketType] = useState<string>("all");
   const [selectedPriceTab, setSelectedPriceTab] = useState<Record<string, 'app' | 'cash'>>({});
@@ -1128,35 +1169,125 @@ export function EventTabs({ eventId, financialReport, tickets, producers, allPro
           </div>
           <button
             onClick={() => {
-              // Convert transactions to CSV
-              const headers = ['ID', 'Fecha', 'Hora', 'Tipo Entrada', 'Cantidad', 'Total', 'Canal', 'Cliente', 'Email'];
-              const rows = transactions.map(t => [
-                t.id,
-                new Date(t.created_at).toLocaleDateString('es-CO'),
-                new Date(t.created_at).toLocaleTimeString('es-CO'),
-                t.tickets.name,
-                t.quantity,
-                t.total,
-                t.source === 'app' ? 'App' : t.source === 'web' ? 'Web' : 'Efectivo',
-                t.user ? `${t.user.name || ''} ${t.user.lastName || ''}`.trim() : 'N/A',
-                t.user?.email || 'N/A'
-              ]);
+              // Generate complete CSV similar to edge function Excel
+              const baseHeaders = [
+                'ID Transacción',
+                'Fecha y Hora',
+                'Nombre Completo',
+                'Correo Electrónico',
+                'Tipo de Entrada',
+                'Cantidad',
+                'Precio Unitario',
+                'Comisión Hunt',
+                'Impuesto',
+                'Total Transacción',
+                'Estado',
+                'Canal de Venta',
+                'Pago en Efectivo',
+                'ID de Orden',
+                'Promotor',
+                'Correo Promotor',
+                'Bold ID',
+                'Bold Fecha',
+                'Bold Estado',
+                'Bold Método Pago',
+                'Tiene Datos Bold',
+              ];
 
-              const csvContent = [
+              const adminHeaders = isAdmin ? [
+                'Bold Valor Compra',
+                'Bold Propina',
+                'Bold IVA',
+                'Bold Impoconsumo',
+                'Bold Valor Total',
+                'Bold Retefuente',
+                'Bold ReteIVA',
+                'Bold ReteICA',
+                'Bold Comisión %',
+                'Bold Comisión Fija',
+                'Bold Total Deducción',
+                'Bold Depósito',
+                'Bold Banco',
+                'Bold Franquicia',
+                'Bold País Tarjeta',
+                'Diferencia Total',
+              ] : [];
+
+              const headers = [...baseHeaders, ...adminHeaders];
+
+              const rows = completeTransactions.map(t => {
+                const baseRow = [
+                  t.id,
+                  t.created_at,
+                  t.user_fullname || 'N/A',
+                  t.user_email || 'N/A',
+                  t.ticket_name,
+                  t.quantity,
+                  t.price,
+                  t.variable_fee,
+                  t.tax,
+                  t.total,
+                  t.status,
+                  t.type === 'app' ? 'App Móvil' : t.type === 'web' ? 'Sitio Web' : 'Efectivo',
+                  t.cash ? 'Sí' : 'No',
+                  t.order_id || 'N/A',
+                  t.promoter_fullname || 'N/A',
+                  t.promoter_email || 'N/A',
+                  t.bold_id || 'N/A',
+                  t.bold_fecha || 'N/A',
+                  t.bold_estado || 'N/A',
+                  t.bold_metodo_pago || 'N/A',
+                  t.bold_id ? 'Sí' : 'No',
+                ];
+
+                const adminRow = isAdmin ? [
+                  t.bold_valor_compra !== undefined && t.bold_valor_compra !== null ? t.bold_valor_compra : 'N/A',
+                  t.bold_propina !== undefined && t.bold_propina !== null ? t.bold_propina : 'N/A',
+                  t.bold_iva !== undefined && t.bold_iva !== null ? t.bold_iva : 'N/A',
+                  t.bold_impoconsumo !== undefined && t.bold_impoconsumo !== null ? t.bold_impoconsumo : 'N/A',
+                  t.bold_valor_total !== undefined && t.bold_valor_total !== null ? t.bold_valor_total : 'N/A',
+                  t.bold_rete_fuente !== undefined && t.bold_rete_fuente !== null ? t.bold_rete_fuente : 'N/A',
+                  t.bold_rete_iva !== undefined && t.bold_rete_iva !== null ? t.bold_rete_iva : 'N/A',
+                  t.bold_rete_ica !== undefined && t.bold_rete_ica !== null ? t.bold_rete_ica : 'N/A',
+                  t.bold_comision_porcentaje !== undefined && t.bold_comision_porcentaje !== null ? t.bold_comision_porcentaje : 'N/A',
+                  t.bold_comision_fija !== undefined && t.bold_comision_fija !== null ? t.bold_comision_fija : 'N/A',
+                  t.bold_total_deduccion !== undefined && t.bold_total_deduccion !== null ? t.bold_total_deduccion : 'N/A',
+                  t.bold_deposito_cuenta !== undefined && t.bold_deposito_cuenta !== null ? t.bold_deposito_cuenta : 'N/A',
+                  t.bold_banco || 'N/A',
+                  t.bold_franquicia || 'N/A',
+                  t.bold_pais_tarjeta || 'N/A',
+                  (t.bold_valor_total && typeof t.total === 'number' && typeof t.bold_valor_total === 'number')
+                    ? (t.total - t.bold_valor_total).toFixed(2)
+                    : 'N/A',
+                ] : [];
+
+                return [...baseRow, ...adminRow];
+              });
+
+              // Add BOM for proper UTF-8 encoding in Excel
+              const BOM = '\uFEFF';
+              const csvContent = BOM + [
                 headers.join(','),
-                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+                ...rows.map(row => row.map(cell => {
+                  // Escape quotes and wrap in quotes if contains comma, newline, or quote
+                  const cellStr = String(cell);
+                  if (cellStr.includes(',') || cellStr.includes('\n') || cellStr.includes('"')) {
+                    return `"${cellStr.replace(/"/g, '""')}"`;
+                  }
+                  return cellStr;
+                }).join(','))
               ].join('\n');
 
               const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
               const link = document.createElement('a');
               link.href = URL.createObjectURL(blob);
-              link.download = `transacciones_${eventId}_${new Date().toISOString().split('T')[0]}.csv`;
+              link.download = `transacciones_${eventName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
             }}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
           >
             <Download className="h-4 w-4" />
-            Descargar CSV
+            Descargar CSV Completo
           </button>
         </div>
 
