@@ -172,6 +172,77 @@ export async function getEventTickets(eventId: string) {
   return data;
 }
 
+export async function getAllEventTransactions(eventId: string) {
+  const supabase = await createClient();
+
+  // Helper function to fetch all transactions with pagination
+  async function fetchAllTransactions(tableName: string, source: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let allData: any[] = [];
+    let from = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select(`
+          id,
+          quantity,
+          total,
+          status,
+          created_at,
+          ticket_id,
+          tickets!inner(
+            event_id,
+            name,
+            price
+          ),
+          profiles(
+            first_name,
+            last_name,
+            email
+          )
+        `)
+        .eq("tickets.event_id", eventId)
+        .eq("status", "PAID WITH QR")
+        .order("created_at", { ascending: false })
+        .range(from, from + batchSize - 1);
+
+      if (error) {
+        console.error(`Error fetching ${tableName}:`, error);
+        break;
+      }
+
+      if (data && data.length > 0) {
+        allData = [...allData, ...data.map(t => ({ ...t, source }))];
+        from += batchSize;
+        hasMore = data.length === batchSize;
+      } else {
+        hasMore = false;
+      }
+    }
+
+    return allData;
+  }
+
+  // Get all transactions from all sources
+  const [appTransactions, webTransactions, cashTransactions] = await Promise.all([
+    fetchAllTransactions("transactions", "app"),
+    fetchAllTransactions("transactions_web", "web"),
+    fetchAllTransactions("transactions_cash", "cash"),
+  ]);
+
+  // Combine and sort all transactions by date
+  const allTransactions = [
+    ...appTransactions,
+    ...webTransactions,
+    ...cashTransactions,
+  ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  return allTransactions;
+}
+
 export async function getTicketsSalesAnalytics(eventId: string) {
   const supabase = await createClient();
 

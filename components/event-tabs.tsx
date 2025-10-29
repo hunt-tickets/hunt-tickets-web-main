@@ -13,6 +13,8 @@ import {
   Settings,
   Users,
   HelpCircle,
+  Download,
+  Receipt,
 } from "lucide-react";
 import { SalesDistributionChart, RevenueByChannelChart, FinancialBreakdownChart, TicketRevenueDistributionChart, ChannelSalesChart } from "@/components/event-charts";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
@@ -71,6 +73,24 @@ interface TicketType {
   name: string;
 }
 
+interface Transaction {
+  id: string;
+  quantity: number;
+  total: number;
+  status: string;
+  created_at: string;
+  source: string;
+  tickets: {
+    name: string;
+    price: number;
+  };
+  profiles: {
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+  } | null;
+}
+
 interface EventTabsProps {
   eventId: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,9 +101,10 @@ interface EventTabsProps {
   variableFee: number;
   ticketsAnalytics?: Record<string, TicketAnalytics>;
   ticketTypes: TicketType[];
+  transactions: Transaction[];
 }
 
-export function EventTabs({ eventId, financialReport, tickets, producers, allProducers, variableFee, ticketsAnalytics, ticketTypes }: EventTabsProps) {
+export function EventTabs({ eventId, financialReport, tickets, producers, allProducers, variableFee, ticketsAnalytics, ticketTypes, transactions }: EventTabsProps) {
   const [mounted, setMounted] = useState(false);
   const [selectedTicketType, setSelectedTicketType] = useState<string>("all");
   const [selectedPriceTab, setSelectedPriceTab] = useState<Record<string, 'app' | 'cash'>>({});
@@ -135,7 +156,7 @@ export function EventTabs({ eventId, financialReport, tickets, producers, allPro
 
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-4 mb-6">
+      <TabsList className="grid w-full grid-cols-5 mb-6">
         <TabsTrigger value="dashboard" className="flex items-center gap-2">
           <LayoutDashboard className="h-4 w-4" />
           Dashboard
@@ -143,6 +164,10 @@ export function EventTabs({ eventId, financialReport, tickets, producers, allPro
         <TabsTrigger value="entradas" className="flex items-center gap-2">
           <Ticket className="h-4 w-4" />
           Entradas
+        </TabsTrigger>
+        <TabsTrigger value="transacciones" className="flex items-center gap-2">
+          <Receipt className="h-4 w-4" />
+          Transacciones
         </TabsTrigger>
         <TabsTrigger value="configuracion" className="flex items-center gap-2">
           <Settings className="h-4 w-4" />
@@ -1090,6 +1115,159 @@ export function EventTabs({ eventId, financialReport, tickets, producers, allPro
             </div>
           );
         })()}
+      </TabsContent>
+
+      {/* Transacciones Tab */}
+      <TabsContent value="transacciones" className="space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold">Transacciones del Evento</h3>
+            <p className="text-sm text-muted-foreground">
+              {transactions.length} transaccion{transactions.length !== 1 ? 'es' : ''} registrada{transactions.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              // Convert transactions to CSV
+              const headers = ['ID', 'Fecha', 'Hora', 'Tipo Entrada', 'Cantidad', 'Total', 'Canal', 'Cliente', 'Email'];
+              const rows = transactions.map(t => [
+                t.id,
+                new Date(t.created_at).toLocaleDateString('es-CO'),
+                new Date(t.created_at).toLocaleTimeString('es-CO'),
+                t.tickets.name,
+                t.quantity,
+                t.total,
+                t.source === 'app' ? 'App' : t.source === 'web' ? 'Web' : 'Efectivo',
+                t.profiles ? `${t.profiles.first_name || ''} ${t.profiles.last_name || ''}`.trim() : 'N/A',
+                t.profiles?.email || 'N/A'
+              ]);
+
+              const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+              ].join('\n');
+
+              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = `transacciones_${eventId}_${new Date().toISOString().split('T')[0]}.csv`;
+              link.click();
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
+          >
+            <Download className="h-4 w-4" />
+            Descargar CSV
+          </button>
+        </div>
+
+        {/* Stats Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
+            <div className="text-xs text-white/40 mb-1">Total Transacciones</div>
+            <div className="text-2xl font-bold">{transactions.length}</div>
+          </div>
+          <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
+            <div className="text-xs text-white/40 mb-1">Por App</div>
+            <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'app').length}</div>
+          </div>
+          <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
+            <div className="text-xs text-white/40 mb-1">Por Web</div>
+            <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'web').length}</div>
+          </div>
+          <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
+            <div className="text-xs text-white/40 mb-1">En Efectivo</div>
+            <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'cash').length}</div>
+          </div>
+        </div>
+
+        {/* Transactions Table */}
+        {transactions.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <Receipt className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-1">
+                No hay transacciones
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Las transacciones aparecerán aquí cuando se realicen ventas
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-white/[0.02] border-white/5">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-white/5">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Fecha</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Tipo Entrada</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Cliente</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Cant.</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-white/40 uppercase tracking-wider">Total</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Canal</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {transactions.map((transaction) => (
+                      <tr key={transaction.id} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-4 py-3 text-sm">
+                          <div className="text-white/90">
+                            {new Date(transaction.created_at).toLocaleDateString('es-CO', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </div>
+                          <div className="text-xs text-white/40">
+                            {new Date(transaction.created_at).toLocaleTimeString('es-CO', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-white/90">
+                          {transaction.tickets.name}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {transaction.profiles ? (
+                            <div>
+                              <div className="text-white/90">
+                                {transaction.profiles.first_name} {transaction.profiles.last_name}
+                              </div>
+                              <div className="text-xs text-white/40">
+                                {transaction.profiles.email}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-white/40">N/A</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-center font-medium text-white/90">
+                          {transaction.quantity}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right font-medium text-white/90">
+                          {formatCurrency(transaction.total)}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                            transaction.source === 'app'
+                              ? 'bg-purple-500/10 text-purple-400'
+                              : transaction.source === 'web'
+                              ? 'bg-cyan-500/10 text-cyan-400'
+                              : 'bg-green-500/10 text-green-400'
+                          }`}>
+                            {transaction.source === 'app' ? 'App' : transaction.source === 'web' ? 'Web' : 'Efectivo'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </TabsContent>
 
       {/* Configuración Tab */}
