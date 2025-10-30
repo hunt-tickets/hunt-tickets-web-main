@@ -480,23 +480,23 @@ export async function addProducerToEvent(eventId: string, producerId: string) {
 export async function getEventArtists(eventId: string) {
   const supabase = await createClient();
 
-  // First, get the events_artists entries
-  const { data: eventArtists, error: eaError } = await supabase
-    .from("events_artists")
+  // First, get the lineup entries
+  const { data: lineup, error: lineupError } = await supabase
+    .from("lineup")
     .select("id, created_at, artist_id")
     .eq("event_id", eventId);
 
-  if (eaError) {
-    console.error("Error fetching events_artists:", eaError);
+  if (lineupError) {
+    console.error("Error fetching lineup:", lineupError);
     return [];
   }
 
-  if (!eventArtists || eventArtists.length === 0) {
+  if (!lineup || lineup.length === 0) {
     return [];
   }
 
   // Then get the artists for those artist_ids
-  const artistIds = eventArtists.map(ea => ea.artist_id);
+  const artistIds = lineup.map(l => l.artist_id);
 
   const { data: artists, error: artistsError } = await supabase
     .from("artists")
@@ -509,13 +509,13 @@ export async function getEventArtists(eventId: string) {
   }
 
   // Combine the data
-  return eventArtists.map(ea => {
-    const artist = artists?.find(a => a.id === ea.artist_id);
+  return lineup.map(l => {
+    const artist = artists?.find(a => a.id === l.artist_id);
     return {
-      id: ea.id,
-      created_at: ea.created_at,
+      id: l.id,
+      created_at: l.created_at,
       artist: artist || {
-        id: ea.artist_id,
+        id: l.artist_id,
         name: null,
         description: null,
         category: null,
@@ -546,7 +546,7 @@ export async function addArtistToEvent(eventId: string, artistId: string) {
 
   // Check if artist is already added
   const { data: existing } = await supabase
-    .from("events_artists")
+    .from("lineup")
     .select("id")
     .eq("event_id", eventId)
     .eq("artist_id", artistId)
@@ -557,7 +557,7 @@ export async function addArtistToEvent(eventId: string, artistId: string) {
   }
 
   const { error } = await supabase
-    .from("events_artists")
+    .from("lineup")
     .insert({
       event_id: eventId,
       artist_id: artistId
