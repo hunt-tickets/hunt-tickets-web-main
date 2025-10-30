@@ -49,18 +49,39 @@ export async function getAllUsers(): Promise<{
     return { users: null, error: "Unauthorized access" };
   }
 
-  // Get all users
-  const { data: users, error } = await supabase
-    .from("profiles")
-    .select('id, name, "lastName", email, phone, birthdate, gender, prefix, document_id, admin, created_at')
-    .order("created_at", { ascending: false });
+  // Get all users with pagination to handle large datasets
+  const allUsers: UserProfile[] = [];
+  const pageSize = 1000;
+  let page = 0;
+  let hasMore = true;
 
-  if (error) {
-    console.error("Error fetching users:", error);
-    return { users: null, error: "Failed to fetch users" };
+  while (hasMore) {
+    const from = page * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data: users, error } = await supabase
+      .from("profiles")
+      .select('id, name, "lastName", email, phone, birthdate, gender, prefix, document_id, admin, created_at')
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error(`Error fetching users page ${page}:`, error);
+      return { users: null, error: "Failed to fetch users" };
+    }
+
+    if (users && users.length > 0) {
+      allUsers.push(...(users as UserProfile[]));
+      hasMore = users.length === pageSize;
+      page++;
+    } else {
+      hasMore = false;
+    }
   }
 
-  return { users: users as UserProfile[], error: null };
+  console.log(`📊 Total users fetched: ${allUsers.length}`);
+
+  return { users: allUsers, error: null };
 }
 
 export async function updateProfile(
