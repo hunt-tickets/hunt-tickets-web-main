@@ -273,9 +273,16 @@ export async function getCompleteEventTransactions(eventId: string) {
     const batchSize = 1000;
     let hasMore = true;
 
-    const selectQuery = tableName === 'transactions'
-      ? `id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, tracker`
-      : `id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id, ${tableName === 'transactions_web' ? 'order' : ''}`;
+    // Build select query based on table
+    let selectQuery = '';
+    if (tableName === 'transactions') {
+      selectQuery = 'id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, tracker';
+    } else if (tableName === 'transactions_web') {
+      selectQuery = 'id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id, order';
+    } else {
+      // transactions_cash
+      selectQuery = 'id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id';
+    }
 
     while (hasMore) {
       const { data, error } = await supabase
