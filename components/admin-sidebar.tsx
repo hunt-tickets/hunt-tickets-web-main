@@ -50,7 +50,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-full bg-[#0a0a0a] border border-[#303030] hover:bg-[#1a1a1a] transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-full bg-[#202020] border border-[#303030] hover:bg-[#2a2a2a] transition-colors"
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? (
@@ -71,7 +71,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-screen w-64 bg-[#0a0a0a] border-r border-[#1a1a1a] z-40 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
+          "fixed top-0 left-0 h-screen w-64 bg-[#202020] border-r border-[#2a2a2a] z-40 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -108,9 +108,9 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
                   href={fullHref}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm relative",
                     isActive
-                      ? "bg-white text-black"
+                      ? "bg-primary/10 text-white border-l-2 border-primary"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
                   )}
                 >
@@ -122,7 +122,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
           </nav>
 
           {/* Footer */}
-          <div className="pt-4 border-t border-[#1a1a1a]">
+          <div className="pt-4 border-t border-[#2a2a2a]">
             <Link
               href={`/profile/${userId}`}
               className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
