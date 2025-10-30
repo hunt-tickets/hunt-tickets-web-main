@@ -361,7 +361,7 @@ export async function getCompleteEventTransactions(eventId: string) {
       const chunk = allUserIds.slice(i, i + chunkSize);
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, name, lastName, email')
+        .select('id, name, "lastName", email')
         .in('id', chunk);
 
       if (profilesError) {
