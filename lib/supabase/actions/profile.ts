@@ -8,6 +8,61 @@ export interface UpdateProfileState {
   error?: string;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string | null;
+  lastName: string | null;
+  email: string | null;
+  phone: string | null;
+  birthdate: string | null;
+  gender: string | null;
+  prefix: string | null;
+  document_id: string | null;
+  admin: boolean;
+  created_at: string;
+}
+
+export async function getAllUsers(): Promise<{
+  users: UserProfile[] | null;
+  error: string | null;
+}> {
+  const supabase = await createClient();
+
+  // Verify user is authenticated and is admin
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { users: null, error: "Authentication required" };
+  }
+
+  // Check if user is admin
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("admin")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile?.admin) {
+    return { users: null, error: "Unauthorized access" };
+  }
+
+  // Get all users
+  const { data: users, error } = await supabase
+    .from("profiles")
+    .select('id, name, "lastName", email, phone, birthdate, gender, prefix, document_id, admin, created_at')
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching users:", error);
+    return { users: null, error: "Failed to fetch users" };
+  }
+
+  return { users: users as UserProfile[], error: null };
+}
+
 export async function updateProfile(
   prevState: UpdateProfileState,
   formData: FormData

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, Settings, ArrowLeft, Menu, X } from "lucide-react";
+import { Calendar, Users, Settings, ArrowLeft, Menu, X, UserCircle } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,13 @@ const menuItems = [
     href: "/administrador",
     description: "Crea y gestiona eventos",
     exact: false, // Will match /administrador/event/[id] too
+  },
+  {
+    title: "Usuarios",
+    icon: UserCircle,
+    href: "/administrador/usuarios",
+    description: "Listado completo de usuarios",
+    exact: true,
   },
   {
     title: "Administrar Perfiles",
