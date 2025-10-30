@@ -72,7 +72,7 @@ export function AddArtistDialog({ eventId, availableArtists }: AddArtistDialogPr
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="rounded-full bg-purple-600 hover:bg-purple-700 transition-all duration-300"
+          className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300"
         >
           <UserPlus className="h-4 w-4 mr-2" />
           Agregar Artista
@@ -89,8 +89,8 @@ export function AddArtistDialog({ eventId, availableArtists }: AddArtistDialogPr
         <div className="space-y-6 py-6">
           {availableArtists.length === 0 ? (
             <div className="text-center py-12">
-              <div className="inline-flex p-5 bg-purple-500/10 rounded-2xl border border-purple-500/20 mb-4">
-                <Users className="h-12 w-12 text-purple-400" />
+              <div className="inline-flex p-5 bg-white/5 rounded-2xl border border-white/10 mb-4">
+                <Users className="h-12 w-12 text-white/40" />
               </div>
               <p className="text-sm text-muted-foreground">
                 No hay artistas disponibles para agregar
@@ -124,11 +124,11 @@ export function AddArtistDialog({ eventId, availableArtists }: AddArtistDialogPr
                             <img
                               src={artist.logo}
                               alt={artist.name || "Artista"}
-                              className="w-8 h-8 rounded-full object-cover ring-2 ring-purple-500/20"
+                              className="w-8 h-8 rounded-full object-cover ring-2 ring-white/10"
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center ring-2 ring-purple-500/20">
-                              <Users className="h-4 w-4 text-purple-400" />
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-white/10">
+                              <Users className="h-4 w-4 text-primary" />
                             </div>
                           )}
                           <div className="flex flex-col">
@@ -167,7 +167,7 @@ export function AddArtistDialog({ eventId, availableArtists }: AddArtistDialogPr
                 <Button
                   onClick={handleSubmit}
                   disabled={isLoading || !selectedArtistId}
-                  className="rounded-full px-6 bg-purple-600 hover:bg-purple-700 transition-all duration-300 disabled:opacity-50"
+                  className="rounded-full px-6 bg-primary hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
                 >
                   {isLoading ? (
                     <span className="flex items-center gap-2">

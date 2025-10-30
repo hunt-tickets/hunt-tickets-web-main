@@ -1547,7 +1547,7 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
 
                 return (
                   <Card key={item.id} className="group relative overflow-hidden rounded-2xl bg-white/[0.02] backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <CardContent className="relative pt-8 pb-6">
                       <div className="flex flex-col items-center text-center">
                         <div className="mb-4">
@@ -1558,13 +1558,13 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
                               className="w-20 h-20 rounded-xl object-cover ring-4 ring-white/5 group-hover:ring-white/10 transition-all duration-300"
                             />
                           ) : (
-                            <div className="w-20 h-20 rounded-xl bg-purple-500/10 flex items-center justify-center ring-4 ring-white/5 group-hover:ring-white/10 transition-all duration-300">
-                              <Users className="h-10 w-10 text-purple-400" />
+                            <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center ring-4 ring-white/5 group-hover:ring-white/10 transition-all duration-300">
+                              <Users className="h-10 w-10 text-primary" />
                             </div>
                           )}
                         </div>
 
-                        <h4 className="font-bold text-lg mb-1 group-hover:text-purple-400 transition-colors duration-300">
+                        <h4 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors duration-300">
                           {displayName}
                         </h4>
                         {artist.category && (
