@@ -651,6 +651,12 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
                       )}
                     </span>
                   </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/40">IVA acumulado (19%)</span>
+                    <span className="font-medium text-cyan-400">
+                      {formatCurrency(financialReport.total_tax)}
+                    </span>
+                  </div>
                   <div className="pt-3 mt-2 border-t border-white/5 flex justify-between items-center">
                     <span className="text-sm font-semibold">Ganancia Neta Hunt</span>
                     <span className="text-lg font-bold text-green-400">
