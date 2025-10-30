@@ -18,9 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserCircle, ChevronLeft, ChevronRight, Shield, Phone, Mail, FileText, Calendar } from "lucide-react";
+import { UserCircle, ChevronLeft, ChevronRight, Shield, Phone, Mail, FileText, Calendar, Cake } from "lucide-react";
 import { EditUserSheet } from "@/components/edit-user-sheet";
 
+// Calculate age from birthdate
+function calculateAge(birthdate: string): number {
+  const today = new Date();
+  const birth = new Date(birthdate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  return age;
+}
 
 interface User {
   id: string;
@@ -106,12 +119,22 @@ export function UsersTable({ users }: UsersTableProps) {
                         <div className="h-11 w-11 rounded-xl bg-white/[0.08] flex items-center justify-center flex-shrink-0 font-semibold text-sm text-white/90 ring-1 ring-white/10">
                           {initials}
                         </div>
-                        <div className="flex flex-col min-w-0">
+                        <div className="flex flex-col min-w-0 gap-0.5">
                           <span className="font-medium text-white truncate">{fullName}</span>
                           {user.email && (
                             <span className="text-xs text-white/40 truncate flex items-center gap-1">
                               <Mail className="h-3 w-3" />
                               {user.email}
+                            </span>
+                          )}
+                          {user.birthdate && (
+                            <span className="text-xs text-white/40 flex items-center gap-1">
+                              <Cake className="h-3 w-3" />
+                              {calculateAge(user.birthdate)} años • {new Date(user.birthdate).toLocaleDateString('es-CO', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              })}
                             </span>
                           )}
                         </div>
