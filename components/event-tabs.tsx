@@ -278,7 +278,7 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
               </div>
               <div className="text-2xl font-bold mb-1">
                 {formatCurrency(
-                  financialReport.global_calculations.ganancia_neta_hunt
+                  financialReport.global_calculations.ganancia_neta_hunt - financialReport.total_tax
                 )}
               </div>
               <p className="text-xs text-white/30">
@@ -363,7 +363,7 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
           grossProfit={financialReport.global_calculations.ganancia_bruta_hunt}
           boldDeductions={financialReport.global_calculations.deducciones_bold_total}
           tax4x1000={financialReport.global_calculations.impuesto_4x1000}
-          netProfit={financialReport.global_calculations.ganancia_neta_hunt}
+          netProfit={financialReport.global_calculations.ganancia_neta_hunt - financialReport.total_tax}
         />
 
         {/* Sales Breakdown */}
@@ -476,7 +476,7 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
                     <span className="text-sm font-semibold">Ganancia Neta Hunt</span>
                     <span className="text-lg font-bold text-green-400">
                       {formatCurrency(
-                        financialReport.global_calculations.ganancia_neta_hunt
+                        financialReport.global_calculations.ganancia_neta_hunt - financialReport.total_tax
                       )}
                     </span>
                   </div>
