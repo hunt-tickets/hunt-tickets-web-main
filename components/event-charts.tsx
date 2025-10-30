@@ -16,8 +16,6 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
     { name: 'Efectivo', value: cash, itemStyle: { color: '#10b981' } },
   ].filter(item => item.value > 0);
 
-  const total = app + web + cash;
-
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
@@ -74,18 +72,6 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
         <div className="h-[300px]">
           <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
         </div>
-        <div className="grid grid-cols-3 gap-4 mt-4">
-          {data.map((item) => (
-            <div key={item.name} className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.itemStyle.color }} />
-                <span className="text-sm text-gray-400">{item.name}</span>
-              </div>
-              <p className="text-lg font-bold">{item.value}</p>
-              <p className="text-xs text-gray-500">{((item.value / total) * 100).toFixed(1)}%</p>
-            </div>
-          ))}
-        </div>
       </CardContent>
     </Card>
   );
@@ -112,8 +98,6 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
     { name: 'Web', value: webTotal, color: '#06b6d4' },
     { name: 'Efectivo', value: cashTotal, color: '#10b981' },
   ].filter(item => item.value > 0);
-
-  const total = appTotal + webTotal + cashTotal;
 
   const option = {
     backgroundColor: 'transparent',
@@ -196,18 +180,6 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
       <CardContent>
         <div className="h-[300px]">
           <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
-        </div>
-        <div className="grid grid-cols-3 gap-4 mt-4">
-          {data.map((item) => (
-            <div key={item.name} className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                <span className="text-sm text-gray-400">{item.name}</span>
-              </div>
-              <p className="text-lg font-bold">{formatCurrency(item.value)}</p>
-              <p className="text-xs text-gray-500">{((item.value / total) * 100).toFixed(1)}%</p>
-            </div>
-          ))}
         </div>
       </CardContent>
     </Card>
