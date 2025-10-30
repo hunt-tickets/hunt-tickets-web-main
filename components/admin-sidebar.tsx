@@ -71,23 +71,20 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-screen w-72 bg-[#0a0a0a] border-r border-[#303030] z-40 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
+          "fixed top-0 left-0 h-screen w-64 bg-[#0a0a0a] border-r border-[#1a1a1a] z-40 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex flex-col h-full p-8">
+        <div className="flex flex-col h-full p-6">
           {/* Logo/Brand */}
-          <div className="mb-10">
-            <div className="flex items-center gap-3 text-2xl font-bold text-white">
-              <div className="text-2xl font-bold text-white" style={{ fontFamily: "LOT, sans-serif" }}>
-                HUNT
-              </div>
+          <div className="mb-8 px-3">
+            <div className="text-xl font-bold text-white" style={{ fontFamily: "LOT, sans-serif" }}>
+              HUNT
             </div>
-            <p className="text-xs text-[#606060] mt-2">Panel de Administración</p>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const fullHref = `/profile/${userId}${item.href}`;
@@ -111,27 +108,27 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
                   href={fullHref}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-200",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm",
                     isActive
                       ? "bg-white text-black"
-                      : "text-gray-400 hover:text-white hover:bg-white/10"
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
                   )}
                 >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
-                  <div className="font-medium text-sm">{item.title}</div>
+                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <div>{item.title}</div>
                 </Link>
               );
             })}
           </nav>
 
           {/* Footer */}
-          <div className="pt-6 border-t border-[#303030]">
+          <div className="pt-4 border-t border-[#1a1a1a]">
             <Link
               href={`/profile/${userId}`}
-              className="flex items-center gap-3 px-5 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+              className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
-              Volver al perfil
+              Volver
             </Link>
           </div>
         </div>

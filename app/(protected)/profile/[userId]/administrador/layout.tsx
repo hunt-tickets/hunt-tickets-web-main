@@ -17,7 +17,7 @@ const AdministradorLayout = async ({ children, params }: AdministradorLayoutProp
       <AdminSidebar userId={userId} />
 
       {/* Main Content - with left margin to accommodate fixed sidebar */}
-      <main className="lg:ml-72 min-h-screen">
+      <main className="lg:ml-64 min-h-screen">
         <div className="px-6 sm:px-8 lg:px-12 py-8 lg:py-12 pt-20 lg:pt-12">
           {children}
         </div>
