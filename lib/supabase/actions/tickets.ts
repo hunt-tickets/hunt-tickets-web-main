@@ -349,16 +349,33 @@ export async function getCompleteEventTransactions(eventId: string) {
 
   const allUserIds = [...userIds, ...promoterIds];
 
-  // Get profiles
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, name, lastName, email')
-    .in('id', allUserIds);
+  console.log(`📋 Total unique user IDs: ${allUserIds.length}`);
 
+  // Get profiles with pagination to handle large datasets
   const profileMap: Record<string, { name: string | null; lastName: string | null; email: string | null }> = {};
-  profiles?.forEach(p => {
-    profileMap[p.id] = p;
-  });
+
+  if (allUserIds.length > 0) {
+    // Process in chunks of 1000
+    const chunkSize = 1000;
+    for (let i = 0; i < allUserIds.length; i += chunkSize) {
+      const chunk = allUserIds.slice(i, i + chunkSize);
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name, lastName, email')
+        .in('id', chunk);
+
+      if (profilesError) {
+        console.error(`Error fetching profiles chunk ${i / chunkSize + 1}:`, profilesError);
+      } else {
+        console.log(`✅ Fetched ${profiles?.length || 0} profiles in chunk ${i / chunkSize + 1}`);
+        profiles?.forEach(p => {
+          profileMap[p.id] = p;
+        });
+      }
+    }
+  }
+
+  console.log(`📊 Total profiles loaded: ${Object.keys(profileMap).length}`);
 
   // Get Bold data if admin
   let boldDataMap: Record<string, any> = {};
@@ -384,12 +401,23 @@ export async function getCompleteEventTransactions(eventId: string) {
   }
 
   // Format transactions
-  const formattedTransactions = allTxs.map(tx => {
+  const formattedTransactions = allTxs.map((tx, index) => {
     const userProfile = tx.user_id && profileMap[tx.user_id] ? profileMap[tx.user_id] : null;
     const promoterProfile = tx.promoter_id && profileMap[tx.promoter_id] ? profileMap[tx.promoter_id] : null;
     const ticketName = ticketMap[tx.ticket_id] || '';
     const reference = tx.source === 'app' ? tx.tracker : tx.source === 'web' ? tx.order : null;
     const bold = isAdmin && reference ? boldDataMap[reference] : null;
+
+    // Log first 3 transactions to debug
+    if (index < 3) {
+      console.log(`🔍 Transaction ${index + 1}:`, {
+        user_id: tx.user_id,
+        has_profile: !!userProfile,
+        profile: userProfile,
+        promoter_id: tx.promoter_id,
+        has_promoter: !!promoterProfile,
+      });
+    }
 
     const formatName = (name: string | null, lastName: string | null) => {
       if (!name && !lastName) return '';
