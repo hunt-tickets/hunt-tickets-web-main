@@ -317,7 +317,7 @@ export async function getCompleteEventTransactions(eventId: string) {
     .eq('event_id', eventId);
 
   if (!tickets || tickets.length === 0) {
-    return { transactions: [], isAdmin };
+    return [];
   }
 
   const ticketIds = tickets.map(t => t.id);
@@ -474,12 +474,9 @@ export async function getCompleteEventTransactions(eventId: string) {
     };
   });
 
-  return {
-    transactions: formattedTransactions.sort((a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    ),
-    isAdmin
-  };
+  return formattedTransactions.sort((a, b) =>
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 }
 
 export async function getTicketsSalesAnalytics(eventId: string) {
@@ -711,4 +708,98 @@ export async function updateTicket(ticketId: string, ticketData: {
   revalidatePath(`/profile/[userId]/administrador/event`);
 
   return { success: true, message: "Entrada actualizada exitosamente" };
+}
+
+export async function getEventProducers(eventId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("event_producers")
+    .select(`
+      id,
+      created_at,
+      producer:producers!inner(
+        id,
+        name,
+        logo
+      )
+    `)
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching event producers:", error);
+    return null;
+  }
+
+  // Transform the data to ensure producer is an object, not an array
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return data?.map((item: any) => ({
+    ...item,
+    producer: Array.isArray(item.producer) ? item.producer[0] : item.producer
+  })) || null;
+}
+
+export async function getEventArtists(eventId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("event_artists")
+    .select(`
+      id,
+      created_at,
+      artist:artists!inner(
+        id,
+        name,
+        description,
+        category,
+        logo
+      )
+    `)
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching event artists:", error);
+    return null;
+  }
+
+  // Transform the data to ensure artist is an object, not an array
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return data?.map((item: any) => ({
+    ...item,
+    artist: Array.isArray(item.artist) ? item.artist[0] : item.artist
+  })) || null;
+}
+
+export async function getAllProducers() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("producers")
+    .select("id, name, logo")
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching all producers:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function getAllArtists() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("artists")
+    .select("id, name, description, category, logo")
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching all artists:", error);
+    return [];
+  }
+
+  return data || [];
 }
