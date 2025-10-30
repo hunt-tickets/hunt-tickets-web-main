@@ -100,42 +100,40 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6">
-      <div className="mx-auto max-w-7xl space-y-4">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
-            <p className="text-xs text-muted-foreground">
-              {new Date(financialReport.timestamp).toLocaleString("es-CO", {
-                dateStyle: "short",
-                timeStyle: "short",
-              })}
-            </p>
-          </div>
-          <Badge variant={event.status ? "default" : "secondary"}>
-            {event.status ? "Activo" : "Finalizado"}
-          </Badge>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
+          <p className="text-xs text-muted-foreground">
+            {new Date(financialReport.timestamp).toLocaleString("es-CO", {
+              dateStyle: "short",
+              timeStyle: "short",
+            })}
+          </p>
         </div>
-
-        {/* Event Tabs */}
-        <EventTabs
-          eventId={eventId}
-          eventName={event.name}
-          financialReport={financialReport}
-          tickets={tickets || []}
-          producers={producers || []}
-          allProducers={allProducers || []}
-          artists={artists || []}
-          allArtists={allArtists || []}
-          variableFee={event.variable_fee || 0}
-          ticketsAnalytics={ticketsAnalytics || undefined}
-          ticketTypes={ticketTypes || []}
-          transactions={transactions || []}
-          completeTransactions={completeTransactions?.transactions || []}
-          isAdmin={completeTransactions?.isAdmin || false}
-        />
+        <Badge variant={event.status ? "default" : "secondary"}>
+          {event.status ? "Activo" : "Finalizado"}
+        </Badge>
       </div>
+
+      {/* Event Tabs */}
+      <EventTabs
+        eventId={eventId}
+        eventName={event.name}
+        financialReport={financialReport}
+        tickets={tickets || []}
+        producers={producers || []}
+        allProducers={allProducers || []}
+        artists={artists || []}
+        allArtists={allArtists || []}
+        variableFee={event.variable_fee || 0}
+        ticketsAnalytics={ticketsAnalytics || undefined}
+        ticketTypes={ticketTypes || []}
+        transactions={transactions || []}
+        completeTransactions={completeTransactions?.transactions || []}
+        isAdmin={completeTransactions?.isAdmin || false}
+      />
     </div>
   );
 }

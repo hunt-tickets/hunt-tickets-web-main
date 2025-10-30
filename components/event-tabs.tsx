@@ -213,7 +213,7 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
 
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-5 mb-6">
+      <TabsList className="hidden">
         <TabsTrigger value="dashboard" className="flex items-center gap-2">
           <LayoutDashboard className="h-4 w-4" />
           Dashboard
