@@ -16,7 +16,7 @@ import {
   Download,
   Receipt,
 } from "lucide-react";
-import { SalesDistributionChart, RevenueByChannelChart, FinancialBreakdownChart, TicketRevenueDistributionChart, ChannelSalesChart } from "@/components/event-charts";
+import { SalesDistributionChart, RevenueByChannelChart, FinancialBreakdownChart, TicketRevenueDistributionChart, ChannelSalesChart, DailySalesChart } from "@/components/event-charts";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { CreateTicketDialog } from "@/components/create-ticket-dialog";
@@ -470,6 +470,9 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
             cashTotal={financialReport.cash_total}
           />
         </div>
+
+        {/* Daily Sales Chart */}
+        <DailySalesChart transactions={transactions} />
 
         <FinancialBreakdownChart
           grossProfit={financialReport.global_calculations.ganancia_bruta_hunt}

@@ -610,3 +610,179 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
     </div>
   );
 }
+
+interface DailySalesChartProps {
+  transactions: Array<{
+    created_at: string;
+    total: number;
+    quantity: number;
+  }>;
+}
+
+export function DailySalesChart({ transactions }: DailySalesChartProps) {
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  // Agrupar transacciones por día
+  const dailySales: Record<string, { revenue: number; quantity: number }> = {};
+
+  transactions.forEach(transaction => {
+    const date = new Date(transaction.created_at);
+    const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+    if (!dailySales[dateKey]) {
+      dailySales[dateKey] = { revenue: 0, quantity: 0 };
+    }
+
+    dailySales[dateKey].revenue += transaction.total;
+    dailySales[dateKey].quantity += transaction.quantity;
+  });
+
+  // Ordenar por fecha y preparar datos para el gráfico
+  const sortedDates = Object.keys(dailySales).sort();
+  const dates = sortedDates.map(date => {
+    const d = new Date(date);
+    return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
+  });
+  const revenues = sortedDates.map(date => dailySales[date].revenue);
+
+  const option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: '#18181b',
+      borderColor: '#303030',
+      borderWidth: 1,
+      textStyle: {
+        color: '#fff'
+      },
+      axisPointer: {
+        type: 'shadow'
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      formatter: (params: any) => {
+        const dateIndex = params[0].dataIndex;
+        const dateKey = sortedDates[dateIndex];
+        return `<strong>${params[0].name}</strong><br/>
+                Ingresos: ${formatCurrency(dailySales[dateKey].revenue)}<br/>
+                Tickets: ${dailySales[dateKey].quantity}`;
+      }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '10%',
+      top: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: dates,
+      axisLine: {
+        lineStyle: {
+          color: '#303030'
+        }
+      },
+      axisLabel: {
+        color: '#888',
+        fontSize: 11,
+        rotate: dates.length > 15 ? 45 : 0
+      }
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: {
+        lineStyle: {
+          color: '#303030'
+        }
+      },
+      axisLabel: {
+        color: '#888',
+        formatter: (value: number) => {
+          if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+          if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+          return `$${value}`;
+        }
+      },
+      splitLine: {
+        lineStyle: {
+          color: '#303030',
+          type: 'dashed'
+        }
+      }
+    },
+    series: [
+      {
+        name: 'Ingresos',
+        type: 'bar',
+        data: revenues,
+        itemStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: '#06b6d4' },
+              { offset: 1, color: '#0891b2' }
+            ]
+          },
+          borderRadius: [6, 6, 0, 0]
+        },
+        emphasis: {
+          itemStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                { offset: 0, color: '#22d3ee' },
+                { offset: 1, color: '#06b6d4' }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  };
+
+  return (
+    <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+      <CardHeader>
+        <CardTitle className="text-base">Ventas Diarias</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[300px]">
+          <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          <div className="text-center">
+            <div className="text-xs text-white/40 mb-1">Total Días</div>
+            <div className="text-lg font-bold">{dates.length}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-xs text-white/40 mb-1">Promedio Diario</div>
+            <div className="text-lg font-bold">
+              {formatCurrency(revenues.reduce((sum, val) => sum + val, 0) / dates.length)}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-xs text-white/40 mb-1">Mejor Día</div>
+            <div className="text-lg font-bold">
+              {formatCurrency(Math.max(...revenues))}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
