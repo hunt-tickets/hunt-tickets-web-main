@@ -7,17 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { UserCircle, Users, Shield } from "lucide-react";
-import { EditUserSheet } from "@/components/edit-user-sheet";
+import { UsersTable } from "@/components/users-table";
 
 interface UsuariosPageProps {
   params: Promise<{
@@ -137,77 +128,7 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
         </CardHeader>
         <CardContent>
           {users && users.length > 0 ? (
-            <div className="rounded-md border border-[#303030] overflow-hidden">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="hover:bg-transparent border-[#303030]">
-                      <TableHead className="font-semibold">Nombre</TableHead>
-                      <TableHead className="font-semibold">Email</TableHead>
-                      <TableHead className="font-semibold">Teléfono</TableHead>
-                      <TableHead className="font-semibold">Documento</TableHead>
-                      <TableHead className="font-semibold">Rol</TableHead>
-                      <TableHead className="font-semibold">Fecha Registro</TableHead>
-                      <TableHead className="font-semibold text-right">Acciones</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((user) => {
-                      const fullName = [user.name, user.lastName]
-                        .filter(Boolean)
-                        .join(' ') || 'Sin nombre';
-
-                      const documentId = user.prefix && user.document_id
-                        ? `${user.prefix}-${user.document_id}`
-                        : user.document_id || '-';
-
-                      return (
-                        <TableRow key={user.id} className="border-[#303030] hover:bg-white/5">
-                          <TableCell className="font-medium">
-                            <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                <UserCircle className="h-4 w-4" />
-                              </div>
-                              <span className="truncate">{fullName}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-[#606060]">
-                            {user.email || '-'}
-                          </TableCell>
-                          <TableCell className="text-[#606060]">
-                            {user.phone || '-'}
-                          </TableCell>
-                          <TableCell className="text-[#606060]">
-                            {documentId}
-                          </TableCell>
-                          <TableCell>
-                            {user.admin ? (
-                              <Badge variant="default" className="bg-primary/10 text-primary hover:bg-primary/20">
-                                Admin
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="border-[#303030] text-[#606060]">
-                                Usuario
-                              </Badge>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-[#606060]">
-                            {new Date(user.created_at).toLocaleDateString('es-CO', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <EditUserSheet user={user} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
+            <UsersTable users={users} />
           ) : (
             <div className="text-center py-12 text-muted-foreground">
               <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
