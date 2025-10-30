@@ -76,19 +76,18 @@ export function UsersTable({ users }: UsersTableProps) {
   return (
     <div className="space-y-6">
       {/* Table */}
-      <div className="rounded-xl border border-white/10 overflow-hidden bg-gradient-to-b from-white/[0.03] to-transparent">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent border-white/10 bg-white/[0.02]">
-                <TableHead className="font-semibold text-white/90 py-4">Usuario</TableHead>
-                <TableHead className="font-semibold text-white/90">Contacto</TableHead>
-                <TableHead className="font-semibold text-white/90">Documento</TableHead>
-                <TableHead className="font-semibold text-white/90">Rol</TableHead>
-                <TableHead className="font-semibold text-white/90">Registro</TableHead>
-                <TableHead className="font-semibold text-white/90 text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent border-b border-white/5">
+              <TableHead className="font-medium text-white/50 py-3 text-xs uppercase tracking-wider">Usuario</TableHead>
+              <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Contacto</TableHead>
+              <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Documento</TableHead>
+              <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Rol</TableHead>
+              <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Registro</TableHead>
+              <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider text-right">Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
             <TableBody>
               {currentUsers.map((user) => {
                 const fullName = [user.name, user.lastName]
@@ -111,10 +110,10 @@ export function UsersTable({ users }: UsersTableProps) {
                 return (
                   <TableRow
                     key={user.id}
-                    className="border-white/5 hover:bg-white/[0.03] transition-all duration-200 group"
+                    className="border-b border-white/5 hover:bg-white/[0.02] transition-all duration-200 group"
                   >
                     {/* Usuario */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-5">
                       <div className="flex items-center gap-3">
                         <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${avatarColor} flex items-center justify-center flex-shrink-0 font-semibold text-sm shadow-lg ring-1 ring-white/10`}>
                           {initials}
@@ -132,7 +131,7 @@ export function UsersTable({ users }: UsersTableProps) {
                     </TableCell>
 
                     {/* Contacto */}
-                    <TableCell>
+                    <TableCell className="py-5">
                       <div className="flex flex-col gap-1">
                         {user.phone ? (
                           <span className="text-sm text-white/70 flex items-center gap-1.5">
@@ -146,7 +145,7 @@ export function UsersTable({ users }: UsersTableProps) {
                     </TableCell>
 
                     {/* Documento */}
-                    <TableCell>
+                    <TableCell className="py-5">
                       {documentId !== '-' ? (
                         <div className="flex items-center gap-1.5">
                           <FileText className="h-3.5 w-3.5 text-white/40" />
@@ -158,7 +157,7 @@ export function UsersTable({ users }: UsersTableProps) {
                     </TableCell>
 
                     {/* Rol */}
-                    <TableCell>
+                    <TableCell className="py-5">
                       {user.admin ? (
                         <Badge
                           variant="default"
@@ -178,7 +177,7 @@ export function UsersTable({ users }: UsersTableProps) {
                     </TableCell>
 
                     {/* Registro */}
-                    <TableCell>
+                    <TableCell className="py-5">
                       <div className="flex items-center gap-1.5 text-sm text-white/50">
                         <Calendar className="h-3.5 w-3.5 text-white/30" />
                         {new Date(user.created_at).toLocaleDateString('es-CO', {
@@ -190,7 +189,7 @@ export function UsersTable({ users }: UsersTableProps) {
                     </TableCell>
 
                     {/* Acciones */}
-                    <TableCell className="text-right">
+                    <TableCell className="text-right py-5">
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <EditUserSheet user={user} />
                       </div>
@@ -200,60 +199,56 @@ export function UsersTable({ users }: UsersTableProps) {
               })}
             </TableBody>
           </Table>
-        </div>
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-        <div className="flex items-center gap-3 text-sm">
-          <span className="text-white/50">Mostrar</span>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5">
+        <div className="flex items-center gap-3 text-sm pt-4">
+          <span className="text-white/40">Mostrar</span>
           <Select
             value={pageSize.toString()}
             onValueChange={handlePageSizeChange}
           >
-            <SelectTrigger className="h-10 w-[80px] rounded-xl border-white/10 bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-200 focus:ring-2 focus:ring-white/20">
+            <SelectTrigger className="h-9 w-[70px] rounded-lg border-white/10 bg-transparent hover:bg-white/[0.02] transition-all duration-200">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-white/10">
+            <SelectContent className="rounded-lg border-white/10">
               <SelectItem value="25">25</SelectItem>
               <SelectItem value="50">50</SelectItem>
               <SelectItem value="100">100</SelectItem>
               <SelectItem value="200">200</SelectItem>
             </SelectContent>
           </Select>
-          <span className="text-white/50">
-            de <span className="text-white font-semibold">{users.length.toLocaleString()}</span> usuarios
+          <span className="text-white/40">
+            de <span className="text-white/70 font-medium">{users.length.toLocaleString()}</span> usuarios
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 pt-4">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="h-10 px-4 rounded-xl border-white/10 bg-white/[0.03] hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+            className="h-9 px-3 hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
           >
-            <ChevronLeft className="h-4 w-4 mr-1.5" />
+            <ChevronLeft className="h-4 w-4 mr-1" />
             Anterior
           </Button>
 
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10">
-            <span className="text-sm text-white/50">Página</span>
-            <span className="text-sm font-semibold text-white">{currentPage}</span>
-            <span className="text-sm text-white/30">/</span>
-            <span className="text-sm text-white/50">{totalPages}</span>
-          </div>
+          <span className="text-sm text-white/50 px-3">
+            Página <span className="text-white font-medium">{currentPage}</span> de <span className="text-white/70">{totalPages}</span>
+          </span>
 
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="h-10 px-4 rounded-xl border-white/10 bg-white/[0.03] hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+            className="h-9 px-3 hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
           >
             Siguiente
-            <ChevronRight className="h-4 w-4 ml-1.5" />
+            <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </div>
       </div>

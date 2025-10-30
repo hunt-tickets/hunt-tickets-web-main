@@ -122,21 +122,20 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
       </div>
 
       {/* Users Table */}
-      <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
-        <CardHeader>
-          <CardTitle>Listado de Usuarios</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {users && users.length > 0 ? (
-            <UsersTable users={users} />
-          ) : (
-            <div className="text-center py-12 text-muted-foreground">
-              <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p className="text-sm">No hay usuarios registrados</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Listado de Usuarios</h2>
+        </div>
+
+        {users && users.length > 0 ? (
+          <UsersTable users={users} />
+        ) : (
+          <div className="text-center py-24 rounded-xl bg-white/[0.02] border border-white/5">
+            <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
+            <p className="text-sm text-white/40">No hay usuarios registrados</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
