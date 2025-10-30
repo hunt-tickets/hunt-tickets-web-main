@@ -18,8 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { UserCircle, ChevronLeft, ChevronRight, Shield, Phone, Mail, FileText, Calendar } from "lucide-react";
 import { EditUserSheet } from "@/components/edit-user-sheet";
+
+// Generate consistent color for user avatar based on name
+function getAvatarColor(name: string): string {
+  const colors = [
+    "from-blue-500/20 to-purple-500/20 text-blue-400",
+    "from-green-500/20 to-teal-500/20 text-green-400",
+    "from-orange-500/20 to-red-500/20 text-orange-400",
+    "from-pink-500/20 to-purple-500/20 text-pink-400",
+    "from-yellow-500/20 to-orange-500/20 text-yellow-400",
+    "from-indigo-500/20 to-blue-500/20 text-indigo-400",
+  ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}
 
 interface User {
   id: string;
@@ -60,20 +74,19 @@ export function UsersTable({ users }: UsersTableProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Table */}
-      <div className="rounded-md border border-[#303030] overflow-hidden">
+      <div className="rounded-xl border border-white/10 overflow-hidden bg-gradient-to-b from-white/[0.03] to-transparent">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-transparent border-[#303030]">
-                <TableHead className="font-semibold">Nombre</TableHead>
-                <TableHead className="font-semibold">Email</TableHead>
-                <TableHead className="font-semibold">Teléfono</TableHead>
-                <TableHead className="font-semibold">Documento</TableHead>
-                <TableHead className="font-semibold">Rol</TableHead>
-                <TableHead className="font-semibold">Fecha Registro</TableHead>
-                <TableHead className="font-semibold text-right">Acciones</TableHead>
+              <TableRow className="hover:bg-transparent border-white/10 bg-white/[0.02]">
+                <TableHead className="font-semibold text-white/90 py-4">Usuario</TableHead>
+                <TableHead className="font-semibold text-white/90">Contacto</TableHead>
+                <TableHead className="font-semibold text-white/90">Documento</TableHead>
+                <TableHead className="font-semibold text-white/90">Rol</TableHead>
+                <TableHead className="font-semibold text-white/90">Registro</TableHead>
+                <TableHead className="font-semibold text-white/90 text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -86,45 +99,101 @@ export function UsersTable({ users }: UsersTableProps) {
                   ? `${user.prefix}-${user.document_id}`
                   : user.document_id || '-';
 
+                const initials = fullName
+                  .split(' ')
+                  .map(n => n[0])
+                  .join('')
+                  .toUpperCase()
+                  .slice(0, 2);
+
+                const avatarColor = getAvatarColor(fullName);
+
                 return (
-                  <TableRow key={user.id} className="border-[#303030] hover:bg-white/5">
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <UserCircle className="h-4 w-4" />
+                  <TableRow
+                    key={user.id}
+                    className="border-white/5 hover:bg-white/[0.03] transition-all duration-200 group"
+                  >
+                    {/* Usuario */}
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${avatarColor} flex items-center justify-center flex-shrink-0 font-semibold text-sm shadow-lg ring-1 ring-white/10`}>
+                          {initials}
                         </div>
-                        <span className="truncate">{fullName}</span>
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-medium text-white truncate">{fullName}</span>
+                          {user.email && (
+                            <span className="text-xs text-white/40 truncate flex items-center gap-1">
+                              <Mail className="h-3 w-3" />
+                              {user.email}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-[#606060]">
-                      {user.email || '-'}
+
+                    {/* Contacto */}
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        {user.phone ? (
+                          <span className="text-sm text-white/70 flex items-center gap-1.5">
+                            <Phone className="h-3.5 w-3.5 text-white/40" />
+                            {user.phone}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-white/30">Sin teléfono</span>
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell className="text-[#606060]">
-                      {user.phone || '-'}
+
+                    {/* Documento */}
+                    <TableCell>
+                      {documentId !== '-' ? (
+                        <div className="flex items-center gap-1.5">
+                          <FileText className="h-3.5 w-3.5 text-white/40" />
+                          <span className="text-sm text-white/70 font-mono">{documentId}</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-white/30">-</span>
+                      )}
                     </TableCell>
-                    <TableCell className="text-[#606060]">
-                      {documentId}
-                    </TableCell>
+
+                    {/* Rol */}
                     <TableCell>
                       {user.admin ? (
-                        <Badge variant="default" className="bg-primary/10 text-primary hover:bg-primary/20">
+                        <Badge
+                          variant="default"
+                          className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 border border-amber-500/20 hover:from-amber-500/20 hover:to-orange-500/20 transition-all duration-200 shadow-sm"
+                        >
+                          <Shield className="h-3 w-3 mr-1" />
                           Admin
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="border-[#303030] text-[#606060]">
+                        <Badge
+                          variant="outline"
+                          className="border-white/10 text-white/50 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-200"
+                        >
                           Usuario
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell className="text-[#606060]">
-                      {new Date(user.created_at).toLocaleDateString('es-CO', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                      })}
+
+                    {/* Registro */}
+                    <TableCell>
+                      <div className="flex items-center gap-1.5 text-sm text-white/50">
+                        <Calendar className="h-3.5 w-3.5 text-white/30" />
+                        {new Date(user.created_at).toLocaleDateString('es-CO', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </div>
                     </TableCell>
+
+                    {/* Acciones */}
                     <TableCell className="text-right">
-                      <EditUserSheet user={user} />
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <EditUserSheet user={user} />
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -135,44 +204,45 @@ export function UsersTable({ users }: UsersTableProps) {
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
-        <div className="flex items-center gap-2 text-sm text-[#606060]">
-          <span>Mostrar</span>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-white/50">Mostrar</span>
           <Select
             value={pageSize.toString()}
             onValueChange={handlePageSizeChange}
           >
-            <SelectTrigger className="h-9 w-[70px] rounded-lg border-[#303030] bg-white/5">
+            <SelectTrigger className="h-10 w-[80px] rounded-xl border-white/10 bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-200 focus:ring-2 focus:ring-white/20">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-xl border-white/10">
               <SelectItem value="25">25</SelectItem>
               <SelectItem value="50">50</SelectItem>
               <SelectItem value="100">100</SelectItem>
               <SelectItem value="200">200</SelectItem>
             </SelectContent>
           </Select>
-          <span>
-            de {users.length} usuarios
+          <span className="text-white/50">
+            de <span className="text-white font-semibold">{users.length.toLocaleString()}</span> usuarios
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button
             variant="outline"
             size="sm"
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="h-9 rounded-lg border-[#303030] hover:bg-white/5"
+            className="h-10 px-4 rounded-xl border-white/10 bg-white/[0.03] hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
           >
-            <ChevronLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-4 w-4 mr-1.5" />
             Anterior
           </Button>
 
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-[#606060]">
-              Página {currentPage} de {totalPages}
-            </span>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10">
+            <span className="text-sm text-white/50">Página</span>
+            <span className="text-sm font-semibold text-white">{currentPage}</span>
+            <span className="text-sm text-white/30">/</span>
+            <span className="text-sm text-white/50">{totalPages}</span>
           </div>
 
           <Button
@@ -180,10 +250,10 @@ export function UsersTable({ users }: UsersTableProps) {
             size="sm"
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="h-9 rounded-lg border-[#303030] hover:bg-white/5"
+            className="h-10 px-4 rounded-xl border-white/10 bg-white/[0.03] hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
           >
             Siguiente
-            <ChevronRight className="h-4 w-4 ml-1" />
+            <ChevronRight className="h-4 w-4 ml-1.5" />
           </Button>
         </div>
       </div>
