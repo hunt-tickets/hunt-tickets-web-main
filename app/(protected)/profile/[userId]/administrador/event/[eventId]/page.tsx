@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getEventFinancialReport, getEventProducers, getAllProducers } from "@/lib/actions/events";
+import { getEventFinancialReport, getEventProducers, getAllProducers, getEventArtists, getAllArtists } from "@/lib/actions/events";
 import { getEventTickets, getTicketsSalesAnalytics, getTicketTypes, getAllEventTransactions, getCompleteEventTransactions } from "@/lib/supabase/actions/tickets";
 import { EventTabs } from "@/components/event-tabs";
 
@@ -30,14 +30,19 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
     .eq("id", userId)
     .single();
 
-  const isProducer = (profile?.producers_admin?.length ?? 0) > 0;
+  const producersAdmin = Array.isArray(profile?.producers_admin)
+    ? profile.producers_admin
+    : profile?.producers_admin
+    ? [profile.producers_admin]
+    : [];
+  const isProducer = producersAdmin.length > 0;
 
   if (!profile?.admin && !isProducer) {
     notFound();
   }
 
-  // Fetch event details, financial report, tickets, producers, all available producers, ticket types, and transactions
-  const [eventData, financialReport, tickets, producers, allProducers, ticketsAnalytics, ticketTypes, transactions, completeTransactions] = await Promise.all([
+  // Fetch event details, financial report, tickets, producers, all available producers, artists, all available artists, ticket types, and transactions
+  const [eventData, financialReport, tickets, producers, allProducers, artists, allArtists, ticketsAnalytics, ticketTypes, transactions, completeTransactions] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, status, variable_fee")
@@ -47,6 +52,8 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
     getEventTickets(eventId),
     getEventProducers(eventId),
     getAllProducers(),
+    getEventArtists(eventId),
+    getAllArtists(),
     getTicketsSalesAnalytics(eventId),
     getTicketTypes(),
     getAllEventTransactions(eventId),
@@ -119,6 +126,8 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
           tickets={tickets || []}
           producers={producers || []}
           allProducers={allProducers || []}
+          artists={artists || []}
+          allArtists={allArtists || []}
           variableFee={event.variable_fee || 0}
           ticketsAnalytics={ticketsAnalytics || undefined}
           ticketTypes={ticketTypes || []}

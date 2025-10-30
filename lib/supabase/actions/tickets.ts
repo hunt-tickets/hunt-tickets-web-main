@@ -298,7 +298,8 @@ export async function getCompleteEventTransactions(eventId: string) {
       }
 
       if (data && data.length > 0) {
-        allData = [...allData, ...data.map(t => ({ ...t, source }))];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        allData = [...allData, ...(data as any[]).map(t => ({ ...t, source }))];
         from += batchSize;
         hasMore = data.length === batchSize;
       } else {
@@ -378,7 +379,8 @@ export async function getCompleteEventTransactions(eventId: string) {
   console.log(`📊 Total profiles loaded: ${Object.keys(profileMap).length}`);
 
   // Get Bold data if admin
-  let boldDataMap: Record<string, any> = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const boldDataMap: Record<string, any> = {};
   if (isAdmin) {
     const boldReferences = new Set<string>();
     appTxs.forEach(tx => {

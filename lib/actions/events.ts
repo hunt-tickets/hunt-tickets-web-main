@@ -321,8 +321,14 @@ export async function createEvent(
       .single();
 
     // Link event to producer if user is a producer
-    if (profile?.producers_admin && profile.producers_admin.length > 0) {
-      const producerId = profile.producers_admin[0].producer_id;
+    const producersAdmin = Array.isArray(profile?.producers_admin)
+      ? profile.producers_admin
+      : profile?.producers_admin
+      ? [profile.producers_admin]
+      : [];
+
+    if (producersAdmin.length > 0) {
+      const producerId = producersAdmin[0].producer_id;
 
       await supabase.from("events_producers").insert({
         event_id: eventData.id,
@@ -469,4 +475,100 @@ export async function addProducerToEvent(eventId: string, producerId: string) {
   revalidatePath(`/profile/[userId]/administrador/event/${eventId}`);
 
   return { success: true, message: "Productor agregado exitosamente" };
+}
+
+export async function getEventArtists(eventId: string) {
+  const supabase = await createClient();
+
+  // First, get the events_artists entries
+  const { data: eventArtists, error: eaError } = await supabase
+    .from("events_artists")
+    .select("id, created_at, artist_id")
+    .eq("event_id", eventId);
+
+  if (eaError) {
+    console.error("Error fetching events_artists:", eaError);
+    return [];
+  }
+
+  if (!eventArtists || eventArtists.length === 0) {
+    return [];
+  }
+
+  // Then get the artists for those artist_ids
+  const artistIds = eventArtists.map(ea => ea.artist_id);
+
+  const { data: artists, error: artistsError } = await supabase
+    .from("artists")
+    .select("id, name, description, category, logo")
+    .in("id", artistIds);
+
+  if (artistsError) {
+    console.error("Error fetching artists:", artistsError);
+    return [];
+  }
+
+  // Combine the data
+  return eventArtists.map(ea => {
+    const artist = artists?.find(a => a.id === ea.artist_id);
+    return {
+      id: ea.id,
+      created_at: ea.created_at,
+      artist: artist || {
+        id: ea.artist_id,
+        name: null,
+        description: null,
+        category: null,
+        logo: null
+      }
+    };
+  });
+}
+
+export async function getAllArtists() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("artists")
+    .select("id, name, description, category, logo")
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching all artists:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function addArtistToEvent(eventId: string, artistId: string) {
+  const supabase = await createClient();
+
+  // Check if artist is already added
+  const { data: existing } = await supabase
+    .from("events_artists")
+    .select("id")
+    .eq("event_id", eventId)
+    .eq("artist_id", artistId)
+    .single();
+
+  if (existing) {
+    return { success: false, message: "El artista ya está asignado a este evento" };
+  }
+
+  const { error } = await supabase
+    .from("events_artists")
+    .insert({
+      event_id: eventId,
+      artist_id: artistId
+    });
+
+  if (error) {
+    console.error("Error adding artist to event:", error);
+    return { success: false, message: "Error al agregar el artista" };
+  }
+
+  revalidatePath(`/profile/[userId]/administrador/event/${eventId}`);
+
+  return { success: true, message: "Artista agregado exitosamente" };
 }

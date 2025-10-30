@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -18,8 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserCircle, ChevronLeft, ChevronRight, Shield, Phone, Mail, FileText, Calendar, Cake } from "lucide-react";
+import { ChevronLeft, ChevronRight, Shield, Phone, Mail, FileText, Calendar, Cake, Search, X, Filter } from "lucide-react";
 import { EditUserSheet } from "@/components/edit-user-sheet";
+import { UserProfileSheet } from "@/components/user-profile-sheet";
+import { Input } from "@/components/ui/input";
 
 // Calculate age from birthdate
 function calculateAge(birthdate: string): number {
@@ -56,12 +58,54 @@ interface UsersTableProps {
 export function UsersTable({ users }: UsersTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [profileFilter, setProfileFilter] = useState("all");
 
-  // Calculate pagination
-  const totalPages = Math.ceil(users.length / pageSize);
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchTerm(searchInput);
+      setCurrentPage(1);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // Filter users based on search and filters
+  const filteredUsers = users.filter((user) => {
+    const fullName = [user.name, user.lastName].filter(Boolean).join(' ').toLowerCase();
+    const email = (user.email || "").toLowerCase();
+    const phone = (user.phone || "").toLowerCase();
+    const document = (user.document_id || "").toLowerCase();
+    const search = searchTerm.toLowerCase();
+
+    // Search filter
+    const matchesSearch = searchTerm === "" ||
+      fullName.includes(search) ||
+      email.includes(search) ||
+      phone.includes(search) ||
+      document.includes(search);
+
+    // Role filter
+    const matchesRole = roleFilter === "all" ||
+      (roleFilter === "admin" && user.admin) ||
+      (roleFilter === "user" && !user.admin);
+
+    // Profile filter
+    const matchesProfile = profileFilter === "all" ||
+      (profileFilter === "complete" && user.phone) ||
+      (profileFilter === "incomplete" && !user.phone);
+
+    return matchesSearch && matchesRole && matchesProfile;
+  });
+
+  // Calculate pagination based on filtered users
+  const totalPages = Math.ceil(filteredUsers.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentUsers = users.slice(startIndex, endIndex);
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
 
   // Handle page changes
   const goToPage = (page: number) => {
@@ -73,8 +117,108 @@ export function UsersTable({ users }: UsersTableProps) {
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
+  // Reset to first page when filters change
+  const handleRoleFilterChange = (value: string) => {
+    setRoleFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleProfileFilterChange = (value: string) => {
+    setProfileFilter(value);
+    setCurrentPage(1);
+  };
+
+  const clearFilters = () => {
+    setSearchInput("");
+    setSearchTerm("");
+    setRoleFilter("all");
+    setProfileFilter("all");
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters = searchTerm !== "" || roleFilter !== "all" || profileFilter !== "all";
+
   return (
     <div className="space-y-6">
+      {/* Search and Filters */}
+      <div className="space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+          <Input
+            type="text"
+            placeholder="Buscar por nombre, email, teléfono o documento..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="h-12 pl-12 pr-4 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 focus:bg-white/10 transition-colors text-base"
+          />
+          {searchInput && (
+            <button
+              onClick={() => setSearchInput("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Filters Row */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-white/40" />
+            <span className="text-sm text-white/50">Filtros:</span>
+          </div>
+
+          {/* Role Filter */}
+          <Select value={roleFilter} onValueChange={handleRoleFilterChange}>
+            <SelectTrigger className="h-9 w-[140px] rounded-lg border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los roles</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="user">Usuario</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Profile Filter */}
+          <Select value={profileFilter} onValueChange={handleProfileFilterChange}>
+            <SelectTrigger className="h-9 w-[160px] rounded-lg border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los perfiles</SelectItem>
+              <SelectItem value="complete">Perfil completo</SelectItem>
+              <SelectItem value="incomplete">Perfil incompleto</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Clear Filters */}
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="h-9 px-3 text-white/60 hover:text-white hover:bg-white/10 transition-all"
+            >
+              <X className="h-4 w-4 mr-1" />
+              Limpiar filtros
+            </Button>
+          )}
+
+          {/* Results Count */}
+          <div className="ml-auto text-sm text-white/50">
+            {filteredUsers.length === users.length ? (
+              <span>{users.length} usuarios</span>
+            ) : (
+              <span>
+                {filteredUsers.length} de {users.length} usuarios
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Table */}
       <div className="overflow-x-auto">
         <Table>
@@ -90,7 +234,27 @@ export function UsersTable({ users }: UsersTableProps) {
             </TableRow>
           </TableHeader>
             <TableBody>
-              {currentUsers.map((user) => {
+              {currentUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-24">
+                    <div className="text-center">
+                      <Search className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p className="text-sm text-white/40 mb-2">No se encontraron usuarios</p>
+                      {hasActiveFilters && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={clearFilters}
+                          className="text-white/60 hover:text-white hover:bg-white/10"
+                        >
+                          Limpiar filtros
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                currentUsers.map((user) => {
                 const fullName = [user.name, user.lastName]
                   .filter(Boolean)
                   .join(' ') || 'Sin nombre';
@@ -213,13 +377,15 @@ export function UsersTable({ users }: UsersTableProps) {
 
                     {/* Acciones */}
                     <TableCell className="text-right py-5">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-end gap-2">
+                        <UserProfileSheet user={user} />
                         <EditUserSheet user={user} />
                       </div>
                     </TableCell>
                   </TableRow>
                 );
-              })}
+              })
+              )}
             </TableBody>
           </Table>
       </div>
@@ -243,7 +409,7 @@ export function UsersTable({ users }: UsersTableProps) {
             </SelectContent>
           </Select>
           <span className="text-white/40">
-            de <span className="text-white/70 font-medium">{users.length.toLocaleString()}</span> usuarios
+            de <span className="text-white/70 font-medium">{filteredUsers.length}</span> usuarios
           </span>
         </div>
 

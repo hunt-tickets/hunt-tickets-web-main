@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getAllUsers } from "@/lib/supabase/actions/profile";
+import { getAllUsers, getUsersWithPurchasesStats } from "@/lib/supabase/actions/profile";
 import {
   Card,
   CardContent,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { UserCircle, Users, Shield } from "lucide-react";
 import { UsersTable } from "@/components/users-table";
+import { AnalyticsCharts } from "@/components/analytics-charts";
 
 interface UsuariosPageProps {
   params: Promise<{
@@ -40,8 +41,13 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
     notFound();
   }
 
-  // Get all users
-  const { users, error } = await getAllUsers();
+  // Get all users and purchase stats
+  const [usersResult, purchaseStats] = await Promise.all([
+    getAllUsers(),
+    getUsersWithPurchasesStats(),
+  ]);
+
+  const { users, error } = usersResult;
 
   if (error) {
     return (
@@ -119,6 +125,36 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
             <p className="text-xs text-[#404040] mt-1">Con teléfono registrado</p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Analytics Section */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold text-white">Analíticas de Público</h2>
+          <p className="text-sm text-[#404040] mt-1">Estadísticas de usuarios que han comprado entradas</p>
+        </div>
+
+        {purchaseStats.error ? (
+          <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+            <CardContent className="py-12 text-center">
+              <p className="text-red-500">Error al cargar estadísticas: {purchaseStats.error}</p>
+            </CardContent>
+          </Card>
+        ) : !purchaseStats.ageGroups || purchaseStats.ageGroups.length === 0 ? (
+          <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+            <CardContent className="py-12 text-center">
+              <p className="text-white/40">No hay usuarios con compras registradas aún</p>
+              <p className="text-xs text-white/30 mt-2">Los gráficos aparecerán cuando haya datos de compras</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <AnalyticsCharts
+            ageGroups={purchaseStats.ageGroups}
+            genderGroups={purchaseStats.genderGroups || []}
+            totalUsers={purchaseStats.totalUsers}
+            totalTicketsSold={purchaseStats.totalTicketsSold}
+          />
+        )}
       </div>
 
       {/* Users Table */}
