@@ -21,19 +21,6 @@ import {
 import { UserCircle, ChevronLeft, ChevronRight, Shield, Phone, Mail, FileText, Calendar } from "lucide-react";
 import { EditUserSheet } from "@/components/edit-user-sheet";
 
-// Generate consistent color for user avatar based on name
-function getAvatarColor(name: string): string {
-  const colors = [
-    "from-blue-500/20 to-purple-500/20 text-blue-400",
-    "from-green-500/20 to-teal-500/20 text-green-400",
-    "from-orange-500/20 to-red-500/20 text-orange-400",
-    "from-pink-500/20 to-purple-500/20 text-pink-400",
-    "from-yellow-500/20 to-orange-500/20 text-yellow-400",
-    "from-indigo-500/20 to-blue-500/20 text-indigo-400",
-  ];
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
-}
 
 interface User {
   id: string;
@@ -105,8 +92,6 @@ export function UsersTable({ users }: UsersTableProps) {
                   .toUpperCase()
                   .slice(0, 2);
 
-                const avatarColor = getAvatarColor(fullName);
-
                 return (
                   <TableRow
                     key={user.id}
@@ -115,7 +100,7 @@ export function UsersTable({ users }: UsersTableProps) {
                     {/* Usuario */}
                     <TableCell className="py-5">
                       <div className="flex items-center gap-3">
-                        <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${avatarColor} flex items-center justify-center flex-shrink-0 font-semibold text-sm shadow-lg ring-1 ring-white/10`}>
+                        <div className="h-11 w-11 rounded-xl bg-white/[0.08] flex items-center justify-center flex-shrink-0 font-semibold text-sm text-white/90 ring-1 ring-white/10">
                           {initials}
                         </div>
                         <div className="flex flex-col min-w-0">
