@@ -669,7 +669,9 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
   const sortedDates = Object.keys(dailySales).sort();
   const dates = sortedDates.map(date => {
     const d = new Date(date);
-    return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
   });
   const revenues = sortedDates.map(date => dailySales[date].revenue);
 
@@ -782,10 +784,7 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
         <CardTitle className="text-base">Ventas Diarias</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
-        </div>
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="text-center">
             <div className="text-xs text-white/40 mb-1">Total Días</div>
             <div className="text-lg font-bold">{dates.length}</div>
@@ -802,6 +801,9 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
               {formatCurrency(Math.max(...revenues))}
             </div>
           </div>
+        </div>
+        <div className="h-[300px]">
+          <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
         </div>
       </CardContent>
     </Card>
