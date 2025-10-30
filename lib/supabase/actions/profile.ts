@@ -150,3 +150,81 @@ export async function updateProfile(
 
   return { success: true };
 }
+
+export interface UpdateUserData {
+  name?: string;
+  lastName?: string;
+  email: string;
+  phone?: string;
+  birthdate?: string;
+  gender?: string;
+  prefix?: string;
+  document_id?: string;
+  admin: boolean;
+}
+
+export async function updateUserAsAdmin(
+  userId: string,
+  userData: UpdateUserData
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient();
+
+  // Verify user is authenticated and is admin
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Authentication required" };
+  }
+
+  // Check if current user is admin
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("admin")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile?.admin) {
+    return { success: false, error: "Unauthorized access" };
+  }
+
+  // Update the target user's profile
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      name: userData.name || null,
+      lastName: userData.lastName || null,
+      email: userData.email,
+      phone: userData.phone || null,
+      birthdate: userData.birthdate || null,
+      gender: userData.gender || null,
+      prefix: userData.prefix || null,
+      document_id: userData.document_id || null,
+      admin: userData.admin,
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("User update error:", error);
+
+    // Handle specific errors
+    if (error.code === "23505") {
+      // Unique constraint violation
+      if (error.message.includes("phone")) {
+        return { success: false, error: "Este número de teléfono ya está en uso" };
+      }
+      if (error.message.includes("email")) {
+        return { success: false, error: "Este email ya está en uso" };
+      }
+    }
+
+    return { success: false, error: "Error al actualizar el usuario" };
+  }
+
+  // Revalidate usuarios page
+  revalidatePath("/administrador/usuarios");
+
+  return { success: true };
+}

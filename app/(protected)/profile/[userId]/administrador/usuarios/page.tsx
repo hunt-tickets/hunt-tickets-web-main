@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { UserCircle, Users, Shield } from "lucide-react";
+import { EditUserSheet } from "@/components/edit-user-sheet";
 
 interface UsuariosPageProps {
   params: Promise<{
@@ -147,6 +148,7 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
                       <TableHead className="font-semibold">Documento</TableHead>
                       <TableHead className="font-semibold">Rol</TableHead>
                       <TableHead className="font-semibold">Fecha Registro</TableHead>
+                      <TableHead className="font-semibold text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -195,6 +197,9 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
                               month: 'short',
                               day: 'numeric',
                             })}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <EditUserSheet user={user} />
                           </TableCell>
                         </TableRow>
                       );
