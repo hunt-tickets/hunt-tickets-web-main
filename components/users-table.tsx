@@ -82,6 +82,7 @@ export function UsersTable({ users }: UsersTableProps) {
             <TableRow className="hover:bg-transparent border-b border-white/5">
               <TableHead className="font-medium text-white/50 py-3 text-xs uppercase tracking-wider">Usuario</TableHead>
               <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Contacto</TableHead>
+              <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Edad</TableHead>
               <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Documento</TableHead>
               <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Rol</TableHead>
               <TableHead className="font-medium text-white/50 text-xs uppercase tracking-wider">Registro</TableHead>
@@ -127,16 +128,6 @@ export function UsersTable({ users }: UsersTableProps) {
                               {user.email}
                             </span>
                           )}
-                          {user.birthdate && (
-                            <span className="text-xs text-white/40 flex items-center gap-1">
-                              <Cake className="h-3 w-3" />
-                              {calculateAge(user.birthdate)} años • {new Date(user.birthdate).toLocaleDateString('es-CO', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric',
-                              })}
-                            </span>
-                          )}
                         </div>
                       </div>
                     </TableCell>
@@ -153,6 +144,27 @@ export function UsersTable({ users }: UsersTableProps) {
                           <span className="text-sm text-white/30">Sin teléfono</span>
                         )}
                       </div>
+                    </TableCell>
+
+                    {/* Edad */}
+                    <TableCell className="py-5">
+                      {user.birthdate ? (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm text-white/70 flex items-center gap-1.5">
+                            <Cake className="h-3.5 w-3.5 text-white/40" />
+                            {calculateAge(user.birthdate)} años
+                          </span>
+                          <span className="text-xs text-white/40">
+                            {new Date(user.birthdate).toLocaleDateString('es-CO', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                            })}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-white/30">-</span>
+                      )}
                     </TableCell>
 
                     {/* Documento */}
