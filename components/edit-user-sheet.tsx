@@ -182,18 +182,45 @@ export function EditUserSheet({ user }: EditUserSheetProps) {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-medium">
-                Teléfono
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="3001234567"
-                className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="prefix" className="text-sm font-medium">
+                  Código País
+                </Label>
+                <Select
+                  value={formData.prefix}
+                  onValueChange={(value) => setFormData({ ...formData, prefix: value })}
+                >
+                  <SelectTrigger className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                    <SelectValue placeholder="Código" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Ninguno</SelectItem>
+                    <SelectItem value="+57">+57 (Colombia)</SelectItem>
+                    <SelectItem value="+1">+1 (USA/Canadá)</SelectItem>
+                    <SelectItem value="+52">+52 (México)</SelectItem>
+                    <SelectItem value="+593">+593 (Ecuador)</SelectItem>
+                    <SelectItem value="+51">+51 (Perú)</SelectItem>
+                    <SelectItem value="+54">+54 (Argentina)</SelectItem>
+                    <SelectItem value="+56">+56 (Chile)</SelectItem>
+                    <SelectItem value="+58">+58 (Venezuela)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-sm font-medium">
+                  Teléfono
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="3001234567"
+                  className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -236,40 +263,17 @@ export function EditUserSheet({ user }: EditUserSheetProps) {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Documento de Identidad</h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="prefix" className="text-sm font-medium">
-                  Tipo de Documento
-                </Label>
-                <Select
-                  value={formData.prefix}
-                  onValueChange={(value) => setFormData({ ...formData, prefix: value })}
-                >
-                  <SelectTrigger className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Ninguno</SelectItem>
-                    <SelectItem value="CC">Cédula de Ciudadanía</SelectItem>
-                    <SelectItem value="CE">Cédula de Extranjería</SelectItem>
-                    <SelectItem value="TI">Tarjeta de Identidad</SelectItem>
-                    <SelectItem value="PA">Pasaporte</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="document_id" className="text-sm font-medium">
-                  Número de Documento
-                </Label>
-                <Input
-                  id="document_id"
-                  value={formData.document_id}
-                  onChange={(e) => setFormData({ ...formData, document_id: e.target.value })}
-                  placeholder="1234567890"
-                  className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="document_id" className="text-sm font-medium">
+                Número de Documento
+              </Label>
+              <Input
+                id="document_id"
+                value={formData.document_id}
+                onChange={(e) => setFormData({ ...formData, document_id: e.target.value })}
+                placeholder="1234567890"
+                className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              />
             </div>
           </div>
 

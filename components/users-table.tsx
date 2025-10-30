@@ -81,9 +81,12 @@ export function UsersTable({ users }: UsersTableProps) {
                   .filter(Boolean)
                   .join(' ') || 'Sin nombre';
 
-                const documentId = user.prefix && user.document_id
-                  ? `${user.prefix}-${user.document_id}`
-                  : user.document_id || '-';
+                // Prefix is for phone, not document
+                const phoneNumber = user.phone
+                  ? user.prefix
+                    ? `${user.prefix} ${user.phone}`
+                    : user.phone
+                  : null;
 
                 const initials = fullName
                   .split(' ')
@@ -118,10 +121,10 @@ export function UsersTable({ users }: UsersTableProps) {
                     {/* Contacto */}
                     <TableCell className="py-5">
                       <div className="flex flex-col gap-1">
-                        {user.phone ? (
+                        {phoneNumber ? (
                           <span className="text-sm text-white/70 flex items-center gap-1.5">
                             <Phone className="h-3.5 w-3.5 text-white/40" />
-                            {user.phone}
+                            {phoneNumber}
                           </span>
                         ) : (
                           <span className="text-sm text-white/30">Sin teléfono</span>
@@ -131,10 +134,10 @@ export function UsersTable({ users }: UsersTableProps) {
 
                     {/* Documento */}
                     <TableCell className="py-5">
-                      {documentId !== '-' ? (
+                      {user.document_id ? (
                         <div className="flex items-center gap-1.5">
                           <FileText className="h-3.5 w-3.5 text-white/40" />
-                          <span className="text-sm text-white/70 font-mono">{documentId}</span>
+                          <span className="text-sm text-white/70 font-mono">{user.document_id}</span>
                         </div>
                       ) : (
                         <span className="text-sm text-white/30">-</span>
