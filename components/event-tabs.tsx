@@ -5,8 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CreditCard,
-  Smartphone,
-  Banknote,
   AlertCircle,
   LayoutDashboard,
   Ticket,
@@ -209,11 +207,6 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
     }).format(amount);
   };
 
-  const totalTickets = financialReport.tickets_sold.total;
-  const appPercentage = (financialReport.tickets_sold.app / totalTickets) * 100;
-  const webPercentage = (financialReport.tickets_sold.web / totalTickets) * 100;
-  const cashPercentage = (financialReport.tickets_sold.cash / totalTickets) * 100;
-
   if (!mounted) {
     return null;
   }
@@ -349,113 +342,8 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
           </CardContent>
         </Card>
 
-        {/* Transaction Analytics - Reorganizado */}
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* App Móvil */}
-          <Card className="bg-white/[0.02] border-white/5 hover:border-purple-500/30 transition-colors">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-purple-500/10">
-                    <Smartphone className="h-4 w-4 text-purple-400" />
-                  </div>
-                  <span className="text-sm font-medium">App Móvil</span>
-                </div>
-                <span className="text-xs text-white/40">{appPercentage.toFixed(0)}%</span>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-white/40 mb-1">Tickets</p>
-                  <p className="text-2xl font-bold">{financialReport.tickets_sold.app}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-white/40 mb-1">Recaudo</p>
-                  <p className="text-lg font-semibold">{formatCurrency(financialReport.app_total)}</p>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-purple-500 rounded-full transition-all duration-500"
-                    style={{ width: `${appPercentage}%` }}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Web */}
-          <Card className="bg-white/[0.02] border-white/5 hover:border-cyan-500/30 transition-colors">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-cyan-500/10">
-                    <CreditCard className="h-4 w-4 text-cyan-400" />
-                  </div>
-                  <span className="text-sm font-medium">Web</span>
-                </div>
-                <span className="text-xs text-white/40">{webPercentage.toFixed(0)}%</span>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-white/40 mb-1">Tickets</p>
-                  <p className="text-2xl font-bold">{financialReport.tickets_sold.web}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-white/40 mb-1">Recaudo</p>
-                  <p className="text-lg font-semibold">{formatCurrency(financialReport.web_total)}</p>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-cyan-500 rounded-full transition-all duration-500"
-                    style={{ width: `${webPercentage}%` }}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Efectivo */}
-          <Card className="bg-white/[0.02] border-white/5 hover:border-green-500/30 transition-colors">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-green-500/10">
-                    <Banknote className="h-4 w-4 text-green-400" />
-                  </div>
-                  <span className="text-sm font-medium">Efectivo</span>
-                </div>
-                <span className="text-xs text-white/40">{cashPercentage.toFixed(0)}%</span>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-white/40 mb-1">Tickets</p>
-                  <p className="text-2xl font-bold">{financialReport.tickets_sold.cash}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-white/40 mb-1">Recaudo</p>
-                  <p className="text-lg font-semibold">{formatCurrency(financialReport.cash_total)}</p>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-green-500 rounded-full transition-all duration-500"
-                    style={{ width: `${cashPercentage}%` }}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Daily Sales Chart */}
+        <DailySalesChart transactions={transactions} />
 
         {/* Charts Section */}
         <div className="grid gap-4 md:grid-cols-2">
@@ -471,88 +359,12 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
           />
         </div>
 
-        {/* Daily Sales Chart */}
-        <DailySalesChart transactions={transactions} />
-
         <FinancialBreakdownChart
           grossProfit={financialReport.global_calculations.ganancia_bruta_hunt}
           boldDeductions={financialReport.global_calculations.deducciones_bold_total}
           tax4x1000={financialReport.global_calculations.impuesto_4x1000}
           netProfit={financialReport.global_calculations.ganancia_neta_hunt}
         />
-
-        {/* Sales by Channel - Simplified Table */}
-        <Card className="bg-white/[0.02] border-white/5">
-          <CardHeader>
-            <CardTitle className="text-base">Distribución por Canal</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {/* App */}
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-500/10">
-                    <Smartphone className="h-4 w-4 text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">App Móvil</p>
-                    <p className="text-xs text-white/40">{financialReport.tickets_sold.app} tickets</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold">{formatCurrency(financialReport.app_total)}</p>
-                  <p className="text-xs text-white/40">{appPercentage.toFixed(1)}%</p>
-                </div>
-              </div>
-
-              {/* Web */}
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-cyan-500/10">
-                    <CreditCard className="h-4 w-4 text-cyan-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Web</p>
-                    <p className="text-xs text-white/40">{financialReport.tickets_sold.web} tickets</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold">{formatCurrency(financialReport.web_total)}</p>
-                  <p className="text-xs text-white/40">{webPercentage.toFixed(1)}%</p>
-                </div>
-              </div>
-
-              {/* Efectivo */}
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-green-500/10">
-                    <Banknote className="h-4 w-4 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Efectivo</p>
-                    <p className="text-xs text-white/40">{financialReport.tickets_sold.cash} tickets</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold">{formatCurrency(financialReport.cash_total)}</p>
-                  <p className="text-xs text-white/40">{cashPercentage.toFixed(1)}%</p>
-                </div>
-              </div>
-
-              {/* Total */}
-              <div className="flex items-center justify-between p-4 rounded-lg bg-white/[0.05] border border-white/10 mt-2">
-                <div>
-                  <p className="text-sm font-bold">Total General</p>
-                  <p className="text-xs text-white/40">{financialReport.tickets_sold.total} tickets</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold">{formatCurrency(financialReport.channels_total)}</p>
-                  <p className="text-xs text-white/40">100%</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Sales Breakdown */}
         <div className="grid gap-4 md:grid-cols-2">

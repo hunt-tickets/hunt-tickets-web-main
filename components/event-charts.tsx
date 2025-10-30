@@ -107,6 +107,14 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
     }).format(value);
   };
 
+  const data = [
+    { name: 'App', value: appTotal, color: '#8b5cf6' },
+    { name: 'Web', value: webTotal, color: '#06b6d4' },
+    { name: 'Efectivo', value: cashTotal, color: '#10b981' },
+  ].filter(item => item.value > 0);
+
+  const total = appTotal + webTotal + cashTotal;
+
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
@@ -134,7 +142,7 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
     },
     xAxis: {
       type: 'category',
-      data: ['App', 'Web', 'Efectivo'],
+      data: data.map(d => d.name),
       axisLine: {
         lineStyle: {
           color: '#303030'
@@ -153,7 +161,11 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
       },
       axisLabel: {
         color: '#888',
-        formatter: (value: number) => `$${(value / 1000).toFixed(0)}K`
+        formatter: (value: number) => {
+          if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+          if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+          return `$${value}`;
+        }
       },
       splitLine: {
         lineStyle: {
@@ -165,14 +177,11 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
     series: [
       {
         type: 'bar',
-        data: [appTotal, webTotal, cashTotal],
-        itemStyle: {
-          color: '#8b5cf6',
-          borderRadius: [8, 8, 0, 0]
-        },
+        data: data.map(d => ({ value: d.value, itemStyle: { color: d.color, borderRadius: [8, 8, 0, 0] } })),
         emphasis: {
           itemStyle: {
-            color: '#a78bfa'
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
         }
       }
@@ -187,6 +196,18 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
       <CardContent>
         <div className="h-[300px]">
           <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          {data.map((item) => (
+            <div key={item.name} className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="text-sm text-gray-400">{item.name}</span>
+              </div>
+              <p className="text-lg font-bold">{formatCurrency(item.value)}</p>
+              <p className="text-xs text-gray-500">{((item.value / total) * 100).toFixed(1)}%</p>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
