@@ -3,9 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getEventFinancialReport, getEventProducers, getAllProducers, getEventArtists, getAllArtists } from "@/lib/actions/events";
-import { getEventTickets, getTicketsSalesAnalytics, getTicketTypes, getAllEventTransactions, getCompleteEventTransactions } from "@/lib/supabase/actions/tickets";
-import { EventTabs } from "@/components/event-tabs";
+import { getEventFinancialReport } from "@/lib/actions/events";
+import { getAllEventTransactions } from "@/lib/supabase/actions/tickets";
+import { EventDashboard } from "@/components/event-dashboard";
 
 interface EventPageProps {
   params: Promise<{
@@ -41,23 +41,15 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
     notFound();
   }
 
-  // Fetch event details, financial report, tickets, producers, all available producers, artists, all available artists, ticket types, and transactions
-  const [eventData, financialReport, tickets, producers, allProducers, artists, allArtists, ticketsAnalytics, ticketTypes, transactions, completeTransactions] = await Promise.all([
+  // Fetch event details, financial report, and transactions
+  const [eventData, financialReport, transactions] = await Promise.all([
     supabase
       .from("events")
-      .select("id, name, status, variable_fee")
+      .select("id, name, status")
       .eq("id", eventId)
       .single(),
     getEventFinancialReport(eventId),
-    getEventTickets(eventId),
-    getEventProducers(eventId),
-    getAllProducers(),
-    getEventArtists(eventId),
-    getAllArtists(),
-    getTicketsSalesAnalytics(eventId),
-    getTicketTypes(),
     getAllEventTransactions(eventId),
-    getCompleteEventTransactions(eventId),
   ]);
 
   if (eventData.error || !eventData.data) {
@@ -117,22 +109,10 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
         </Badge>
       </div>
 
-      {/* Event Tabs */}
-      <EventTabs
-        eventId={eventId}
-        eventName={event.name}
+      {/* Event Dashboard */}
+      <EventDashboard
         financialReport={financialReport}
-        tickets={tickets || []}
-        producers={producers || []}
-        allProducers={allProducers || []}
-        artists={artists || []}
-        allArtists={allArtists || []}
-        variableFee={event.variable_fee || 0}
-        ticketsAnalytics={ticketsAnalytics || undefined}
-        ticketTypes={ticketTypes || []}
         transactions={transactions || []}
-        completeTransactions={completeTransactions?.transactions || []}
-        isAdmin={completeTransactions?.isAdmin || false}
       />
     </div>
   );
