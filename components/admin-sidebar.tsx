@@ -99,7 +99,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
               } else {
                 // For non-exact matches (like /administrador which should also match /administrador/event/[id])
                 if (item.href === "/administrador") {
-                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion");
+                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios");
                 } else {
                   isActive = pathname.includes(item.href);
                 }
