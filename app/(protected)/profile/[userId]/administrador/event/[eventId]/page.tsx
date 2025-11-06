@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getEventFinancialReport } from "@/lib/actions/events";
-import { getAllEventTransactions } from "@/lib/supabase/actions/tickets";
+import { getAllEventTransactions, getEventTickets, getTicketsSalesAnalytics } from "@/lib/supabase/actions/tickets";
 import { EventDashboard } from "@/components/event-dashboard";
 
 interface EventPageProps {
@@ -41,8 +41,8 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
     notFound();
   }
 
-  // Fetch event details, financial report, and transactions
-  const [eventData, financialReport, transactions] = await Promise.all([
+  // Fetch event details, financial report, transactions, tickets, and analytics
+  const [eventData, financialReport, transactions, tickets, ticketsAnalytics] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, status")
@@ -50,7 +50,20 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
       .single(),
     getEventFinancialReport(eventId),
     getAllEventTransactions(eventId),
+    getEventTickets(eventId),
+    getTicketsSalesAnalytics(eventId),
   ]);
+
+  // Combine tickets with their analytics
+  const ticketsWithAnalytics = tickets?.map((ticket) => ({
+    ...ticket,
+    analytics: ticketsAnalytics?.[ticket.id] || {
+      total: { quantity: 0, total: 0 },
+      app: { quantity: 0, total: 0 },
+      web: { quantity: 0, total: 0 },
+      cash: { quantity: 0, total: 0 },
+    },
+  })) || [];
 
   if (eventData.error || !eventData.data) {
     notFound();
@@ -113,6 +126,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
       <EventDashboard
         financialReport={financialReport}
         transactions={transactions || []}
+        tickets={ticketsWithAnalytics}
       />
     </div>
   );

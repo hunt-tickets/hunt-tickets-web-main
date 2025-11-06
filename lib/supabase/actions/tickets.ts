@@ -273,15 +273,26 @@ export async function getCompleteEventTransactions(eventId: string) {
     const batchSize = 1000;
     let hasMore = true;
 
-    // Build select query based on table
+    // Build select query with JOINs based on table
     let selectQuery = '';
     if (tableName === 'transactions') {
-      selectQuery = 'id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, tracker';
+      selectQuery = `
+        id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, tracker,
+        user:profiles!user_id(name, lastName, email)
+      `;
     } else if (tableName === 'transactions_web') {
-      selectQuery = 'id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id, order';
+      selectQuery = `
+        id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id, order,
+        user:profiles!user_id(name, lastName, email),
+        promoter:profiles!promoter_id(name, lastName, email)
+      `;
     } else {
       // transactions_cash
-      selectQuery = 'id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id';
+      selectQuery = `
+        id, created_at, ticket_id, quantity, price, variable_fee, tax, total, status, order_id, user_id, promoter_id,
+        user:profiles!user_id(name, lastName, email),
+        promoter:profiles!promoter_id(name, lastName, email)
+      `;
     }
 
     while (hasMore) {
@@ -340,44 +351,6 @@ export async function getCompleteEventTransactions(eventId: string) {
     ...cashTxs.filter(t => ticketIds.includes(t.ticket_id)),
   ];
 
-  // Get unique user IDs and promoter IDs
-  const userIds = new Set<string>();
-  const promoterIds = new Set<string>();
-  allTxs.forEach(tx => {
-    if (tx.user_id) userIds.add(tx.user_id);
-    if (tx.promoter_id) promoterIds.add(tx.promoter_id);
-  });
-
-  const allUserIds = [...userIds, ...promoterIds];
-
-  console.log(`📋 Total unique user IDs: ${allUserIds.length}`);
-
-  // Get profiles with pagination to handle large datasets
-  const profileMap: Record<string, { name: string | null; lastName: string | null; email: string | null }> = {};
-
-  if (allUserIds.length > 0) {
-    // Process in chunks of 1000
-    const chunkSize = 1000;
-    for (let i = 0; i < allUserIds.length; i += chunkSize) {
-      const chunk = allUserIds.slice(i, i + chunkSize);
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, name, "lastName", email')
-        .in('id', chunk);
-
-      if (profilesError) {
-        console.error(`Error fetching profiles chunk ${i / chunkSize + 1}:`, profilesError);
-      } else {
-        console.log(`✅ Fetched ${profiles?.length || 0} profiles in chunk ${i / chunkSize + 1}`);
-        profiles?.forEach(p => {
-          profileMap[p.id] = p;
-        });
-      }
-    }
-  }
-
-  console.log(`📊 Total profiles loaded: ${Object.keys(profileMap).length}`);
-
   // Get Bold data if admin
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const boldDataMap: Record<string, any> = {};
@@ -403,23 +376,10 @@ export async function getCompleteEventTransactions(eventId: string) {
   }
 
   // Format transactions
-  const formattedTransactions = allTxs.map((tx, index) => {
-    const userProfile = tx.user_id && profileMap[tx.user_id] ? profileMap[tx.user_id] : null;
-    const promoterProfile = tx.promoter_id && profileMap[tx.promoter_id] ? profileMap[tx.promoter_id] : null;
+  const formattedTransactions = allTxs.map((tx) => {
     const ticketName = ticketMap[tx.ticket_id] || '';
     const reference = tx.source === 'app' ? tx.tracker : tx.source === 'web' ? tx.order : null;
     const bold = isAdmin && reference ? boldDataMap[reference] : null;
-
-    // Log first 3 transactions to debug
-    if (index < 3) {
-      console.log(`🔍 Transaction ${index + 1}:`, {
-        user_id: tx.user_id,
-        has_profile: !!userProfile,
-        profile: userProfile,
-        promoter_id: tx.promoter_id,
-        has_promoter: !!promoterProfile,
-      });
-    }
 
     const formatName = (name: string | null, lastName: string | null) => {
       if (!name && !lastName) return '';
@@ -431,8 +391,8 @@ export async function getCompleteEventTransactions(eventId: string) {
     return {
       id: tx.id,
       created_at: tx.created_at,
-      user_fullname: userProfile ? formatName(userProfile.name, userProfile.lastName) : '',
-      user_email: userProfile?.email || '',
+      user_fullname: tx.user ? formatName(tx.user.name, tx.user.lastName) : '',
+      user_email: tx.user?.email || '',
       ticket_name: ticketName,
       quantity: tx.quantity,
       price: tx.price,
@@ -443,8 +403,8 @@ export async function getCompleteEventTransactions(eventId: string) {
       type: tx.source,
       cash: tx.source === 'cash',
       order_id: tx.order_id,
-      promoter_fullname: promoterProfile ? formatName(promoterProfile.name, promoterProfile.lastName) : '',
-      promoter_email: promoterProfile?.email || '',
+      promoter_fullname: tx.promoter ? formatName(tx.promoter.name, tx.promoter.lastName) : '',
+      promoter_email: tx.promoter?.email || '',
       ...(isAdmin && bold ? {
         bold_id: bold.id,
         bold_fecha: bold.fecha,
@@ -617,6 +577,7 @@ export async function createTicket(eventId: string, ticketData: {
   hex?: string;
   family?: string;
   reference?: string;
+  ticket_type_id?: string;
 }) {
   const supabase = await createClient();
 
@@ -644,6 +605,7 @@ export async function createTicket(eventId: string, ticketData: {
       hex: ticketData.hex || null,
       family: ticketData.family || null,
       reference: ticketData.reference || null,
+      ticket_type_id: ticketData.ticket_type_id || null,
     });
 
   if (error) {
@@ -791,7 +753,7 @@ export async function getAllProducers() {
 export async function getAllArtists() {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { data, error} = await supabase
     .from("artists")
     .select("id, name, description, category, logo")
     .order("name", { ascending: true });
@@ -802,4 +764,307 @@ export async function getAllArtists() {
   }
 
   return data || [];
+}
+
+export async function getAllTransactions() {
+  const supabase = await createClient();
+
+  // Helper function to fetch all transactions with pagination
+  async function fetchAllTransactions(tableName: string, source: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let allData: any[] = [];
+    let from = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select(`
+          id,
+          quantity,
+          total,
+          status,
+          created_at,
+          ticket_id,
+          user_id,
+          order_id,
+          tickets!inner(
+            event_id,
+            name,
+            price,
+            event:events!inner(
+              id,
+              name
+            )
+          ),
+          user:profiles!user_id(
+            name,
+            lastName,
+            email
+          ),
+          qr_code:qr_codes!transaction_id(
+            id,
+            svg
+          )
+        `)
+        .eq("status", "PAID WITH QR")
+        .order("created_at", { ascending: false })
+        .range(from, from + batchSize - 1);
+
+      if (error) {
+        console.error(`❌ Error fetching ${tableName}:`, error);
+        break;
+      }
+
+      if (data && data.length > 0) {
+        allData = [...allData, ...data.map(t => ({ ...t, source }))];
+        from += batchSize;
+        hasMore = data.length === batchSize;
+      } else {
+        hasMore = false;
+      }
+    }
+
+    return allData;
+  }
+
+  // Get all transactions from all sources
+  const [appTransactions, webTransactions, cashTransactions] = await Promise.all([
+    fetchAllTransactions("transactions", "app"),
+    fetchAllTransactions("transactions_web", "web"),
+    fetchAllTransactions("transactions_cash", "cash"),
+  ]);
+
+  // Combine and sort all transactions by date
+  const allTransactions = [
+    ...appTransactions,
+    ...webTransactions,
+    ...cashTransactions,
+  ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  return allTransactions;
+}
+
+export async function getOrphanQRCodes() {
+  const supabase = await createClient();
+
+  // Get all QR codes with their user profiles
+  const { data: allQRCodes, error: qrError } = await supabase
+    .from("qr_codes")
+    .select(`
+      id,
+      transaction_id,
+      user_id,
+      svg,
+      created_at,
+      scan,
+      scanner_id,
+      updated_at,
+      apple,
+      google,
+      profile:profiles!user_id(
+        id,
+        name,
+        lastName,
+        email
+      )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (qrError) {
+    console.error("Error fetching QR codes:", qrError);
+    return [];
+  }
+
+  if (!allQRCodes || allQRCodes.length === 0) {
+    return [];
+  }
+
+  console.log(`🔍 Checking ${allQRCodes.length} QR codes for orphans...`);
+
+  // Check each QR code individually against all three transaction tables
+  const orphanQRs = [];
+
+  for (const qr of allQRCodes) {
+    // Check if transaction exists in any of the three tables
+    const [appCheck, webCheck, cashCheck] = await Promise.all([
+      supabase.from("transactions").select("id").eq("id", qr.transaction_id).single(),
+      supabase.from("transactions_web").select("id").eq("id", qr.transaction_id).single(),
+      supabase.from("transactions_cash").select("id").eq("id", qr.transaction_id).single()
+    ]);
+
+    // If transaction doesn't exist in any table, it's an orphan
+    const existsInApp = appCheck.data !== null && !appCheck.error;
+    const existsInWeb = webCheck.data !== null && !webCheck.error;
+    const existsInCash = cashCheck.data !== null && !cashCheck.error;
+
+    if (!existsInApp && !existsInWeb && !existsInCash) {
+      orphanQRs.push(qr);
+      console.log(`❌ Orphan QR found: ${qr.id} (transaction: ${qr.transaction_id})`);
+    }
+  }
+
+  // Format the data
+  const formattedOrphanQRs = orphanQRs.map(qr => ({
+    id: qr.id,
+    transaction_id: qr.transaction_id,
+    user_id: qr.user_id,
+    svg: qr.svg,
+    created_at: qr.created_at,
+    scan: qr.scan,
+    scanner_id: qr.scanner_id,
+    updated_at: qr.updated_at,
+    apple: qr.apple,
+    google: qr.google,
+    user_name: qr.profile ? `${qr.profile.name || ''} ${qr.profile.lastName || ''}`.trim() : 'N/A',
+    user_email: qr.profile?.email || 'N/A'
+  }));
+
+  console.log(`✅ Found ${formattedOrphanQRs.length} orphan QR codes out of ${allQRCodes.length} total QR codes`);
+
+  return formattedOrphanQRs;
+}
+
+export async function getEventQRCodes(eventId: string) {
+  const supabase = await createClient();
+
+  // Get all tickets for this event
+  const { data: ticketsData } = await supabase
+    .from("tickets")
+    .select("id, name")
+    .eq("event_id", eventId);
+
+  if (!ticketsData || ticketsData.length === 0) {
+    return [];
+  }
+
+  // Ensure tickets is always an array
+  const tickets = Array.isArray(ticketsData) ? ticketsData : [ticketsData];
+  const ticketIds = tickets.map(t => t.id);
+  const ticketMap = new Map(tickets.map(t => [t.id, t.name]));
+
+  // Helper function to fetch QR codes directly with transaction data in batches
+  async function fetchAllQRCodes(tableName: string, source: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let allData: any[] = [];
+    let from = 0;
+    const batchSize = 1000;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select(`
+          id,
+          ticket_id,
+          user_id,
+          order_id,
+          created_at
+        `)
+        .in("ticket_id", ticketIds)
+        .eq("status", "PAID WITH QR")
+        .range(from, from + batchSize - 1);
+
+      if (error) {
+        console.error(`Error fetching ${tableName}:`, error);
+        break;
+      }
+
+      if (!data || data.length === 0) break;
+
+      allData.push(...data.map(t => ({ ...t, source })));
+
+      if (data.length < batchSize) break;
+      from += batchSize;
+    }
+
+    return allData;
+  }
+
+  // Get all transactions in parallel
+  const [appTx, webTx, cashTx] = await Promise.all([
+    fetchAllQRCodes("transactions", "app"),
+    fetchAllQRCodes("transactions_web", "web"),
+    fetchAllQRCodes("transactions_cash", "cash"),
+  ]);
+
+  const allTransactions = [...appTx, ...webTx, ...cashTx];
+
+  if (allTransactions.length === 0) {
+    return [];
+  }
+
+  const transactionIds = allTransactions.map(t => t.id);
+  const transactionMap = new Map(allTransactions.map(t => [t.id, t]));
+
+  // Fetch all QR codes for these transactions in batches
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let allQRCodes: any[] = [];
+  let from = 0;
+  const batchSize = 1000;
+
+  while (true) {
+    const { data: qrBatch, error } = await supabase
+      .from("qr_codes")
+      .select("id, transaction_id, user_id, created_at, scan, scanner_id, updated_at, apple, google")
+      .in("transaction_id", transactionIds)
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      console.error("Error fetching QR codes:", error);
+      break;
+    }
+
+    if (!qrBatch || qrBatch.length === 0) break;
+
+    allQRCodes.push(...qrBatch);
+
+    if (qrBatch.length < batchSize) break;
+    from += batchSize;
+  }
+
+  // Get unique user and scanner IDs
+  const userIds = [...new Set(allQRCodes.map(qr => qr.user_id))];
+  const scannerIds = [...new Set(allQRCodes.filter(qr => qr.scanner_id).map(qr => qr.scanner_id))];
+
+  // Fetch all user and scanner profiles in parallel
+  const [usersData, scannersData] = await Promise.all([
+    userIds.length > 0
+      ? supabase.from("profiles").select("id, name, lastName, email").in("id", userIds)
+      : Promise.resolve({ data: [] }),
+    scannerIds.length > 0
+      ? supabase.from("profiles").select("id, name, lastName, email").in("id", scannerIds)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const userMap = new Map((usersData.data || []).map(u => [u.id, u]));
+  const scannerMap = new Map((scannersData.data || []).map(s => [s.id, s]));
+
+  // Format the QR codes with all data
+  const formattedQRCodes = allQRCodes.map(qr => {
+    const transaction = transactionMap.get(qr.transaction_id);
+    const user = userMap.get(qr.user_id);
+    const scanner = qr.scanner_id ? scannerMap.get(qr.scanner_id) : null;
+
+    return {
+      id: qr.id,
+      transaction_id: qr.transaction_id,
+      user_id: qr.user_id,
+      created_at: qr.created_at,
+      scan: qr.scan,
+      scanner_id: qr.scanner_id,
+      updated_at: qr.updated_at,
+      apple: qr.apple,
+      google: qr.google,
+      user_name: user ? `${user.name || ''} ${user.lastName || ''}`.trim() : 'N/A',
+      user_email: user?.email || 'N/A',
+      scanner_name: scanner ? `${scanner.name || ''} ${scanner.lastName || ''}`.trim() : null,
+      scanner_email: scanner?.email || null,
+      ticket_name: transaction?.ticket_id ? ticketMap.get(transaction.ticket_id) || 'N/A' : 'N/A',
+      source: transaction?.source || 'unknown',
+      order_id: transaction?.order_id || null,
+    };
+  });
+
+  return formattedQRCodes;
 }

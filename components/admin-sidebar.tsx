@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, Settings, ArrowLeft, Menu, X, UserCircle } from "lucide-react";
+import { Calendar, Users, Settings, ArrowLeft, Menu, X, UserCircle, Calculator, Shield } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface AdminSidebarProps {
   userId: string;
@@ -17,6 +18,20 @@ const menuItems = [
     href: "/administrador",
     description: "Crea y gestiona eventos",
     exact: false, // Will match /administrador/event/[id] too
+  },
+  {
+    title: "Contabilidad",
+    icon: Calculator,
+    href: "/administrador/contabilidad",
+    description: "Gestión contable y financiera",
+    exact: false,
+  },
+  {
+    title: "Seguridad",
+    icon: Shield,
+    href: "/administrador/seguridad",
+    description: "QR codes huérfanos y seguridad",
+    exact: true,
   },
   {
     title: "Usuarios",
@@ -96,7 +111,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
               } else {
                 // For non-exact matches (like /administrador which should also match /administrador/event/[id])
                 if (item.href === "/administrador") {
-                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios");
+                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios") && !pathname.includes("/contabilidad") && !pathname.includes("/seguridad");
                 } else {
                   isActive = pathname.includes(item.href);
                 }
@@ -122,7 +137,8 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
           </nav>
 
           {/* Footer */}
-          <div className="pt-4 border-t border-[#2a2a2a]">
+          <div className="pt-4 border-t border-[#2a2a2a] space-y-1">
+            <ThemeToggle />
             <Link
               href={`/profile/${userId}`}
               className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"

@@ -6,6 +6,7 @@ import { Ticket, HelpCircle } from "lucide-react";
 import { CreateTicketDialog } from "@/components/create-ticket-dialog";
 import { EditTicketSheet } from "@/components/edit-ticket-sheet";
 import { ChannelSalesChart, TicketRevenueDistributionChart } from "@/components/event-charts";
+import { SendCourtesyDialog } from "@/components/send-courtesy-dialog";
 
 interface TicketType {
   id: string;
@@ -88,7 +89,10 @@ export function EventTicketsContent({
             {tickets.length} tipo{tickets.length !== 1 ? 's' : ''} de entrada configurado{tickets.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <CreateTicketDialog eventId={eventId} />
+        <div className="flex items-center gap-2">
+          <SendCourtesyDialog eventId={eventId} />
+          <CreateTicketDialog eventId={eventId} ticketTypes={ticketTypes} />
+        </div>
       </div>
 
       {/* Filtros por tipo de ticket */}
@@ -128,12 +132,23 @@ export function EventTicketsContent({
                 </button>
               );
             })}
+            {/* QR Huérfanos Tab */}
+            <button
+              onClick={() => setSelectedTicketType("orphan_qrs")}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                selectedTicketType === "orphan_qrs"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-white/5 hover:bg-white/10 text-white/60"
+              }`}
+            >
+              QR Huérfanos (0)
+            </button>
           </div>
         );
       })()}
 
       {/* Analytics Overview */}
-      {ticketsAnalytics && Object.keys(ticketsAnalytics).length > 0 && (() => {
+      {ticketsAnalytics && Object.keys(ticketsAnalytics).length > 0 && selectedTicketType !== "orphan_qrs" && (() => {
         // Filtrar tickets según el tipo seleccionado
         const filteredTicketsForAnalytics = selectedTicketType === "all"
           ? tickets
@@ -167,7 +182,7 @@ export function EventTicketsContent({
         return (
           <div className="mb-6 space-y-4">
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
                 <div className="text-xs text-white/40 mb-1">Total Vendidos</div>
                 <div className="text-2xl font-bold">{totals.total}</div>
@@ -175,13 +190,6 @@ export function EventTicketsContent({
               <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
                 <div className="text-xs text-white/40 mb-1">Recaudo Total</div>
                 <div className="text-2xl font-bold">{formatCurrency(totals.revenue)}</div>
-              </div>
-              <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-                <div className="text-xs text-white/40 mb-1">Tipos Vendiendo</div>
-                <div className="text-2xl font-bold">
-                  {filteredTicketsForAnalytics.filter(t => ticketsAnalytics[t.id]).length}
-                </div>
-                <div className="text-xs text-white/30">de {filteredTicketsForAnalytics.length}</div>
               </div>
               <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
                 <div className="text-xs text-white/40 mb-1">Ticket Promedio</div>
@@ -225,6 +233,23 @@ export function EventTicketsContent({
       })()}
 
       {(() => {
+        // Handle QR Huérfanos tab
+        if (selectedTicketType === "orphan_qrs") {
+          return (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <Ticket className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-1">
+                  QR Huérfanos
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Aquí aparecerán los códigos QR sin ticket asociado
+                </p>
+              </CardContent>
+            </Card>
+          );
+        }
+
         // Filtrar tickets según el tipo seleccionado
         const filteredTickets = selectedTicketType === "all"
           ? tickets
@@ -303,37 +328,56 @@ export function EventTicketsContent({
                       </div>
                     )}
 
-                    {/* Precio con tabs */}
+                    {/* Precio con switch */}
                     <div className="mb-4 p-4 rounded-lg bg-white/[0.03] border border-white/5">
-                      {/* Tabs */}
-                      <div className="flex gap-2 mb-3">
-                        <button
-                          onClick={() => setSelectedPriceTab({ ...selectedPriceTab, [ticket.id]: 'app' })}
-                          className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      {/* Switch con etiquetas */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="text-xs text-white/40 mb-1">
+                            {(selectedPriceTab[ticket.id] || 'app') === 'app' ? 'Precio App/Web' : 'Precio Efectivo'}
+                          </p>
+                          <p className="text-xl font-bold">
+                            {(selectedPriceTab[ticket.id] || 'app') === 'app'
+                              ? formatCurrency(totalPrice)
+                              : formatCurrency(ticket.price)
+                            }
+                          </p>
+                        </div>
+                        {/* Switch con labels */}
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-medium transition-colors ${
                             (selectedPriceTab[ticket.id] || 'app') === 'app'
-                              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                              : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/5'
-                          }`}
-                        >
-                          App/Web
-                        </button>
-                        <button
-                          onClick={() => setSelectedPriceTab({ ...selectedPriceTab, [ticket.id]: 'cash' })}
-                          className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              ? 'text-white/80'
+                              : 'text-white/30'
+                          }`}>
+                            App
+                          </span>
+                          <button
+                            onClick={() => setSelectedPriceTab({
+                              ...selectedPriceTab,
+                              [ticket.id]: selectedPriceTab[ticket.id] === 'cash' ? 'app' : 'cash'
+                            })}
+                            className="relative inline-flex h-5 w-9 items-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                          >
+                            <span
+                              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                selectedPriceTab[ticket.id] === 'cash' ? 'translate-x-[1.4rem]' : 'translate-x-0.5'
+                              }`}
+                            />
+                          </button>
+                          <span className={`text-[10px] font-medium transition-colors ${
                             selectedPriceTab[ticket.id] === 'cash'
-                              ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                              : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/5'
-                          }`}
-                        >
-                          Efectivo
-                        </button>
+                              ? 'text-white/80'
+                              : 'text-white/30'
+                          }`}>
+                            Cash
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Precio según tab seleccionado */}
+                      {/* Desglose solo para App/Web */}
                       {(selectedPriceTab[ticket.id] || 'app') === 'app' ? (
                         <div>
-                          <p className="text-xs text-white/40 mb-1">Precio App/Web</p>
-                          <p className="text-xl font-bold mb-3">{formatCurrency(totalPrice)}</p>
                           <details className="group/details">
                             <summary className="text-xs text-white/40 cursor-pointer hover:text-white/60 list-none flex items-center gap-1 pt-3 border-t border-white/5">
                               <span>Ver desglose</span>
@@ -359,9 +403,7 @@ export function EventTicketsContent({
                         </div>
                       ) : (
                         <div>
-                          <p className="text-xs text-white/40 mb-1">Precio Efectivo</p>
-                          <p className="text-xl font-bold mb-1">{formatCurrency(ticket.price)}</p>
-                          <p className="text-xs text-white/30">Sin fee adicional</p>
+                          <p className="text-xs text-white/30 pt-3 border-t border-white/5">Sin fee adicional</p>
                         </div>
                       )}
                     </div>

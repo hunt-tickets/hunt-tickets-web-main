@@ -2,27 +2,25 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { createTicket } from "@/lib/supabase/actions/tickets";
 import { useRouter } from "next/navigation";
 
-interface CreateTicketDialogProps {
-  eventId: string;
+interface TicketType {
+  id: string;
+  name: string;
 }
 
-export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
+interface CreateTicketDialogProps {
+  eventId: string;
+  ticketTypes: TicketType[];
+}
+
+export function CreateTicketDialog({ eventId, ticketTypes }: CreateTicketDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +42,7 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
     hex: "",
     family: "",
     reference: "",
+    ticket_type_id: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,6 +72,7 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
         hex: formData.hex || undefined,
         family: formData.family || undefined,
         reference: formData.reference || undefined,
+        ticket_type_id: formData.ticket_type_id || undefined,
       });
 
       if (result.success) {
@@ -92,6 +92,7 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
           hex: "",
           family: "",
           reference: "",
+          ticket_type_id: "",
         });
         router.refresh();
       } else {
@@ -105,25 +106,52 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Crear Entrada
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto rounded-2xl bg-background/95 backdrop-blur-xl border-white/10 shadow-2xl">
-        <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl font-bold">Crear Nueva Entrada</DialogTitle>
-          <DialogDescription className="text-base text-muted-foreground">
-            Completa la información para crear un nuevo tipo de entrada.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      {/* Trigger Button */}
+      <Button
+        size="sm"
+        onClick={() => setOpen(true)}
+        className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300"
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        Crear Entrada
+      </Button>
 
-        <form onSubmit={handleSubmit} className="space-y-6 py-6">
+      {/* Sidebar Modal */}
+      {open && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            onClick={() => {
+              setOpen(false);
+              setError(null);
+            }}
+          />
+
+          {/* Sidebar Panel */}
+          <div className="fixed top-0 right-0 h-full w-full sm:w-[700px] bg-[#1a1a1a] border-l border-white/10 z-50 overflow-y-auto">
+            {/* Sticky Header */}
+            <div className="sticky top-0 bg-[#1a1a1a] border-b border-white/10 p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Crear Nueva Entrada</h2>
+                <p className="text-sm text-white/60 mt-1">
+                  Completa la información para crear un nuevo tipo de entrada.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  setError(null);
+                }}
+                className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Form Content */}
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Información Básica */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Información Básica</h3>
@@ -140,6 +168,28 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
                 className="h-12 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ticket_type_id" className="text-sm font-medium">
+                Tipo de Entrada
+              </Label>
+              <select
+                id="ticket_type_id"
+                value={formData.ticket_type_id}
+                onChange={(e) => setFormData({ ...formData, ticket_type_id: e.target.value })}
+                className="w-full h-12 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="">Sin categoría</option>
+                {ticketTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-white/40">
+                Categoriza tus entradas (VIP, General, Palco, etc.)
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -346,36 +396,38 @@ export function CreateTicketDialog({ eventId }: CreateTicketDialogProps) {
             </div>
           )}
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setOpen(false);
-                setError(null);
-              }}
-              disabled={isLoading}
-              className="rounded-full px-6 border-white/10 hover:bg-white/5 transition-all duration-300"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-full px-6 bg-primary hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Creando...
-                </span>
-              ) : (
-                "Crear Entrada"
-              )}
-            </Button>
+              <div className="flex justify-end gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setOpen(false);
+                    setError(null);
+                  }}
+                  disabled={isLoading}
+                  className="rounded-full px-6 border-white/10 hover:bg-white/5 transition-all duration-300"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="rounded-full px-6 bg-primary hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Creando...
+                    </span>
+                  ) : (
+                    "Crear Entrada"
+                  )}
+                </Button>
+              </div>
+            </form>
           </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </>
+      )}
+    </>
   );
 }

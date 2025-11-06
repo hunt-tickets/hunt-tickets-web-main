@@ -28,13 +28,22 @@ interface Transaction {
   } | null;
 }
 
+interface Ticket {
+  id: string;
+  quantity: number;
+  analytics: {
+    total: { quantity: number; total: number };
+  };
+}
+
 interface EventDashboardProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   financialReport: any;
   transactions: Transaction[];
+  tickets: Ticket[];
 }
 
-export function EventDashboard({ financialReport, transactions }: EventDashboardProps) {
+export function EventDashboard({ financialReport, transactions, tickets }: EventDashboardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
@@ -43,21 +52,43 @@ export function EventDashboard({ financialReport, transactions }: EventDashboard
     }).format(amount);
   };
 
+  // Calculate total tickets available and sold
+  const totalTicketsAvailable = tickets.reduce((sum, ticket) => sum + ticket.quantity, 0);
+  const totalTicketsSold = tickets.reduce((sum, ticket) => sum + ticket.analytics.total.quantity, 0);
+  const ticketsSoldPercentage = totalTicketsAvailable > 0
+    ? (totalTicketsSold / totalTicketsAvailable) * 100
+    : 0;
+
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       {/* Key Metrics */}
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
         <Card className="bg-white/[0.02] border-white/5">
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <CreditCard className="h-3.5 w-3.5 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Ventas Totales</span>
+              <span className="text-xs text-white/40 uppercase tracking-wider">Recaudo Total</span>
             </div>
             <div className="text-2xl font-bold mb-1">
-              {formatCurrency(financialReport.total_general)}
+              {formatCurrency(financialReport.channels_total)}
             </div>
             <p className="text-xs text-white/30">
-              {financialReport.tickets_sold.total} tickets
+              Promedio: {formatCurrency(financialReport.channels_total / (financialReport.tickets_sold.total || 1))}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/[0.02] border-white/5">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Ticket className="h-3.5 w-3.5 text-white/40" />
+              <span className="text-xs text-white/40 uppercase tracking-wider">Total Tickets</span>
+            </div>
+            <div className="text-2xl font-bold mb-1">
+              {totalTicketsSold} / {totalTicketsAvailable}
+            </div>
+            <p className="text-xs text-white/30">
+              {ticketsSoldPercentage.toFixed(1)}% vendidos
             </p>
           </CardContent>
         </Card>
@@ -66,88 +97,17 @@ export function EventDashboard({ financialReport, transactions }: EventDashboard
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Users className="h-3.5 w-3.5 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Liquidación</span>
+              <span className="text-xs text-white/40 uppercase tracking-wider">Monto a Liquidar</span>
             </div>
             <div className="text-2xl font-bold mb-1">
               {formatCurrency(financialReport.settlement_amount)}
             </div>
             <p className="text-xs text-white/30">
-              Monto a liquidar
+              Para el productor
             </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/[0.02] border-white/5">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <LayoutDashboard className="h-3.5 w-3.5 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Ganancia Hunt</span>
-            </div>
-            <div className="text-2xl font-bold mb-1">
-              {formatCurrency(
-                financialReport.global_calculations.ganancia_neta_hunt - financialReport.total_tax
-              )}
-            </div>
-            <p className="text-xs text-white/30">
-              Ganancia neta
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/[0.02] border-white/5">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <AlertCircle className="h-3.5 w-3.5 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Validación</span>
-            </div>
-            {financialReport.validation.revenue_discrepancy === 0 ? (
-              <>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500" />
-                  <span className="text-sm font-medium">Validado</span>
-                </div>
-                <p className="text-xs text-white/30">Datos correctos</p>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                  <span className="text-sm font-medium">Revisar</span>
-                </div>
-                <p className="text-xs text-white/30">Discrepancia detectada</p>
-              </>
-            )}
           </CardContent>
         </Card>
       </div>
-
-      {/* Total Summary */}
-      <Card className="bg-white/[0.02] border-white/5">
-        <CardContent className="p-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Ticket className="h-4 w-4 text-white/40" />
-                <span className="text-xs text-white/40 uppercase tracking-wider">Total Tickets</span>
-              </div>
-              <p className="text-4xl font-bold">{financialReport.tickets_sold.total}</p>
-              <p className="text-xs text-white/30 mt-1">
-                {((financialReport.tickets_sold.total / (financialReport.tickets_sold.total + 100)) * 100).toFixed(0)}% vendidos
-              </p>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <CreditCard className="h-4 w-4 text-white/40" />
-                <span className="text-xs text-white/40 uppercase tracking-wider">Recaudo Total</span>
-              </div>
-              <p className="text-4xl font-bold">{formatCurrency(financialReport.channels_total)}</p>
-              <p className="text-xs text-white/30 mt-1">
-                Promedio: {formatCurrency(financialReport.channels_total / (financialReport.tickets_sold.total || 1))}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Daily Sales Chart */}
       <DailySalesChart transactions={transactions} />
