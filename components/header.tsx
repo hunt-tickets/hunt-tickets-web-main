@@ -4,18 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "./ui/theme-toggle";
 import { LanguageToggle } from "./ui/language-toggle";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { AuthButton } from "./auth-button";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +20,19 @@ export function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    // Prevent scrolling when mobile menu is open
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
   return (
     <header className={`fixed top-0 z-50 w-full transition-all duration-300 ${
       isScrolled
@@ -78,34 +86,66 @@ export function Header() {
           <LanguageToggle />
           <ThemeToggle />
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Abrir menú</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem asChild>
-                <Link href="/eventos" className="relative flex w-full cursor-pointer select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
-                  Eventos
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/productor" className="relative flex w-full cursor-pointer select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
-                  Productor
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/sobre-nosotros" className="relative flex w-full cursor-pointer select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground">
-                  Sobre Nosotros
-                </Link>
-              </DropdownMenuItem>
-              <div className="px-2 py-2 flex flex-col items-center gap-3">
-                <AuthButton />
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+            <span className="sr-only">Abrir menú</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Menu - Full Screen with Glass Effect */}
+      <div
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${
+          isMobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
+        }`}
+        style={{ top: '64px' }}
+      >
+        {/* Glass Background */}
+        <div className="absolute inset-0 bg-background/95 backdrop-blur-2xl" />
+
+        {/* Menu Content */}
+        <div className="relative h-full flex flex-col items-center justify-center px-8">
+          <nav className="flex flex-col items-center gap-8 w-full max-w-sm">
+            <Link
+              href="/eventos"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-110 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
+              style={{ fontFamily: 'LOT, sans-serif' }}
+            >
+              Eventos
+            </Link>
+            <Link
+              href="/productor"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-110 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
+              style={{ fontFamily: 'LOT, sans-serif' }}
+            >
+              Productor
+            </Link>
+            <Link
+              href="/sobre-nosotros"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-110 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
+              style={{ fontFamily: 'LOT, sans-serif' }}
+            >
+              Sobre Nosotros
+            </Link>
+
+            <div className="mt-8 w-full flex justify-center">
+              <AuthButton />
+            </div>
+          </nav>
         </div>
       </div>
     </header>
