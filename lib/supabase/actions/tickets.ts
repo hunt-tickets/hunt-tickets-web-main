@@ -993,7 +993,7 @@ export async function getEventQRCodes(eventId: string) {
   // Helper function to fetch QR codes directly with transaction data in batches
   async function fetchAllQRCodes(tableName: string, source: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let allData: any[] = [];
+    const allData: any[] = [];
     let from = 0;
     const batchSize = 1000;
 
@@ -1045,7 +1045,7 @@ export async function getEventQRCodes(eventId: string) {
 
   // Fetch all QR codes for these transactions in batches
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let allQRCodes: any[] = [];
+  const allQRCodes: any[] = [];
   let from = 0;
   const batchSize = 1000;
 

@@ -51,10 +51,11 @@ export function SendCourtesyDialog({ eventId }: SendCourtesyDialogProps) {
       // Reset form and close dialog
       setFormData({ name: "", email: "" });
       setOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending courtesy:", error);
+      const message = error instanceof Error ? error.message : "Ocurrió un error inesperado";
       toast.error("Error al enviar cortesía", {
-        description: error.message || "Ocurrió un error inesperado",
+        description: message,
       });
     } finally {
       setIsLoading(false);
