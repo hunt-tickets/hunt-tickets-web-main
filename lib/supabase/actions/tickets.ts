@@ -344,42 +344,85 @@ export async function getCompleteEventTransactions(eventId: string) {
     fetchCompleteTransactions('transactions_cash', 'cash'),
   ]);
 
-  // Filter by event tickets
+  // Filter by event tickets FIRST
+  const filteredAppTxs = appTxs.filter(t => ticketIds.includes(t.ticket_id));
+  const filteredWebTxs = webTxs.filter(t => ticketIds.includes(t.ticket_id));
+  const filteredCashTxs = cashTxs.filter(t => ticketIds.includes(t.ticket_id));
+
   const allTxs = [
-    ...appTxs.filter(t => ticketIds.includes(t.ticket_id)),
-    ...webTxs.filter(t => ticketIds.includes(t.ticket_id)),
-    ...cashTxs.filter(t => ticketIds.includes(t.ticket_id)),
+    ...filteredAppTxs,
+    ...filteredWebTxs,
+    ...filteredCashTxs,
   ];
 
-  // Get Bold data if admin
+  // Get Bold data for all users (basic info for everyone, detailed info for admins)
+  // Collect references ONLY from filtered transactions (transactions of this event)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const boldDataMap: Record<string, any> = {};
-  if (isAdmin) {
-    const boldReferences = new Set<string>();
-    appTxs.forEach(tx => {
-      if (tx.tracker) boldReferences.add(tx.tracker);
-    });
-    webTxs.forEach(tx => {
-      if (tx.order) boldReferences.add(tx.order);
-    });
+  const boldReferences = new Set<string>();
+  filteredAppTxs.forEach(tx => {
+    if (tx.tracker) boldReferences.add(tx.tracker);
+  });
+  filteredWebTxs.forEach(tx => {
+    if (tx.order) boldReferences.add(tx.order);
+  });
 
-    if (boldReferences.size > 0) {
-      const { data: boldData } = await supabase
+  console.log(`🔍 [getCompleteEventTransactions] Total references collected: ${boldReferences.size}`);
+  console.log(`🔍 [getCompleteEventTransactions] Sample references:`, Array.from(boldReferences).slice(0, 3));
+
+  if (boldReferences.size > 0) {
+    // Split references into chunks to avoid PostgreSQL IN limit (~1000 items)
+    const referencesArray = Array.from(boldReferences);
+    const CHUNK_SIZE = 100;
+    const chunks = [];
+
+    for (let i = 0; i < referencesArray.length; i += CHUNK_SIZE) {
+      chunks.push(referencesArray.slice(i, i + CHUNK_SIZE));
+    }
+
+    console.log(`🔍 [getCompleteEventTransactions] Fetching Bold data in ${chunks.length} chunks`);
+
+    // Fetch Bold data in chunks
+    for (let i = 0; i < chunks.length; i++) {
+      const { data: boldDataChunk, error: boldError } = await supabase
         .from('bold_transactions')
         .select('*')
-        .in('referencia', Array.from(boldReferences));
+        .in('referencia', chunks[i]);
 
-      boldData?.forEach(bold => {
-        boldDataMap[bold.referencia] = bold;
-      });
+      if (boldError) {
+        console.error(`❌ [getCompleteEventTransactions] Bold fetch error (chunk ${i + 1}):`, boldError);
+      } else {
+        boldDataChunk?.forEach(bold => {
+          boldDataMap[bold.referencia] = bold;
+        });
+        console.log(`✅ [getCompleteEventTransactions] Chunk ${i + 1}/${chunks.length}: Fetched ${boldDataChunk?.length || 0} Bold records`);
+      }
     }
+
+    console.log(`🔍 [getCompleteEventTransactions] Bold data mapped: ${Object.keys(boldDataMap).length} records`);
+    console.log(`🔍 [getCompleteEventTransactions] Sample bold data:`, Object.keys(boldDataMap).slice(0, 2).map(key => ({
+      ref: key,
+      id: boldDataMap[key].id,
+      estado: boldDataMap[key].estado_actual
+    })));
   }
 
   // Format transactions
-  const formattedTransactions = allTxs.map((tx) => {
+  const formattedTransactions = allTxs.map((tx, index) => {
     const ticketName = ticketMap[tx.ticket_id] || '';
     const reference = tx.source === 'app' ? tx.tracker : tx.source === 'web' ? tx.order : null;
-    const bold = isAdmin && reference ? boldDataMap[reference] : null;
+    const bold = reference ? boldDataMap[reference] : null;
+
+    // Log first transaction for debugging
+    if (index === 0) {
+      console.log(`🔍 [getCompleteEventTransactions] First transaction:`, {
+        id: tx.id,
+        source: tx.source,
+        reference: reference,
+        hasBold: !!bold,
+        boldId: bold?.id
+      });
+    }
 
     const formatName = (name: string | null, lastName: string | null) => {
       if (!name && !lastName) return '';
@@ -388,7 +431,7 @@ export async function getCompleteEventTransactions(eventId: string) {
       return words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
     };
 
-    return {
+    const baseData = {
       id: tx.id,
       created_at: tx.created_at,
       user_fullname: tx.user ? formatName(tx.user.name, tx.user.lastName) : '',
@@ -405,11 +448,17 @@ export async function getCompleteEventTransactions(eventId: string) {
       order_id: tx.order_id,
       promoter_fullname: tx.promoter ? formatName(tx.promoter.name, tx.promoter.lastName) : '',
       promoter_email: tx.promoter?.email || '',
-      ...(isAdmin && bold ? {
-        bold_id: bold.id,
-        bold_fecha: bold.fecha,
-        bold_estado: bold.estado_actual,
-        bold_metodo_pago: bold.metodo_de_pago,
+      // Basic Bold data for all users
+      bold_id: bold?.id || null,
+      bold_fecha: bold?.fecha || null,
+      bold_estado: bold?.estado_actual || null,
+      bold_metodo_pago: bold?.metodo_de_pago || null,
+    };
+
+    // Add detailed Bold data only for admins
+    if (isAdmin && bold) {
+      return {
+        ...baseData,
         bold_valor_compra: bold.valor_de_la_compra,
         bold_propina: bold.propina,
         bold_iva: bold.iva,
@@ -425,13 +474,10 @@ export async function getCompleteEventTransactions(eventId: string) {
         bold_banco: bold.banco,
         bold_franquicia: bold.franquicia,
         bold_pais_tarjeta: bold.pais_tarjeta,
-      } : {
-        bold_id: null,
-        bold_fecha: null,
-        bold_estado: null,
-        bold_metodo_pago: null,
-      }),
-    };
+      };
+    }
+
+    return baseData;
   });
 
   return formattedTransactions.sort((a, b) =>

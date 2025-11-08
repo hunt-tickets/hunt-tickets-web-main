@@ -117,17 +117,17 @@ export const Component: React.FC = () => {
       <AnimatedShaderBackground />
 
       <div className="relative z-10 text-center w-full max-w-4xl mx-auto flex flex-col items-center justify-center h-full pb-8 px-6 sm:px-8 md:px-12">
-        <h1 className="w-full text-foreground leading-tight tracking-tight mb-6 sm:mb-8 animate-fadeIn px-4">
-          <span className="font-black text-[clamp(1.5rem,6vw,3.75rem)] whitespace-nowrap" style={{ fontFamily: 'LOT, sans-serif' }}>
-            HUNT YOUR <span className="text-primary">{displayedText}<span className="animate-pulse">|</span></span>
+        <h1 className="w-full text-foreground leading-tight tracking-tight mb-6 sm:mb-8 animate-fadeIn px-4 flex justify-center">
+          <span className="font-black text-[clamp(1.5rem,6vw,3.75rem)] whitespace-nowrap inline-flex items-center gap-2 sm:gap-3" style={{ fontFamily: 'LOT, sans-serif' }}>
+            HUNT YOUR <span className="text-primary inline-flex items-center min-w-[1ch]">{displayedText}<span className="animate-pulse">|</span></span>
           </span>
         </h1>
 
         <div className="mb-6 sm:mb-10 px-4">
-          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#404040] leading-relaxed animate-fadeIn animation-delay-200">
+          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#B0B0B0] leading-relaxed animate-fadeIn animation-delay-200">
             Descubre, compara y compra los tickets que van con tu estilo.
           </p>
-          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#404040] leading-relaxed animate-fadeIn animation-delay-300">
+          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#B0B0B0] leading-relaxed animate-fadeIn animation-delay-300">
             En Hunt tú mandas.
           </p>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
@@ -21,7 +21,8 @@ const HoverButton: React.FC<ButtonProps> = ({
   glowColor = '#00ffc3',
   backgroundColor = '#111827', // gray-900 equivalent
   textColor = '#ffffff',
-  hoverTextColor = '#67e8f9' // cyan-300 equivalent
+  hoverTextColor = '#67e8f9', // cyan-300 equivalent
+  ...rest
 }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 });
@@ -67,6 +68,7 @@ const HoverButton: React.FC<ButtonProps> = ({
         ${className}
       `}
       style={buttonStyle}
+      {...rest}
     >
       {/* Glow effect div */}
       <div

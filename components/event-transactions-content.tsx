@@ -38,10 +38,12 @@ interface CompleteTransaction {
   order_id: string;
   promoter_fullname: string;
   promoter_email: string;
-  bold_id?: string | null;
-  bold_fecha?: string | null;
-  bold_estado?: string | null;
-  bold_metodo_pago?: string | null;
+  // Basic Bold data - always present for all users
+  bold_id: string | null;
+  bold_fecha: string | null;
+  bold_estado: string | null;
+  bold_metodo_pago: string | null;
+  // Detailed Bold financial data - only present for admins
   bold_valor_compra?: number | null;
   bold_propina?: number | null;
   bold_iva?: number | null;
@@ -168,8 +170,9 @@ export function EventTransactionsContent({
         t.bold_banco || 'N/A',
         t.bold_franquicia || 'N/A',
         t.bold_pais_tarjeta || 'N/A',
-        (t.bold_valor_total && typeof t.total === 'number' && typeof t.bold_valor_total === 'number')
-          ? (t.total - t.bold_valor_total).toFixed(2)
+        // Calculate difference between Hunt total and Bold total (similar to edge function)
+        (t.bold_valor_total !== undefined && t.bold_valor_total !== null && t.total !== undefined && t.total !== null)
+          ? (parseFloat(String(t.total)) - parseFloat(String(t.bold_valor_total))).toFixed(2)
           : 'N/A',
       ] : [];
 

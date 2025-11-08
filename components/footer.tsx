@@ -79,7 +79,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/resources/privacy"
+                  href="/resources/terms-and-conditions"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Política de privacidad
@@ -87,12 +87,32 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="https://wa.me/573228597640"
+                  href="https://forms.hunt-tickets.com/refunds"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Reembolsos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="https://forms.hunt-tickets.com/feedbacks"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Danos retroalimentación
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="https://forms.hunt-tickets.com/bugs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Reportar un bug
                 </Link>
               </li>
             </ul>
