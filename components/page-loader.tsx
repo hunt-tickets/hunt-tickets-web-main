@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
+import { GLSLHills } from "@/components/ui/glsl-hills"
 
 export function PageLoader() {
   const [isLoading, setIsLoading] = useState(true)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
+  const [displayedText, setDisplayedText] = useState("")
+  const [currentWordIndex, setCurrentWordIndex] = useState(0)
+  const [isTyping, setIsTyping] = useState(true)
+  const words = ["YOUR", "TU", "THE", "LA"]
 
   useEffect(() => {
     // Check if this is the first visit or if we should show the loader
@@ -26,83 +31,97 @@ export function PageLoader() {
       // Remove loader after animation completes
       setTimeout(() => {
         setIsLoading(false)
-      }, 800)
-    }, 2000) // Show for at least 2 seconds
+      }, 1000)
+    }, 2500) // Show for at least 2.5 seconds
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Typewriter effect
+  useEffect(() => {
+    if (isAnimatingOut) return
+
+    const currentWord = words[currentWordIndex]
+
+    if (isTyping) {
+      if (displayedText.length < currentWord.length) {
+        const timer = setTimeout(() => {
+          setDisplayedText(currentWord.slice(0, displayedText.length + 1))
+        }, 100)
+        return () => clearTimeout(timer)
+      } else {
+        const timer = setTimeout(() => {
+          setIsTyping(false)
+        }, 800)
+        return () => clearTimeout(timer)
+      }
+    } else {
+      if (displayedText.length > 0) {
+        const timer = setTimeout(() => {
+          setDisplayedText(displayedText.slice(0, -1))
+        }, 50)
+        return () => clearTimeout(timer)
+      } else {
+        setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length)
+        setIsTyping(true)
+      }
+    }
+  }, [displayedText, isTyping, currentWordIndex, isAnimatingOut, words])
 
   if (!isLoading) return null
 
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[9999] flex items-center justify-center bg-background transition-all duration-800",
-        isAnimatingOut && "opacity-0 scale-110"
+        "fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-1000",
+        isAnimatingOut && "opacity-0"
       )}
     >
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse animation-delay-1000" />
+      {/* Shader Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden bg-background">
+        <GLSLHills speed={0.3} />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
       </div>
 
       {/* Loader Content */}
-      <div className="relative flex flex-col items-center gap-8">
-        {/* Logo with Animation */}
-        <div className="relative">
-          <h1
-            className={cn(
-              "text-6xl sm:text-8xl font-bold tracking-tight transition-all duration-1000",
-              isAnimatingOut ? "scale-150 opacity-0" : "scale-100 opacity-100"
-            )}
-            style={{ fontFamily: 'LOT, sans-serif' }}
-          >
-            HUNT
-          </h1>
+      <div className="relative z-10 flex flex-col items-center justify-center px-6">
+        <h1
+          className={cn(
+            "text-[clamp(3rem,12vw,8rem)] font-black tracking-tight transition-all duration-1000 mb-4",
+            isAnimatingOut ? "scale-110 opacity-0 blur-md" : "scale-100 opacity-100 blur-0"
+          )}
+          style={{ fontFamily: "LOT, sans-serif" }}
+        >
+          <span className="text-foreground">
+            HUNT{" "}
+            <span className="inline-flex items-baseline min-w-[2ch]">
+              <span className="text-primary">{displayedText}</span>
+              <span className="text-primary animate-pulse">|</span>
+            </span>
+          </span>
+        </h1>
 
-          {/* Animated underline */}
-          <div className="absolute -bottom-4 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent">
-            <div className="h-full w-full bg-gradient-to-r from-primary to-primary/50 animate-shimmer" />
-          </div>
+        {/* Loading indicator */}
+        <div
+          className={cn(
+            "flex items-center gap-1.5 transition-all duration-500",
+            isAnimatingOut && "opacity-0 translate-y-4"
+          )}
+        >
+          <div
+            className="h-1.5 w-1.5 rounded-full bg-foreground/60 animate-pulse"
+            style={{ animationDelay: "0ms" }}
+          />
+          <div
+            className="h-1.5 w-1.5 rounded-full bg-foreground/60 animate-pulse"
+            style={{ animationDelay: "200ms" }}
+          />
+          <div
+            className="h-1.5 w-1.5 rounded-full bg-foreground/60 animate-pulse"
+            style={{ animationDelay: "400ms" }}
+          />
         </div>
-
-        {/* Loading Dots */}
-        <div className={cn(
-          "flex gap-2 transition-all duration-500",
-          isAnimatingOut && "opacity-0 translate-y-4"
-        )}>
-          <div className="w-3 h-3 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-          <div className="w-3 h-3 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
-          <div className="w-3 h-3 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
-        </div>
-
-        {/* Loading Text */}
-        <p className={cn(
-          "text-sm text-muted-foreground animate-pulse transition-all duration-500",
-          isAnimatingOut && "opacity-0"
-        )}>
-          Preparando tu experiencia...
-        </p>
       </div>
-
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-        .animate-shimmer {
-          animation: shimmer 2s infinite;
-        }
-        .animation-delay-1000 {
-          animation-delay: 1000ms;
-        }
-      `}</style>
     </div>
   )
 }
