@@ -1,69 +1,122 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Languages } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useEffect, useState } from "react"
+import { useTheme } from "next-themes"
+import { cn } from "@/lib/utils"
 
-type Language = "es" | "en";
+type Language = "es" | "en"
 
-export function LanguageToggle() {
-  const [language, setLanguage] = useState<Language>("es");
+interface LanguageToggleProps {
+  className?: string
+}
+
+export function LanguageToggle({ className }: LanguageToggleProps) {
+  const [mounted, setMounted] = useState(false)
+  const [language, setLanguage] = useState<Language>("es")
+  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
+    setMounted(true)
     // Load saved language from localStorage
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const savedLanguage = localStorage.getItem("language") as Language
     if (savedLanguage) {
-      setLanguage(savedLanguage);
+      setLanguage(savedLanguage)
     }
-  }, []);
+  }, [])
 
-  const handleLanguageChange = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem("language", lang);
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          "flex w-20 h-10 p-1 rounded-full",
+          "bg-zinc-950 border border-zinc-800",
+          className
+        )}
+      />
+    )
+  }
+
+  const isDark = resolvedTheme === "dark"
+  const isSpanish = language === "es"
+
+  const handleLanguageChange = () => {
+    const newLang: Language = isSpanish ? "en" : "es"
+    setLanguage(newLang)
+    localStorage.setItem("language", newLang)
     // Here you can add logic to change the language throughout the app
     // For example, trigger a context update or use i18n library
-  };
+  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 transition-all duration-200 hover:bg-muted dark:hover:bg-accent/50"
-        >
-          <Languages className="h-4 w-4" />
-          <span className="sr-only">Cambiar idioma</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-32">
-        <DropdownMenuItem
-          onClick={() => handleLanguageChange("es")}
-          className={`cursor-pointer ${
-            language === "es" ? "bg-muted dark:bg-accent/50 font-medium" : ""
-          }`}
-        >
-          <span className="flex items-center gap-2">
-            🇪🇸 ESP
+    <div
+      className={cn(
+        "relative flex w-20 h-10 p-1 rounded-full cursor-pointer transition-all duration-300",
+        isDark
+          ? "bg-zinc-900 border border-zinc-700"
+          : "bg-zinc-100 border border-zinc-300",
+        className
+      )}
+      onClick={handleLanguageChange}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          handleLanguageChange()
+        }
+      }}
+      aria-label={`Switch to ${isSpanish ? "English" : "Spanish"}`}
+    >
+      {/* Background text - always visible */}
+      <div className="absolute inset-0 flex items-center justify-between px-2">
+        <div className="flex justify-center items-center w-8 h-8">
+          <span
+            className={cn(
+              "text-xs font-medium transition-colors duration-300",
+              isSpanish
+                ? isDark ? "text-white" : "text-zinc-900"
+                : isDark ? "text-zinc-600" : "text-zinc-400"
+            )}
+          >
+            ES
           </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleLanguageChange("en")}
-          className={`cursor-pointer ${
-            language === "en" ? "bg-muted dark:bg-accent/50 font-medium" : ""
-          }`}
-        >
-          <span className="flex items-center gap-2">
-            🇺🇸 EN
+        </div>
+        <div className="flex justify-center items-center w-8 h-8">
+          <span
+            className={cn(
+              "text-xs font-medium transition-colors duration-300",
+              !isSpanish
+                ? isDark ? "text-white" : "text-zinc-900"
+                : isDark ? "text-zinc-600" : "text-zinc-400"
+            )}
+          >
+            EN
           </span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+        </div>
+      </div>
+
+      {/* Sliding circle with active text */}
+      <div
+        className={cn(
+          "absolute flex justify-center items-center w-8 h-8 rounded-full transition-all duration-300 ease-in-out",
+          isSpanish
+            ? "left-1"
+            : "left-[calc(100%-2.25rem)]",
+          isDark
+            ? "bg-zinc-700"
+            : "bg-white shadow-sm"
+        )}
+      >
+        <span
+          className={cn(
+            "text-xs font-semibold",
+            isDark ? "text-white" : "text-zinc-900"
+          )}
+        >
+          {isSpanish ? "ES" : "EN"}
+        </span>
+      </div>
+    </div>
+  )
 }
