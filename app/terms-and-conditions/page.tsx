@@ -150,7 +150,7 @@ export default function TermsAndConditionsPage() {
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="p-5 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
                 <p className="text-sm text-muted-foreground mb-1">Razón social</p>
-                <p className="font-semibold text-foreground">Hunt Tickets S.A.S. ("HUNT")</p>
+                <p className="font-semibold text-foreground">Hunt Tickets S.A.S. (&ldquo;HUNT&rdquo;)</p>
               </div>
               <div className="p-5 rounded-xl bg-card" style={{ border: '1px solid #303030' }}>
                 <p className="text-sm text-muted-foreground mb-1">NIT</p>
@@ -175,7 +175,7 @@ export default function TermsAndConditionsPage() {
           <section id="section-1" className="mb-16 scroll-mt-24">
             <h2 className="text-2xl font-bold mb-6">1. ACEPTACIÓN Y ALCANCE</h2>
             <p>
-              Al registrarse, acceder o utilizar los servicios de HUNT (la "Plataforma"), el Usuario declara que ha leído, comprende y acepta íntegramente estos Términos y Condiciones ("T&C"). Si no está de acuerdo, deberá abstenerse de usar la Plataforma.
+              Al registrarse, acceder o utilizar los servicios de HUNT (la &ldquo;Plataforma&rdquo;), el Usuario declara que ha leído, comprende y acepta íntegramente estos Términos y Condiciones (&ldquo;T&C&rdquo;). Si no está de acuerdo, deberá abstenerse de usar la Plataforma.
             </p>
             <p>
               Estos T&C regulan el uso de: (i) la aplicación móvil, (ii) el sitio web, (iii) los módulos de venta, control de acceso y transferencia de entradas, y (iv) los demás canales habilitados por HUNT (incluido WhatsApp, cuando aplique).
@@ -187,7 +187,7 @@ export default function TermsAndConditionsPage() {
             <h2 className="text-2xl font-bold mb-6">2. DEFINICIONES BÁSICAS</h2>
             <ul className="space-y-3 not-prose">
               <li className="p-4 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
-                <strong className="text-foreground">Usuario Comprador ("Comprador"):</strong>{" "}
+                <strong className="text-foreground">Usuario Comprador (&ldquo;Comprador&rdquo;):</strong>{" "}
                 <span className="text-muted-foreground">Persona que adquiere entradas a través de HUNT.</span>
               </li>
               <li className="p-4 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
@@ -195,7 +195,7 @@ export default function TermsAndConditionsPage() {
                 <span className="text-muted-foreground">Persona que utiliza la entrada para ingresar al evento.</span>
               </li>
               <li className="p-4 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
-                <strong className="text-foreground">Productor/Organizador ("Productor"):</strong>{" "}
+                <strong className="text-foreground">Productor/Organizador (&ldquo;Productor&rdquo;):</strong>{" "}
                 <span className="text-muted-foreground">Persona natural o jurídica responsable de la realización del evento (logística, contenido, permisos, seguridad, etc.).</span>
               </li>
               <li className="p-4 rounded-xl bg-muted/30" style={{ border: '1px solid #303030' }}>
@@ -304,7 +304,7 @@ export default function TermsAndConditionsPage() {
           <section id="section-11" className="mb-16 scroll-mt-24">
             <h2 className="text-2xl font-bold mb-6">11. DERECHO DE RETRACTO (VENTAS NO PRESENCIALES)</h2>
             <p>
-              El Usuario podrá ejercer el derecho de retracto en los términos y condiciones que contempla la Ley 1480 de 2011 "Estatuto del consumidor" en su artículo 47 para ventas no presenciales, cuando sea aplicable al tipo de servicio adquirido. El procedimiento, plazos y excepciones se informarán en los canales de HUNT para cada caso.
+              El Usuario podrá ejercer el derecho de retracto en los términos y condiciones que contempla la Ley 1480 de 2011 &ldquo;Estatuto del consumidor&rdquo; en su artículo 47 para ventas no presenciales, cuando sea aplicable al tipo de servicio adquirido. El procedimiento, plazos y excepciones se informarán en los canales de HUNT para cada caso.
             </p>
           </section>
 

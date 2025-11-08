@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CreditCard,
   AlertCircle,
-  LayoutDashboard,
   Ticket,
   Users,
 } from "lucide-react";

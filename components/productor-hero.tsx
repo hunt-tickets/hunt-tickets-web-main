@@ -2,7 +2,6 @@
 
 import { WaveBackground } from "@/components/ui/wave-background";
 import { HoverButton } from "@/components/ui/hover-glow-button";
-import { Badge } from "@/components/ui/badge";
 import { Users, BarChart3, Shield, Zap } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -32,16 +31,19 @@ const features = [
 
 const ProductorHero = () => {
   useEffect(() => {
-    (function (C, A, L) {
-      let p = function (a: any, ar: any) {
+    /* eslint-disable */
+    // @ts-nocheck
+    // Cal.com embed script
+    (function (C: any, A: any, L: any) {
+      const p = function (a: any, ar: any) {
         a.q.push(ar);
       };
-      let d = C.document;
+      const d = C.document;
       C.Cal =
         C.Cal ||
         function () {
-          let cal = C.Cal;
-          let ar = arguments;
+          const cal = C.Cal;
+          const ar = arguments;
           if (!cal.loaded) {
             cal.ns = {};
             cal.q = cal.q || [];
@@ -72,6 +74,7 @@ const ProductorHero = () => {
       hideEventTypeDetails: false,
       layout: "month_view",
     });
+    /* eslint-enable */
   }, []);
 
   return (

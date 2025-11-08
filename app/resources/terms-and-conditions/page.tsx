@@ -187,7 +187,7 @@ export default function TermsAndConditionsPage() {
             <div className="space-y-4">
               <div className="rounded-2xl bg-card p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4">
-                  Al registrarse, acceder o utilizar los servicios de HUNT (la "Plataforma"), el Usuario declara que ha leído, comprende y acepta íntegramente estos Términos y Condiciones ("T&C"). Si no está de acuerdo, deberá abstenerse de usar la Plataforma.
+                  Al registrarse, acceder o utilizar los servicios de HUNT (la &ldquo;Plataforma&rdquo;), el Usuario declara que ha leído, comprende y acepta íntegramente estos Términos y Condiciones (&ldquo;T&C&rdquo;). Si no está de acuerdo, deberá abstenerse de usar la Plataforma.
                 </p>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                   Estos T&C regulan el uso de: (i) la aplicación móvil, (ii) el sitio web, (iii) los módulos de venta, control de acceso y transferencia de entradas, y (iv) los demás canales habilitados por HUNT (incluido WhatsApp, cuando aplique).
@@ -400,7 +400,7 @@ export default function TermsAndConditionsPage() {
             </h2>
             <div className="rounded-2xl bg-card p-6 lg:p-8" style={{ border: '1px solid #303030' }}>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                El Usuario podrá ejercer el derecho de retracto en los términos y condiciones que contempla la Ley 1480 de 2011 "Estatuto del consumidor" en su artículo 47 para ventas no presenciales, cuando sea aplicable al tipo de servicio adquirido.
+                El Usuario podrá ejercer el derecho de retracto en los términos y condiciones que contempla la Ley 1480 de 2011 &ldquo;Estatuto del consumidor&rdquo; en su artículo 47 para ventas no presenciales, cuando sea aplicable al tipo de servicio adquirido.
               </p>
             </div>
           </section>
