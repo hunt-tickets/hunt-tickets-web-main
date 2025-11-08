@@ -25,6 +25,7 @@ interface QRCode {
 
 interface TransactionMissingQR {
   id: string;
+  transaction_id: string;
   user_id: string;
   user_name: string;
   user_email: string;
@@ -32,6 +33,7 @@ interface TransactionMissingQR {
   quantity: number;
   actualQRs: number;
   missingQRs: number;
+  status: string;
   source: string;
   order_id: string | null;
   created_at: string;
@@ -343,6 +345,7 @@ export async function getEventAccessControl(eventId: string): Promise<AccessCont
 
       return {
         id: t.id,
+        transaction_id: t.id,
         user_id: t.user_id, // ← user_id de la transacción (comprador original)
         user_name: user ? `${user.name || ''} ${user.lastName || ''}`.trim() || 'Sin nombre' : 'N/A', // Comprador original
         user_email: user?.email || 'N/A', // Comprador original
@@ -350,6 +353,7 @@ export async function getEventAccessControl(eventId: string): Promise<AccessCont
         quantity: expected,
         actualQRs: actual,
         missingQRs: expected - actual,
+        status: t.status || 'PAID WITH QR',
         source: t.source || 'unknown',
         order_id: t.order_id || null,
         created_at: t.created_at || new Date().toISOString(),

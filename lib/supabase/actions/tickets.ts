@@ -952,20 +952,23 @@ export async function getOrphanQRCodes() {
   }
 
   // Format the data
-  const formattedOrphanQRs = orphanQRs.map(qr => ({
-    id: qr.id,
-    transaction_id: qr.transaction_id,
-    user_id: qr.user_id,
-    svg: qr.svg,
-    created_at: qr.created_at,
-    scan: qr.scan,
-    scanner_id: qr.scanner_id,
-    updated_at: qr.updated_at,
-    apple: qr.apple,
-    google: qr.google,
-    user_name: qr.profile ? `${qr.profile.name || ''} ${qr.profile.lastName || ''}`.trim() : 'N/A',
-    user_email: qr.profile?.email || 'N/A'
-  }));
+  const formattedOrphanQRs = orphanQRs.map((qr: any) => {
+    const profile = Array.isArray(qr.profile) ? qr.profile[0] : qr.profile;
+    return {
+      id: qr.id,
+      transaction_id: qr.transaction_id,
+      user_id: qr.user_id,
+      svg: qr.svg,
+      created_at: qr.created_at,
+      scan: qr.scan,
+      scanner_id: qr.scanner_id,
+      updated_at: qr.updated_at,
+      apple: qr.apple,
+      google: qr.google,
+      user_name: profile ? `${profile.name || ''} ${profile.lastName || ''}`.trim() : 'N/A',
+      user_email: profile?.email || 'N/A'
+    };
+  });
 
   console.log(`✅ Found ${formattedOrphanQRs.length} orphan QR codes out of ${allQRCodes.length} total QR codes`);
 

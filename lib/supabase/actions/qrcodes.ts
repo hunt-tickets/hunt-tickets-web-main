@@ -57,7 +57,7 @@ export async function getEventQRCodesOptimized(eventId: string): Promise<EventQR
 
     if (ticketsError) {
       console.error("Error fetching tickets:", ticketsError);
-      return [];
+      return { qrCodes: [], transactionsWithoutQR: [] };
     }
 
     if (!tickets || tickets.length === 0) {

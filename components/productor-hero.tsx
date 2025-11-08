@@ -51,7 +51,7 @@ const ProductorHero = () => {
             cal.loaded = true;
           }
           if (ar[0] === L) {
-            const api = function () {
+            const api: any = function () {
               p(api, arguments);
             };
             const namespace = ar[1];

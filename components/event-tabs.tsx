@@ -634,7 +634,7 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
               {tickets.length} tipo{tickets.length !== 1 ? 's' : ''} de entrada configurado{tickets.length !== 1 ? 's' : ''}
             </p>
           </div>
-          <CreateTicketDialog eventId={eventId} />
+          <CreateTicketDialog eventId={eventId} ticketTypes={ticketTypes} />
         </div>
 
         {/* Filtros por tipo de ticket */}
