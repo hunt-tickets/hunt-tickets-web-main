@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "./ui/theme-toggle";
+import { LanguageToggle } from "./ui/language-toggle";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,11 +69,13 @@ export function Header() {
         {/* Right side - Desktop */}
         <div className="hidden md:flex items-center gap-2">
           <AuthButton />
+          <LanguageToggle />
           <ThemeToggle />
         </div>
 
         {/* Right side - Mobile */}
         <div className="flex md:hidden items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
 
           <DropdownMenu>
