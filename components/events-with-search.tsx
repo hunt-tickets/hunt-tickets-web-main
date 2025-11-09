@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { EventCard } from "@/components/event-card";
+import { WebPreviewCard } from "@/components/web-preview-card";
 import { EnhancedSearchBar } from "@/components/enhanced-search-bar";
 import { EnhancedCityFilter } from "@/components/enhanced-city-filter";
 import { Filter } from "lucide-react";
@@ -195,6 +196,12 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
               }
             />
           ))}
+
+          {/* Web Preview Card */}
+          <WebPreviewCard
+            url="https://perronegro.biotickets.com/"
+            title="Más Eventos"
+          />
         </div>
       )}
     </>
