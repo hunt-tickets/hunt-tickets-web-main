@@ -12,7 +12,7 @@ export function WebPreviewCard({ url, title = "Ver más eventos" }: WebPreviewCa
   const [isLoaded, setIsLoaded] = useState(false)
 
   return (
-    <div className="group relative h-full min-h-[400px] rounded-2xl overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20">
+    <div className="group relative aspect-[3/4] rounded-[20px] overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20">
       {/* Loading State */}
       {!isLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10">
@@ -26,7 +26,7 @@ export function WebPreviewCard({ url, title = "Ver más eventos" }: WebPreviewCa
       {/* Iframe */}
       <iframe
         src={url}
-        className="w-full h-full min-h-[400px]"
+        className="absolute inset-0 w-full h-full"
         onLoad={() => setIsLoaded(true)}
         title={title}
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
@@ -35,18 +35,18 @@ export function WebPreviewCard({ url, title = "Ver más eventos" }: WebPreviewCa
 
       {/* Overlay with title and link */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'LOT, sans-serif' }}>
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-bold text-white mb-2" style={{ fontFamily: 'LOT, sans-serif' }}>
             {title}
           </h3>
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-white/90 hover:text-white transition-colors pointer-events-auto"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm text-white/90 hover:text-white transition-colors pointer-events-auto"
           >
             Abrir en nueva pestaña
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
           </a>
         </div>
       </div>
