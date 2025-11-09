@@ -5,9 +5,12 @@ export default function Page() {
   return (
     <div className="min-h-screen">
       {/* Gradient Bar Hero Section with Shader Background - Fixed position */}
-      <div className="sticky top-0 h-screen w-full">
+      <div className="fixed top-0 left-0 right-0 h-screen w-full z-0">
         <Component />
       </div>
+
+      {/* Spacer for hero height */}
+      <div className="h-screen" />
 
       {/* Popular Events Section - Parallax effect */}
       <section className="relative z-10 py-16 sm:py-20 bg-[#101010] rounded-t-[32px] sm:rounded-t-[48px] -mt-16 sm:-mt-20">
