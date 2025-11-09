@@ -104,18 +104,18 @@ export function Header() {
 
       {/* Mobile Menu - Full Screen with Glass Effect */}
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${
+        className={`fixed inset-0 md:hidden transition-all duration-300 ${
           isMobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
         }`}
-        style={{ top: '64px' }}
+        style={{ zIndex: 45 }}
       >
         {/* Glass Background */}
         <div className="absolute inset-0 bg-background/95 backdrop-blur-2xl" />
 
         {/* Menu Content */}
-        <div className="relative h-full flex flex-col items-center justify-center px-8">
+        <div className="relative h-full flex flex-col items-center justify-center px-8 pt-16">
           <nav className="flex flex-col items-center gap-8 w-full max-w-sm">
             <Link
               href="/eventos"
