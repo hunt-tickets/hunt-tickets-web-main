@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
-import { ExternalLink, Globe, Code, Palette, Rocket, Zap, Sparkles } from "lucide-react"
+import { ExternalLink, Globe, Code, Palette, Rocket, Zap } from "lucide-react"
 
 interface WebsitePortfolioItem {
   id: string
@@ -107,8 +106,6 @@ interface PortfolioWithServicesProps {
 }
 
 export function PortfolioWithServices({ activeTab, onTabChange }: PortfolioWithServicesProps) {
-  const [hoveredService, setHoveredService] = useState<string | null>(null)
-
   return (
     <div className="space-y-12">
       {/* Enhanced Tabs */}
@@ -218,8 +215,6 @@ export function PortfolioWithServices({ activeTab, onTabChange }: PortfolioWithS
             {services.map((service, index) => (
               <div
                 key={service.id}
-                onMouseEnter={() => setHoveredService(service.id)}
-                onMouseLeave={() => setHoveredService(null)}
                 className="group relative rounded-[20px] bg-white/[0.03] border border-white/10 hover:border-white/20 backdrop-blur-sm transition-all duration-300 p-8"
                 style={{
                   animationDelay: `${index * 100}ms`,
