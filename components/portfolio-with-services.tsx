@@ -107,39 +107,73 @@ interface PortfolioWithServicesProps {
 
 export function PortfolioWithServices({ activeTab, onTabChange }: PortfolioWithServicesProps) {
   return (
-    <div className="space-y-12">
-      {/* Enhanced Tabs */}
+    <div className="space-y-16">
+      {/* Minimal Premium Tabs */}
       <div className="relative">
-        <div className="flex gap-4 p-1.5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 w-fit">
+        <div className="flex items-center gap-12">
+          {/* Portfolio Tab */}
           <button
             onClick={() => onTabChange("portfolio")}
-            className={`relative px-8 py-3 text-sm font-bold transition-all duration-300 rounded-xl ${
-              activeTab === "portfolio"
-                ? "text-white"
-                : "text-white/50 hover:text-white/80"
-            }`}
-            style={{ fontFamily: 'LOT, sans-serif' }}
+            className="group relative transition-all duration-300"
           >
-            {activeTab === "portfolio" && (
-              <div className="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm" />
-            )}
-            <span className="relative z-10">Portafolio</span>
+            <div className="flex items-center gap-3">
+              <span className={`text-2xl font-bold transition-all duration-300 ${
+                activeTab === "portfolio"
+                  ? "text-white"
+                  : "text-white/40 group-hover:text-white/60"
+              }`} style={{ fontFamily: 'LOT, sans-serif' }}>
+                Portafolio
+              </span>
+              <span className={`text-sm font-medium transition-all duration-300 ${
+                activeTab === "portfolio"
+                  ? "text-white/60"
+                  : "text-white/30 group-hover:text-white/40"
+              }`}>
+                03
+              </span>
+            </div>
+
+            {/* Animated Underline */}
+            <div className={`h-[2px] mt-2 rounded-full transition-all duration-500 ${
+              activeTab === "portfolio"
+                ? "w-full bg-white"
+                : "w-0 group-hover:w-1/2 bg-white/40"
+            }`} />
           </button>
+
+          {/* Services Tab */}
           <button
             onClick={() => onTabChange("services")}
-            className={`relative px-8 py-3 text-sm font-bold transition-all duration-300 rounded-xl ${
-              activeTab === "services"
-                ? "text-white"
-                : "text-white/50 hover:text-white/80"
-            }`}
-            style={{ fontFamily: 'LOT, sans-serif' }}
+            className="group relative transition-all duration-300"
           >
-            {activeTab === "services" && (
-              <div className="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm" />
-            )}
-            <span className="relative z-10">Servicios</span>
+            <div className="flex items-center gap-3">
+              <span className={`text-2xl font-bold transition-all duration-300 ${
+                activeTab === "services"
+                  ? "text-white"
+                  : "text-white/40 group-hover:text-white/60"
+              }`} style={{ fontFamily: 'LOT, sans-serif' }}>
+                Servicios
+              </span>
+              <span className={`text-sm font-medium transition-all duration-300 ${
+                activeTab === "services"
+                  ? "text-white/60"
+                  : "text-white/30 group-hover:text-white/40"
+              }`}>
+                04
+              </span>
+            </div>
+
+            {/* Animated Underline */}
+            <div className={`h-[2px] mt-2 rounded-full transition-all duration-500 ${
+              activeTab === "services"
+                ? "w-full bg-white"
+                : "w-0 group-hover:w-1/2 bg-white/40"
+            }`} />
           </button>
         </div>
+
+        {/* Subtle background line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/10" />
       </div>
 
       {/* Content */}
