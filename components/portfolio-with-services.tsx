@@ -55,33 +55,53 @@ const services: Service[] = [
   {
     id: "1",
     title: "Desarrollo Web",
-    description: "Sitios y aplicaciones web de alto rendimiento con las últimas tecnologías",
+    description: "Creamos sitios y aplicaciones web que destacan por su velocidad, diseño y funcionalidad. Desde landing pages hasta aplicaciones empresariales complejas.",
     icon: <Code className="h-6 w-6" />,
-    features: ["React/Next.js", "Responsive Design", "SEO Optimizado", "Performance"],
+    features: [
+      "React & Next.js para rendimiento óptimo",
+      "Responsive design que funciona en todos los dispositivos",
+      "SEO optimizado para máxima visibilidad",
+      "Integración con APIs y servicios externos"
+    ],
     color: "from-blue-500/20 to-cyan-500/20",
   },
   {
     id: "2",
     title: "Diseño UI/UX",
-    description: "Experiencias digitales intuitivas que convierten usuarios en clientes",
+    description: "Diseñamos experiencias digitales que no solo se ven bien, sino que convierten visitantes en clientes. Cada decisión de diseño tiene un propósito.",
     icon: <Palette className="h-6 w-6" />,
-    features: ["Prototipos", "Design System", "User Research", "Branding"],
+    features: [
+      "Research de usuarios y análisis de competencia",
+      "Wireframes y prototipos interactivos",
+      "Design systems escalables y consistentes",
+      "Testing de usabilidad y mejora continua"
+    ],
     color: "from-purple-500/20 to-pink-500/20",
   },
   {
     id: "3",
     title: "E-commerce",
-    description: "Tiendas online que venden 24/7 con conversión optimizada",
+    description: "Construimos tiendas online que venden 24/7. Desde el catálogo hasta el checkout, optimizamos cada paso para maximizar tus conversiones.",
     icon: <Rocket className="h-6 w-6" />,
-    features: ["Pasarelas de pago", "Gestión de inventario", "Analytics", "Marketing"],
+    features: [
+      "Integración con pasarelas de pago seguras",
+      "Sistema de gestión de inventario en tiempo real",
+      "Analytics avanzados y reportes de ventas",
+      "Email marketing y automatización de ventas"
+    ],
     color: "from-orange-500/20 to-red-500/20",
   },
   {
     id: "4",
     title: "Aplicaciones Web",
-    description: "Soluciones personalizadas que automatizan y escalan tu negocio",
+    description: "Desarrollamos soluciones personalizadas que automatizan procesos, reducen costos y escalan con tu negocio. Tu visión, nuestra tecnología.",
     icon: <Zap className="h-6 w-6" />,
-    features: ["APIs", "Dashboards", "Automatización", "Integraciones"],
+    features: [
+      "APIs RESTful y GraphQL robustas",
+      "Dashboards interactivos con data en tiempo real",
+      "Automatización de workflows y procesos",
+      "Integraciones con herramientas empresariales"
+    ],
     color: "from-green-500/20 to-emerald-500/20",
   },
 ]
@@ -198,71 +218,59 @@ export function PortfolioWithServices({ activeTab, onTabChange }: PortfolioWithS
             ))}
           </div>
         ) : (
-          /* Enhanced Services Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+          /* Minimal Services Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fadeIn">
             {services.map((service, index) => (
               <div
                 key={service.id}
                 onMouseEnter={() => setHoveredService(service.id)}
                 onMouseLeave={() => setHoveredService(null)}
-                className="group relative rounded-[24px] overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-white/20 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8"
+                className="group relative rounded-[20px] bg-white/[0.03] border border-white/10 hover:border-white/20 backdrop-blur-sm transition-all duration-300 p-8"
                 style={{
                   animationDelay: `${index * 100}ms`,
                 }}
               >
-                {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Subtle hover background */}
+                <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[20px]" />
 
                 {/* Content */}
                 <div className="relative z-10">
-                  {/* Icon with animated background */}
-                  <div className="mb-6 inline-flex">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl scale-110 group-hover:scale-125 transition-transform duration-500" />
-                      <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 group-hover:bg-white/15 transition-all duration-300">
-                        <div className="text-primary group-hover:scale-110 transition-transform duration-300">
-                          {service.icon}
-                        </div>
-                      </div>
+                  {/* Icon - minimal style */}
+                  <div className="mb-5 inline-flex">
+                    <div className="text-white/80 group-hover:text-white transition-colors duration-300">
+                      {service.icon}
                     </div>
                   </div>
 
-                  {/* Title with sparkle effect */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <h3 className="text-2xl font-bold text-white group-hover:text-primary transition-colors duration-300" style={{ fontFamily: 'LOT, sans-serif' }}>
-                      {service.title}
-                    </h3>
-                    <Sparkles className={`h-4 w-4 text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 ${hoveredService === service.id ? 'rotate-12' : ''}`} />
-                  </div>
+                  {/* Title */}
+                  <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'LOT, sans-serif' }}>
+                    {service.title}
+                  </h3>
 
                   {/* Description */}
-                  <p className="text-white/70 mb-6 leading-relaxed">
+                  <p className="text-white/60 mb-6 leading-relaxed text-sm">
                     {service.description}
                   </p>
 
-                  {/* Features with enhanced styling */}
+                  {/* Divider */}
+                  <div className="h-px bg-white/10 mb-6" />
+
+                  {/* Features - more informative */}
                   <div className="space-y-3">
                     {service.features.map((feature, featureIndex) => (
                       <div
                         key={featureIndex}
-                        className="flex items-center gap-3 text-sm text-white/80 group-hover:text-white/90 transition-colors duration-300"
-                        style={{
-                          animationDelay: `${featureIndex * 50}ms`,
-                        }}
+                        className="flex items-start gap-3 text-sm text-white/70 group-hover:text-white/80 transition-colors duration-300"
                       >
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary/60 group-hover:bg-primary group-hover:scale-150 transition-all duration-300" />
-                        <span className="group-hover:translate-x-1 transition-transform duration-300">{feature}</span>
+                        <div className="mt-1.5 h-1 w-1 rounded-full bg-white/40 flex-shrink-0" />
+                        <span className="leading-relaxed">{feature}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Corner accent */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Minimal corner indicator */}
+                <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
           </div>
