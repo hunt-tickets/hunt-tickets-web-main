@@ -19,7 +19,6 @@ interface Service {
   description: string
   icon: React.ReactNode
   features: string[]
-  color: string
 }
 
 // Páginas web desarrolladas
@@ -63,7 +62,6 @@ const services: Service[] = [
       "SEO optimizado para máxima visibilidad",
       "Integración con APIs y servicios externos"
     ],
-    color: "from-blue-500/20 to-cyan-500/20",
   },
   {
     id: "2",
@@ -76,7 +74,6 @@ const services: Service[] = [
       "Design systems escalables y consistentes",
       "Testing de usabilidad y mejora continua"
     ],
-    color: "from-purple-500/20 to-pink-500/20",
   },
   {
     id: "3",
@@ -89,7 +86,6 @@ const services: Service[] = [
       "Analytics avanzados y reportes de ventas",
       "Email marketing y automatización de ventas"
     ],
-    color: "from-orange-500/20 to-red-500/20",
   },
   {
     id: "4",
@@ -102,7 +98,6 @@ const services: Service[] = [
       "Automatización de workflows y procesos",
       "Integraciones con herramientas empresariales"
     ],
-    color: "from-green-500/20 to-emerald-500/20",
   },
 ]
 
