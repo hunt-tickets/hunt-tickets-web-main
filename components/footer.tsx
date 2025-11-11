@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Instagram, Linkedin, MessageCircle } from "lucide-react";
+import { Instagram } from "lucide-react";
+import { FaWhatsapp, FaGooglePlay, FaApple, FaLinkedin } from 'react-icons/fa';
+import { SiGmail } from 'react-icons/si';
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
@@ -121,7 +123,7 @@ const Footer = () => {
           {/* Social Media Column */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold">Síguenos</h3>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Link
                 href="https://www.instagram.com/hunt____tickets/"
                 target="_blank"
@@ -138,8 +140,17 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <FaLinkedin className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                   <span className="sr-only">LinkedIn</span>
+                </Button>
+              </Link>
+              <Link
+                href="mailto:"
+                className="inline-block"
+              >
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <SiGmail className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <span className="sr-only">Gmail</span>
                 </Button>
               </Link>
               <Link
@@ -148,8 +159,24 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <MessageCircle className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <FaWhatsapp className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                   <span className="sr-only">WhatsApp</span>
+                </Button>
+              </Link>
+              <Link
+                href="#"
+              >
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <FaApple className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <span className="sr-only">Apple</span>
+                </Button>
+              </Link>
+              <Link
+                href="#"
+              >
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <FaGooglePlay className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <span className="sr-only">Google Play</span>
                 </Button>
               </Link>
             </div>
