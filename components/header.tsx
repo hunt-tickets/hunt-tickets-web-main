@@ -93,19 +93,17 @@ export function Header() {
               <LanguageToggle />
               <ThemeToggle />
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10"
+              <button
+                className="flex items-center justify-center h-10 w-10 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 bg-zinc-100 border border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-zinc-800"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5 text-zinc-900 dark:text-white" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-5 w-5 text-zinc-900 dark:text-white" />
                 )}
-                <span className="sr-only">Abrir menú</span>
-              </Button>
+              </button>
             </>
           )}
         </div>
@@ -126,15 +124,13 @@ export function Header() {
         {/* Menu Content */}
         <div className="relative h-full flex flex-col items-center justify-center px-8 pt-16">
           {/* Close Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 h-10 w-10"
+          <button
+            className="absolute top-4 right-4 flex items-center justify-center h-10 w-10 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 bg-zinc-100 border border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-zinc-800"
             onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Cerrar menú"
           >
-            <X className="h-6 w-6" />
-            <span className="sr-only">Cerrar menú</span>
-          </Button>
+            <X className="h-5 w-5 text-zinc-900 dark:text-white" />
+          </button>
 
           <nav className="flex flex-col items-center gap-8 w-full max-w-sm">
             <Link
