@@ -39,7 +39,7 @@ export function Header() {
   }, [isMobileMenuOpen]);
   return (
     <header className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-      isScrolled
+      isScrolled && !isMobileMenuOpen
         ? 'bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/80'
         : 'bg-transparent'
     }`}>
