@@ -128,7 +128,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Instagram className="h-5 w-5" />
+                  <Instagram className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                   <span className="sr-only">Instagram</span>
                 </Button>
               </Link>
@@ -138,7 +138,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Linkedin className="h-5 w-5" />
+                  <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                   <span className="sr-only">LinkedIn</span>
                 </Button>
               </Link>
@@ -148,7 +148,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <MessageCircle className="h-5 w-5" />
+                  <MessageCircle className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                   <span className="sr-only">WhatsApp</span>
                 </Button>
               </Link>
