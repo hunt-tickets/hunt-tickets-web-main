@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ThemeToggle } from "./ui/theme-toggle";
 import { LanguageToggle } from "./ui/language-toggle";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { AuthButton } from "./auth-button";
 
 export function Header() {
