@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Instagram } from 'lucide-react';
-import { FaWhatsapp, FaGooglePlay, FaApple } from 'react-icons/fa';
+import { FaWhatsapp, FaGooglePlay, FaApple, FaLinkedin } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 import { HoverButton } from '@/components/ui/hover-glow-button';
@@ -137,8 +137,11 @@ export const Component: React.FC = () => {
         </div>
 
         <div className="flex justify-center space-x-6">
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
+          <a href="https://www.instagram.com/hunt____tickets/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
             <Instagram size={20} className="w-5 h-5 sm:w-[22px] sm:h-[22px]" />
+          </a>
+          <a href="https://www.linkedin.com/company/hunt-tickets-co/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <FaLinkedin size={20} className="w-5 h-5 sm:w-[22px] sm:h-[22px]" />
           </a>
           <a href="mailto:" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
             <SiGmail size={20} className="w-5 h-5 sm:w-[22px] sm:h-[22px]" />
