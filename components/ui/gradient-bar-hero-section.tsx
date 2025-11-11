@@ -127,9 +127,6 @@ export const Component: React.FC = () => {
           <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#B0B0B0] leading-relaxed animate-fadeIn animation-delay-200">
             Descubre, compara y compra los tickets que van con tu estilo.
           </p>
-          <p className="text-[clamp(1rem,3vw,1.5rem)] text-[#B0B0B0] leading-relaxed animate-fadeIn animation-delay-300">
-            En Hunt tú mandas.
-          </p>
         </div>
 
         <div className="w-full max-w-2xl mb-6 sm:mb-8 px-4">
