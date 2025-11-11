@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ThemeToggle } from "./ui/theme-toggle";
 import { LanguageToggle } from "./ui/language-toggle";
@@ -9,8 +10,12 @@ import { Button } from "@/components/ui/button";
 import { AuthButton } from "./auth-button";
 
 export function Header() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Check if we're in admin route
+  const isAdminRoute = pathname?.includes("/administrador");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,22 +88,26 @@ export function Header() {
 
         {/* Right side - Mobile */}
         <div className="flex md:hidden items-center gap-2">
-          <LanguageToggle />
-          <ThemeToggle />
+          {!isAdminRoute && (
+            <>
+              <LanguageToggle />
+              <ThemeToggle />
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-            <span className="sr-only">Abrir menú</span>
-          </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+                <span className="sr-only">Abrir menú</span>
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -116,28 +125,36 @@ export function Header() {
 
         {/* Menu Content */}
         <div className="relative h-full flex flex-col items-center justify-center px-8 pt-16">
+          {/* Close Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 h-10 w-10"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="h-6 w-6" />
+            <span className="sr-only">Cerrar menú</span>
+          </Button>
+
           <nav className="flex flex-col items-center gap-8 w-full max-w-sm">
             <Link
               href="/eventos"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-110 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
-              style={{ fontFamily: 'LOT, sans-serif' }}
+              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-105 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
             >
               Eventos
             </Link>
             <Link
               href="/productor"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-110 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
-              style={{ fontFamily: 'LOT, sans-serif' }}
+              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-105 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
             >
               Productor
             </Link>
             <Link
               href="/sobre-nosotros"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-110 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
-              style={{ fontFamily: 'LOT, sans-serif' }}
+              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-105 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
             >
               Sobre Nosotros
             </Link>
