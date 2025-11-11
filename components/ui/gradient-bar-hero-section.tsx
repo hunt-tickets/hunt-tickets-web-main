@@ -25,13 +25,13 @@ const WaitlistForm: React.FC = () => {
   };
 
   return (
-    <div className="relative z-10 w-full flex justify-center">
+    <div className="relative z-10 w-full flex justify-center px-4">
       {!isSubmitted ? (
-        <div className="flex flex-col sm:flex-row gap-3 items-center">
+        <div className="flex flex-row gap-2 sm:gap-3 items-center">
           <HoverButton
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-6 sm:px-8 py-3 sm:py-4 rounded-full whitespace-nowrap text-sm sm:text-base font-medium bg-primary text-primary-foreground"
+            className="px-4 sm:px-8 py-3 sm:py-4 rounded-full whitespace-nowrap text-xs sm:text-base font-medium bg-primary text-primary-foreground"
             glowColor="#000000"
             backgroundColor="transparent"
             textColor="inherit"
@@ -45,7 +45,7 @@ const WaitlistForm: React.FC = () => {
           </HoverButton>
 
           <HoverButton
-            className="px-6 sm:px-8 py-3 sm:py-4 rounded-full whitespace-nowrap text-sm sm:text-base font-medium bg-background/50 text-foreground border border-[#303030] backdrop-blur-sm"
+            className="px-4 sm:px-8 py-3 sm:py-4 rounded-full whitespace-nowrap text-xs sm:text-base font-medium bg-background/50 text-foreground border border-[#303030] backdrop-blur-sm"
             glowColor="#ffffff"
             backgroundColor="transparent"
             textColor="inherit"
