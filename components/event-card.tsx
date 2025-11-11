@@ -56,16 +56,16 @@ export function EventCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
         {/* Event information overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-6">
+        <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6">
           {/* Event title */}
-          <h2 className="text-sm sm:text-lg font-bold text-white text-balance mb-1.5 sm:mb-2 line-clamp-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold text-white text-balance mb-2 sm:mb-3 line-clamp-2">
             {title}
           </h2>
 
           {/* Event details */}
-          <div className="flex flex-col gap-0.5 sm:gap-1 text-white/90 text-xs sm:text-sm">
+          <div className="flex flex-col gap-1 sm:gap-1.5 text-white/90 text-sm sm:text-base">
             <span className="line-clamp-1">{location}</span>
-            {price && <span>Desde ${formatPrice(price)}</span>}
+            {price && <span className="font-medium">Desde ${formatPrice(price)}</span>}
           </div>
         </div>
       </div>
