@@ -40,7 +40,7 @@ const WaitlistForm: React.FC = () => {
             {isSubmitting ? (
               <div className="h-4 w-4 sm:h-5 sm:w-5 border-2 border-muted-foreground border-t-primary-foreground rounded-full animate-spin"></div>
             ) : (
-              'Descubrir eventos'
+              'Ver Eventos'
             )}
           </HoverButton>
 
