@@ -41,10 +41,10 @@ export function EnhancedCityFilter({ cities, selectedCity, onCityChange }: Enhan
         </div>
       </SelectTrigger>
 
-        <SelectContent className="bg-[#101010]/95 backdrop-blur-xl border border-white/20 rounded-2xl text-white text-base">
+        <SelectContent className="bg-white border border-zinc-200 rounded-2xl text-zinc-900 text-base shadow-xl">
           <SelectItem
             value="all"
-            className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-base"
+            className="cursor-pointer hover:bg-zinc-100 focus:bg-zinc-100 text-base"
           >
             Todas las ciudades
           </SelectItem>
@@ -53,7 +53,7 @@ export function EnhancedCityFilter({ cities, selectedCity, onCityChange }: Enhan
             <SelectItem
               key={city}
               value={city}
-              className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-base"
+              className="cursor-pointer hover:bg-zinc-100 focus:bg-zinc-100 text-base"
             >
               {city}
             </SelectItem>
