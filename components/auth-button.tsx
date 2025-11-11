@@ -58,14 +58,14 @@ export function AuthButton() {
 
   // Show nothing while loading to prevent layout shift
   if (loading) {
-    return <div className="h-9 w-24" />; // Placeholder with approximate size
+    return <div className="h-10 w-20" />; // Placeholder with approximate size
   }
 
   return user ? (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-          <Avatar className="h-9 w-9">
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+          <Avatar className="h-10 w-10">
             <AvatarFallback className="bg-primary text-primary-foreground">
               {getInitials(user.email as string)}
             </AvatarFallback>
@@ -100,13 +100,8 @@ export function AuthButton() {
       </DropdownMenuContent>
     </DropdownMenu>
   ) : (
-    <div className="flex gap-3">
-      <Button asChild variant={"ghost"} className="px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-xs sm:text-sm font-medium bg-background/50 hover:bg-background/70 text-foreground border border-border dark:border-[#303030] backdrop-blur-sm">
-        <Link href="/login">Ingresar</Link>
-      </Button>
-      <Button asChild variant={"ghost"} className="px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-xs sm:text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
-        <Link href="/sign-up">Registrarse</Link>
-      </Button>
-    </div>
+    <Button asChild variant={"ghost"} className="h-10 px-6 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground">
+      <Link href="/login">Ingresar</Link>
+    </Button>
   );
 }
