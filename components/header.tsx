@@ -118,7 +118,7 @@ export function Header() {
         style={{ zIndex: 45 }}
       >
         {/* Glass Background */}
-        <div className="bg-background/95 backdrop-blur-2xl border-b border-white/10 shadow-2xl">
+        <div className="bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 border-b border-white/10 shadow-2xl">
           {/* Menu Content */}
           <nav className="flex flex-col items-center gap-4 px-6 py-6 max-w-sm mx-auto">
             <Link
