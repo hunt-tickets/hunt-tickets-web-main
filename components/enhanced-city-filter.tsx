@@ -25,7 +25,7 @@ export function EnhancedCityFilter({ cities, selectedCity, onCityChange }: Enhan
       onValueChange={(value) => onCityChange(value === "all" ? null : value)}
     >
       <SelectTrigger
-        className={`w-full !h-10 sm:!h-12 pl-3 sm:pl-4 pr-3 sm:pr-4 py-0 bg-white/10 border rounded-3xl text-sm sm:text-base text-white data-[placeholder]:text-white/50 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0 transition-all duration-200 ${
+        className={`w-full !h-11 sm:!h-12 pl-3 sm:pl-4 pr-3 sm:pr-4 py-0 bg-white/10 border rounded-3xl text-base text-white data-[placeholder]:text-white/50 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0 transition-all duration-200 ${
           isFocused
             ? 'border-white/40 bg-white/15'
             : 'border-white/20 hover:border-white/30 hover:bg-white/12'
@@ -41,10 +41,10 @@ export function EnhancedCityFilter({ cities, selectedCity, onCityChange }: Enhan
         </div>
       </SelectTrigger>
 
-        <SelectContent className="bg-[#101010]/95 backdrop-blur-xl border border-white/20 rounded-2xl text-white text-sm sm:text-base">
+        <SelectContent className="bg-[#101010]/95 backdrop-blur-xl border border-white/20 rounded-2xl text-white text-base">
           <SelectItem
             value="all"
-            className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-sm sm:text-base"
+            className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-base"
           >
             Todas las ciudades
           </SelectItem>
@@ -53,7 +53,7 @@ export function EnhancedCityFilter({ cities, selectedCity, onCityChange }: Enhan
             <SelectItem
               key={city}
               value={city}
-              className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-sm sm:text-base"
+              className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-base"
             >
               {city}
             </SelectItem>

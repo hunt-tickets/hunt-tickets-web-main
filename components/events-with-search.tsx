@@ -143,12 +143,12 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
         {/* Active filters indicator */}
         {(searchQuery || selectedCity) && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs sm:text-sm text-white/60">
+            <span className="text-sm text-white/60">
               {filteredEvents.length} de {events.length} eventos
             </span>
             <button
               onClick={resetFilters}
-              className="text-xs sm:text-sm text-white/70 hover:text-white transition-colors"
+              className="text-sm text-white/70 hover:text-white transition-colors"
             >
               Limpiar filtros
             </button>

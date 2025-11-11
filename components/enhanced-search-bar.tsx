@@ -28,7 +28,7 @@ export function EnhancedSearchBar({ searchQuery, onSearchChange }: EnhancedSearc
       <Input
         type="text"
         placeholder="Buscar eventos..."
-        className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 h-10 sm:h-12 text-sm sm:text-base bg-white/10 border rounded-3xl text-white placeholder:text-white/50 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0 transition-all duration-200 ${
+        className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 h-11 sm:h-12 text-base bg-white/10 border rounded-3xl text-white placeholder:text-white/50 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0 transition-all duration-200 ${
           isFocused
             ? 'border-white/40 bg-white/15'
             : 'border-white/20 hover:border-white/30 hover:bg-white/12'
