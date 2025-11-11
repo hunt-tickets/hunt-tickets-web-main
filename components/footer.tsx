@@ -19,7 +19,7 @@ const Footer = () => {
                 HUNT
               </span>
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-[#B0B0B0]">
               Tu plataforma de tickets para eventos
             </p>
           </div>
@@ -31,7 +31,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/sobre-nosotros"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Sobre nosotros
                 </Link>
@@ -39,7 +39,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/eventos"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Eventos
                 </Link>
@@ -49,7 +49,7 @@ const Footer = () => {
                   href="https://wa.me/573228597640"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Contáctanos
                 </Link>
@@ -59,7 +59,7 @@ const Footer = () => {
                   href="https://zaap.bio/hunt"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Descarga la app
                 </Link>
@@ -74,7 +74,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/resources/terms-and-conditions"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Términos y condiciones
                 </Link>
@@ -82,7 +82,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/resources/terms-and-conditions"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Política de privacidad
                 </Link>
@@ -92,7 +92,7 @@ const Footer = () => {
                   href="https://forms.hunt-tickets.com/refunds"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Reembolsos
                 </Link>
@@ -102,7 +102,7 @@ const Footer = () => {
                   href="https://forms.hunt-tickets.com/feedbacks"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Danos retroalimentación
                 </Link>
@@ -112,7 +112,7 @@ const Footer = () => {
                   href="https://forms.hunt-tickets.com/bugs"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Reportar un bug
                 </Link>
@@ -130,7 +130,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Instagram className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <Instagram className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Instagram</span>
                 </Button>
               </Link>
@@ -140,7 +140,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <FaLinkedin className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <FaLinkedin className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">LinkedIn</span>
                 </Button>
               </Link>
@@ -149,7 +149,7 @@ const Footer = () => {
                 className="inline-block"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <SiGmail className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <SiGmail className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Gmail</span>
                 </Button>
               </Link>
@@ -159,7 +159,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <FaWhatsapp className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <FaWhatsapp className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">WhatsApp</span>
                 </Button>
               </Link>
@@ -167,7 +167,7 @@ const Footer = () => {
                 href="#"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <FaApple className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <FaApple className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Apple</span>
                 </Button>
               </Link>
@@ -175,7 +175,7 @@ const Footer = () => {
                 href="#"
               >
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <FaGooglePlay className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  <FaGooglePlay className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Google Play</span>
                 </Button>
               </Link>
@@ -184,7 +184,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 border-t dark:border-t-[#303030] pt-8">
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-[#B0B0B0]">
             © {new Date().getFullYear()} Hunt Tickets. Todos los derechos
             reservados.
           </p>
