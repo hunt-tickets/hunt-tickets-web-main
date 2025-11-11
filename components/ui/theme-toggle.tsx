@@ -24,7 +24,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       <div
         className={cn(
           "flex w-20 h-10 p-1 rounded-full",
-          "bg-zinc-950 border border-zinc-800",
+          "bg-zinc-900 border border-zinc-700",
           className
         )}
       />
@@ -44,8 +44,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       className={cn(
         "relative flex w-20 h-10 p-1 rounded-full cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95",
         isDark
-          ? "bg-zinc-950 border border-zinc-800 hover:bg-zinc-900"
-          : "bg-white border border-zinc-200 hover:bg-zinc-50",
+          ? "bg-zinc-900 border border-zinc-700 hover:bg-zinc-800"
+          : "bg-zinc-100 border border-zinc-300 hover:bg-zinc-200",
         className
       )}
       onClick={handleToggle}
@@ -65,7 +65,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
           <Moon
             className={cn(
               "w-4 h-4 transition-all duration-300",
-              isDark ? "text-white" : "text-gray-400",
+              isDark ? "text-white" : "text-zinc-400",
               isAnimating && isDark && "rotate-12 scale-110"
             )}
             strokeWidth={1.5}
@@ -75,7 +75,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
           <Sun
             className={cn(
               "w-4 h-4 transition-all duration-300",
-              isDark ? "text-gray-500" : "text-gray-700",
+              isDark ? "text-zinc-600" : "text-zinc-900",
               isAnimating && !isDark && "rotate-90 scale-110"
             )}
             strokeWidth={1.5}
@@ -89,7 +89,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
           "absolute flex justify-center items-center w-8 h-8 rounded-full transition-all duration-300 ease-in-out shadow-sm",
           isDark
             ? "left-1 bg-zinc-800"
-            : "left-[calc(100%-2.25rem)] bg-gray-200",
+            : "left-[calc(100%-2.25rem)] bg-zinc-300",
           isAnimating && "scale-110"
         )}
       >
@@ -104,7 +104,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         ) : (
           <Sun
             className={cn(
-              "w-4 h-4 text-gray-700 transition-all duration-300",
+              "w-4 h-4 text-zinc-900 transition-all duration-300",
               isAnimating && "rotate-90"
             )}
             strokeWidth={1.5}
