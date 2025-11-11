@@ -108,53 +108,42 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu - Full Screen with Glass Effect */}
+      {/* Mobile Menu - Dropdown from Header */}
       <div
-        className={`fixed inset-0 md:hidden transition-all duration-300 ${
+        className={`fixed top-16 left-0 right-0 md:hidden transition-all duration-300 ${
           isMobileMenuOpen
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none'
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
+            : '-translate-y-4 opacity-0 pointer-events-none'
         }`}
         style={{ zIndex: 45 }}
       >
         {/* Glass Background */}
-        <div className="absolute inset-0 bg-background/95 backdrop-blur-2xl" />
-
-        {/* Menu Content */}
-        <div className="relative h-full flex flex-col items-center justify-center px-8 pt-16">
-          {/* Close Button */}
-          <button
-            className="absolute top-4 right-4 flex items-center justify-center h-10 w-10 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 bg-zinc-100 border border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-zinc-800"
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label="Cerrar menú"
-          >
-            <X className="h-5 w-5 text-zinc-900 dark:text-white" />
-          </button>
-
-          <nav className="flex flex-col items-center gap-8 w-full max-w-sm">
+        <div className="bg-background/95 backdrop-blur-2xl border-b border-white/10 shadow-2xl">
+          {/* Menu Content */}
+          <nav className="flex flex-col items-center gap-4 px-6 py-6 max-w-sm mx-auto">
             <Link
               href="/eventos"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-105 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
+              className="w-full text-center px-6 py-3 text-lg font-semibold text-foreground/80 transition-all duration-200 hover:text-foreground hover:scale-105 rounded-xl hover:bg-muted/50 dark:hover:bg-accent/30"
             >
               Eventos
             </Link>
             <Link
               href="/productor"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-105 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
+              className="w-full text-center px-6 py-3 text-lg font-semibold text-foreground/80 transition-all duration-200 hover:text-foreground hover:scale-105 rounded-xl hover:bg-muted/50 dark:hover:bg-accent/30"
             >
               Productor
             </Link>
             <Link
               href="/sobre-nosotros"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-6 py-4 text-2xl font-bold text-foreground/80 transition-all duration-300 hover:text-foreground hover:scale-105 rounded-2xl hover:bg-muted/50 dark:hover:bg-accent/30"
+              className="w-full text-center px-6 py-3 text-lg font-semibold text-foreground/80 transition-all duration-200 hover:text-foreground hover:scale-105 rounded-xl hover:bg-muted/50 dark:hover:bg-accent/30"
             >
               Sobre Nosotros
             </Link>
 
-            <div className="mt-8 w-full flex justify-center">
+            <div className="mt-4 w-full flex justify-center border-t border-white/10 pt-6">
               <AuthButton />
             </div>
           </nav>
