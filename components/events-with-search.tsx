@@ -125,9 +125,9 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
   return (
     <>
       {/* Search and Filter Bar */}
-      <div className="space-y-4 mb-8">
+      <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
         {/* Search and filter row */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full">
           <div className="flex-1">
             <EnhancedSearchBar searchQuery={searchQuery} onSearchChange={handleSearch} />
           </div>
@@ -143,12 +143,12 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
         {/* Active filters indicator */}
         {(searchQuery || selectedCity) && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm text-white/60">
+            <span className="text-xs sm:text-sm text-white/60">
               {filteredEvents.length} de {events.length} eventos
             </span>
             <button
               onClick={resetFilters}
-              className="text-sm text-white/70 hover:text-white transition-colors"
+              className="text-xs sm:text-sm text-white/70 hover:text-white transition-colors"
             >
               Limpiar filtros
             </button>
@@ -158,28 +158,28 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
 
       {/* Show message if no events found after filtering */}
       {filteredEvents.length === 0 ? (
-        <div className="text-center py-16 sm:py-20">
-          <div className="inline-flex p-4 bg-white/5 rounded-2xl border border-white/10 mb-6">
-            <Filter className="h-12 w-12 text-white/60" />
+        <div className="text-center py-12 sm:py-16 md:py-20">
+          <div className="inline-flex p-3 sm:p-4 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 mb-4 sm:mb-6">
+            <Filter className="h-10 w-10 sm:h-12 sm:w-12 text-white/60" />
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3 px-4">
             No se encontraron eventos
           </h3>
-          <p className="text-white/60 mb-6 max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-white/60 mb-5 sm:mb-6 max-w-md mx-auto px-4">
             {selectedCity && `No hay eventos disponibles en ${selectedCity}`}
             {searchQuery && !selectedCity && `No hay eventos que coincidan con "${searchQuery}"`}
             {searchQuery && selectedCity && ` que coincidan con "${searchQuery}"`}
           </p>
           <button
             onClick={resetFilters}
-            className="px-6 py-3 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-full text-white font-medium transition-all duration-300"
+            className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-full text-white text-sm sm:text-base font-medium transition-all duration-300"
           >
             Mostrar todos los eventos
           </button>
         </div>
       ) : (
         /* Grid of Popular Events - 3 columns layout */
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 pb-16 sm:pb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 pb-12 sm:pb-16 md:pb-24">
           {gridEvents.slice(0, limit).map((event, index) => (
             <EventCard
               key={`${event.id}-${index}`}
