@@ -952,7 +952,7 @@ export async function getOrphanQRCodes() {
   }
 
   // Format the data
-  const formattedOrphanQRs = orphanQRs.map((qr: any) => {
+  const formattedOrphanQRs = orphanQRs.map((qr) => {
     const profile = Array.isArray(qr.profile) ? qr.profile[0] : qr.profile;
     return {
       id: qr.id,
