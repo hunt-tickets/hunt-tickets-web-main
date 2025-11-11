@@ -75,7 +75,7 @@
     @apply bg-background text-foreground;
   }
 
-  /* Hide scrollbar on mobile devices */
+  /* Mobile optimizations */
   @media (max-width: 768px) {
     /* Hide scrollbar for Chrome, Safari and Opera */
     html::-webkit-scrollbar,
@@ -90,6 +90,25 @@
     body {
       -ms-overflow-style: none;  /* IE and Edge */
       scrollbar-width: none;  /* Firefox */
+    }
+
+    /* Prevent viewport jumping on mobile browsers */
+    html {
+      /* Prevent overscroll/bounce effect */
+      overscroll-behavior: none;
+      /* Lock viewport height */
+      height: 100svh;
+      height: -webkit-fill-available;
+    }
+
+    body {
+      /* Match html height */
+      min-height: 100svh;
+      min-height: -webkit-fill-available;
+      /* Prevent iOS Safari rubber band scrolling at top/bottom */
+      overscroll-behavior-y: none;
+      /* Prevent address bar from affecting layout */
+      position: relative;
     }
   }
 }

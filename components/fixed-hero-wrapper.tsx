@@ -1,48 +1,57 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 
 interface FixedHeroWrapperProps {
   children: React.ReactNode
 }
 
 export function FixedHeroWrapper({ children }: FixedHeroWrapperProps) {
-  const [height, setHeight] = useState<number | null>(null)
+  const heroRef = useRef<HTMLDivElement>(null)
+  const spacerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Set initial height
-    const setVh = () => {
+    // Capture viewport height ONCE on mount and NEVER update it
+    // This prevents the hero from jumping when browser UI appears/disappears
+    const captureHeight = () => {
+      if (typeof window === 'undefined') return
+
+      // Use window.innerHeight which gives us the actual viewport
       const vh = window.innerHeight
-      setHeight(vh)
-      // Also set CSS custom property as fallback
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
+
+      // Apply the fixed height to both elements
+      if (heroRef.current) {
+        heroRef.current.style.height = `${vh}px`
+      }
+      if (spacerRef.current) {
+        spacerRef.current.style.height = `${vh}px`
+      }
+
+      // Also set CSS custom property for any other uses
+      document.documentElement.style.setProperty('--app-height', `${vh}px`)
     }
 
-    // Set on mount
-    setVh()
+    // Small delay to ensure window is fully loaded
+    const timeoutId = setTimeout(captureHeight, 50)
 
-    // Update on resize (but throttled to avoid performance issues)
-    let timeoutId: NodeJS.Timeout
-    const handleResize = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(setVh, 100)
-    }
-
-    window.addEventListener('resize', handleResize)
-
+    // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize)
       clearTimeout(timeoutId)
     }
-  }, [])
+  }, []) // Empty dependency array - only run once on mount
 
   return (
     <>
       {/* Fixed Hero Background */}
       <div
+        ref={heroRef}
         className="fixed top-0 left-0 right-0 w-full z-0"
         style={{
-          height: height ? `${height}px` : '100vh',
+          // Use CSS with fallback chain for maximum compatibility
+          // svh = small viewport height (most stable on mobile)
+          height: '100svh',
+          // Fallback for older browsers
+          minHeight: '100vh',
         }}
       >
         {children}
@@ -50,8 +59,10 @@ export function FixedHeroWrapper({ children }: FixedHeroWrapperProps) {
 
       {/* Spacer */}
       <div
+        ref={spacerRef}
         style={{
-          height: height ? `${height}px` : '100vh',
+          height: '100svh',
+          minHeight: '100vh',
         }}
       />
     </>
