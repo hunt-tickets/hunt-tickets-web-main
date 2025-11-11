@@ -117,11 +117,6 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
     setSelectedCity(null);
   };
 
-  // Prepare events for grid - if only 1 event, duplicate it 3 times
-  const gridEvents = filteredEvents.length === 1
-    ? [filteredEvents[0], filteredEvents[0], filteredEvents[0]]
-    : filteredEvents;
-
   return (
     <>
       {/* Search and Filter Bar */}
@@ -180,7 +175,7 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
       ) : (
         /* Grid of Popular Events - 3 columns layout */
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 pb-12 sm:pb-16 md:pb-24">
-          {gridEvents.slice(0, limit).map((event, index) => (
+          {filteredEvents.slice(0, limit).map((event, index) => (
             <EventCard
               key={`${event.id}-${index}`}
               id={event.id}
