@@ -24,6 +24,12 @@ const GLSLHills: React.FC<GLSLHillsProps> = ({
   useEffect(() => {
     if (!canvasRef.current) return;
 
+    // Capture viewport dimensions ONCE on mount
+    // This prevents the shader from jumping when mobile browser UI appears/disappears
+    const initialWidth = window.innerWidth;
+    const initialHeight = window.innerHeight;
+    let lastWidth = initialWidth;
+
     // Plane class
     class Plane {
       uniforms: { time: { type: string; value: number } };
@@ -175,18 +181,26 @@ const GLSLHills: React.FC<GLSLHillsProps> = ({
     // Three.js setup
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias: false });
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    const camera = new THREE.PerspectiveCamera(45, initialWidth / initialHeight, 1, 10000);
     const clock = new THREE.Clock();
     const plane = new Plane();
 
     const resize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const currentWidth = window.innerWidth;
+
+      // Only resize if width changed (orientation change)
+      // Ignore height-only changes (mobile browser UI showing/hiding)
+      if (currentWidth !== lastWidth) {
+        lastWidth = currentWidth;
+        canvas.width = currentWidth;
+        canvas.height = window.innerHeight;
+        camera.aspect = currentWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(currentWidth, window.innerHeight);
+      }
     };
 
     const render = () => {
@@ -201,13 +215,12 @@ const GLSLHills: React.FC<GLSLHillsProps> = ({
     };
 
     const init = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(initialWidth, initialHeight);
       renderer.setClearColor(0x000000, 0);
       camera.position.set(0, 16, cameraZ);
       camera.lookAt(new THREE.Vector3(0, 28, 0));
       scene.add(plane.mesh);
       window.addEventListener('resize', resize);
-      resize();
       renderLoop();
     };
 
