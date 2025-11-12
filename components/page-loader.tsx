@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
-import { GLSLHills } from "@/components/ui/glsl-hills"
+
+const LETTERS = ["H", "U", "N", "T"]
+const LETTER_DURATION = 600 // Duration each letter is shown (ms)
 
 export function PageLoader() {
   const [isLoading, setIsLoading] = useState(true)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
-  const [progress, setProgress] = useState(0)
+  const [currentLetterIndex, setCurrentLetterIndex] = useState(0)
 
   useEffect(() => {
     // Check if this is the first visit or if we should show the loader
@@ -19,22 +21,15 @@ export function PageLoader() {
       return
     }
 
-    // Progress counter - increment to 100% over 4 seconds
-    const duration = 4000 // 4 seconds
-    const increment = 100 / (duration / 16) // 60fps (16ms per frame)
+    // Cycle through letters H → U → N → T
+    const letterInterval = setInterval(() => {
+      setCurrentLetterIndex((prev) => (prev + 1) % LETTERS.length)
+    }, LETTER_DURATION)
 
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + increment
-        if (next >= 100) {
-          clearInterval(progressInterval)
-          return 100
-        }
-        return next
-      })
-    }, 16)
+    // Total duration: 4 cycles through all letters (2.4s per cycle)
+    const totalDuration = LETTER_DURATION * LETTERS.length * 2 // ~4.8 seconds
 
-    // Start exit animation when progress reaches 100%
+    // Start exit animation
     const timer = setTimeout(() => {
       setIsAnimatingOut(true)
       // Mark as visited
@@ -44,10 +39,10 @@ export function PageLoader() {
       setTimeout(() => {
         setIsLoading(false)
       }, 800)
-    }, duration)
+    }, totalDuration)
 
     return () => {
-      clearInterval(progressInterval)
+      clearInterval(letterInterval)
       clearTimeout(timer)
     }
   }, [])
@@ -61,26 +56,46 @@ export function PageLoader() {
         isAnimatingOut && "opacity-0"
       )}
     >
-      {/* Shader Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden bg-background">
-        <GLSLHills speed={0.3} />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
+      {/* Glassmorphism Background */}
+      <div className="absolute inset-0 bg-black/95 backdrop-blur-xl" />
+
+      {/* Morphing Letters */}
+      <div className="relative z-10 flex items-center justify-center">
+        <div className="relative w-[clamp(8rem,30vw,20rem)] h-[clamp(8rem,30vw,20rem)] flex items-center justify-center">
+          {LETTERS.map((letter, index) => (
+            <div
+              key={letter}
+              className={cn(
+                "absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out",
+                index === currentLetterIndex
+                  ? "opacity-100 scale-100 blur-0"
+                  : "opacity-0 scale-90 blur-sm"
+              )}
+            >
+              <span
+                className="text-[clamp(6rem,25vw,16rem)] font-black text-white leading-none"
+                style={{ fontFamily: "LOT, sans-serif" }}
+              >
+                {letter}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Loader Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-6">
-        <h1
-          className={cn(
-            "text-[clamp(4rem,20vw,12rem)] font-black tracking-tight transition-all duration-800 tabular-nums",
-            isAnimatingOut ? "scale-110 opacity-0 blur-lg" : "scale-100 opacity-100 blur-0"
-          )}
-          style={{ fontFamily: "LOT, sans-serif" }}
-        >
-          <span className="text-foreground">
-            {Math.floor(progress)}
-            <span className="text-primary">%</span>
-          </span>
-        </h1>
+      {/* Optional: Loading dots indicator */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className={cn(
+              "w-2 h-2 rounded-full transition-all duration-300",
+              i === currentLetterIndex
+                ? "bg-white scale-125"
+                : "bg-white/30 scale-100"
+            )}
+          />
+        ))}
       </div>
     </div>
   )
