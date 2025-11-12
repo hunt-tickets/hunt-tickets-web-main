@@ -245,6 +245,27 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
         </div>
       </div>
 
+          {/* Empty State */}
+          {ticketBreakdown.length === 0 && transactionsWithoutQR.length === 0 && (
+            <Card className="bg-white/[0.02] border-white/5">
+              <CardContent className="py-16 text-center">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="rounded-full bg-white/5 p-4">
+                    <QrCode className="h-12 w-12 text-white/40" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      No hay datos de acceso aún
+                    </h3>
+                    <p className="text-sm text-white/60 max-w-md">
+                      Los datos de control de acceso aparecerán aquí cuando se generen códigos QR o se realicen ventas para este evento.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Breakdown by Ticket Type */}
           {ticketBreakdown.length > 0 && (
             <Card className="bg-white/[0.02] border-white/5">
