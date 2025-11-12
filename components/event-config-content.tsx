@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,6 +48,12 @@ export function EventConfigContent() {
 
   const [activeTab, setActiveTab] = useState("information");
 
+  const tabs = [
+    { id: "information", label: "Información", icon: Settings },
+    { id: "images", label: "Imágenes", icon: ImageIcon },
+    { id: "payment", label: "Pagos", icon: CreditCard },
+  ];
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -89,24 +94,30 @@ export function EventConfigContent() {
   };
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-6">
-        <TabsTrigger value="information" className="rounded-lg">
-          <Settings className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Información</span>
-        </TabsTrigger>
-        <TabsTrigger value="images" className="rounded-lg">
-          <ImageIcon className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Imágenes</span>
-        </TabsTrigger>
-        <TabsTrigger value="payment" className="rounded-lg">
-          <CreditCard className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Pagos</span>
-        </TabsTrigger>
-      </TabsList>
+    <div className="space-y-4">
+      {/* Tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-2">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === tab.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-white/5 hover:bg-white/10 text-white/60 hover:text-white/80"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
 
-      {/* Information Tab */}
-      <TabsContent value="information" className="space-y-4">
+      {/* Information Section */}
+      {activeTab === "information" && (
         <Card className="bg-white/[0.02] border-white/5">
           <CardHeader>
             <CardTitle>Información del Evento</CardTitle>
@@ -222,10 +233,10 @@ export function EventConfigContent() {
             </div>
           </CardContent>
         </Card>
-      </TabsContent>
+      )}
 
-      {/* Images Tab */}
-      <TabsContent value="images" className="space-y-4">
+      {/* Images Section */}
+      {activeTab === "images" && (
         <Card className="bg-white/[0.02] border-white/5">
           <CardHeader>
             <CardTitle>Imágenes del Evento</CardTitle>
@@ -324,10 +335,10 @@ export function EventConfigContent() {
             </div>
           </CardContent>
         </Card>
-      </TabsContent>
+      )}
 
-      {/* Payment Tab */}
-      <TabsContent value="payment" className="space-y-4">
+      {/* Payment Section */}
+      {activeTab === "payment" && (
         <Card className="bg-white/[0.02] border-white/5">
           <CardHeader>
             <CardTitle>Configuración de Pagos</CardTitle>
@@ -443,7 +454,7 @@ export function EventConfigContent() {
             </div>
           </CardContent>
         </Card>
-      </TabsContent>
-    </Tabs>
+      )}
+    </div>
   );
 }
