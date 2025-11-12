@@ -21,9 +21,9 @@ export function PageLoader() {
       return
     }
 
-    // morphTime = 0.7s per transition, cooldownTime = 0.25s
-    // Total: (0.7s + 0.25s) * 3 transitions = 2.85s for H→U→N→T
-    const totalDuration = 3500 // 3.5 seconds - fast loading experience
+    // Fast morphing animation: 0.7s per transition, 0.25s cooldown
+    // Total: (0.7s + 0.25s) × 3 transitions = 2.85s for H→U→N→T
+    const totalDuration = 3500 // 3.5 seconds total - optimized loading experience
 
     // Start exit animation
     const timer = setTimeout(() => {
