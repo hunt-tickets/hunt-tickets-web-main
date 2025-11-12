@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, Settings, ArrowLeft, Menu, X, UserCircle, Calculator, Shield } from "lucide-react";
+import { Calendar, Users, Settings, ArrowLeft, Menu, X, UserCircle, Calculator, Shield, Tag } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -11,7 +11,7 @@ interface AdminSidebarProps {
   userId: string;
 }
 
-const menuItems = [
+const primaryMenuItems = [
   {
     title: "Eventos",
     icon: Calendar,
@@ -19,6 +19,16 @@ const menuItems = [
     description: "Crea y gestiona eventos",
     exact: false, // Will match /administrador/event/[id] too
   },
+  {
+    title: "Marcas",
+    icon: Tag,
+    href: "/administrador/marcas",
+    description: "Gestiona productores y marcas",
+    exact: true,
+  },
+];
+
+const adminMenuItems = [
   {
     title: "Contabilidad",
     icon: Calculator,
@@ -100,7 +110,8 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
 
           {/* Navigation */}
           <nav className="flex-1 space-y-1">
-            {menuItems.map((item) => {
+            {/* Primary Menu Items */}
+            {primaryMenuItems.map((item) => {
               const Icon = item.icon;
               const fullHref = `/profile/${userId}${item.href}`;
 
@@ -111,10 +122,51 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
               } else {
                 // For non-exact matches (like /administrador which should also match /administrador/event/[id])
                 if (item.href === "/administrador") {
-                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios") && !pathname.includes("/contabilidad") && !pathname.includes("/seguridad");
+                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios") && !pathname.includes("/contabilidad") && !pathname.includes("/seguridad") && !pathname.includes("/marcas");
                 } else {
                   isActive = pathname.includes(item.href);
                 }
+              }
+
+              return (
+                <Link
+                  key={item.href}
+                  href={fullHref}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm relative",
+                    isActive
+                      ? "bg-primary/10 text-white border-l-2 border-primary"
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                  )}
+                >
+                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <div>{item.title}</div>
+                </Link>
+              );
+            })}
+
+            {/* Separator with "Administrador" label */}
+            <div className="py-4">
+              <div className="px-3 mb-2">
+                <span className="text-xs font-semibold text-white/40 uppercase tracking-wider">
+                  Administrador
+                </span>
+              </div>
+              <div className="border-t border-white/10" />
+            </div>
+
+            {/* Admin Menu Items */}
+            {adminMenuItems.map((item) => {
+              const Icon = item.icon;
+              const fullHref = `/profile/${userId}${item.href}`;
+
+              // Check if current route matches this menu item
+              let isActive = false;
+              if (item.exact) {
+                isActive = pathname === fullHref;
+              } else {
+                isActive = pathname.includes(item.href);
               }
 
               return (

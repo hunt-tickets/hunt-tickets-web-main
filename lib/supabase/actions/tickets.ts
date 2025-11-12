@@ -846,6 +846,54 @@ export async function getAllArtists() {
   return data || [];
 }
 
+export async function getAllVenues() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("venues")
+    .select("id, name, logo, address, city")
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching all venues:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function getProducerTeam(producerId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("producers_admin")
+    .select(`
+      id,
+      rol,
+      profile:profiles!inner(
+        id,
+        name,
+        lastName,
+        email
+      )
+    `)
+    .eq("producer_id", producerId)
+    .order("rol", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching producer team:", error);
+    return [];
+  }
+
+  // Transform profile from array to object if needed
+  const transformedData = data?.map((item) => ({
+    ...item,
+    profile: Array.isArray(item.profile) ? item.profile[0] : item.profile
+  }));
+
+  return transformedData || [];
+}
+
 export async function getAllTransactions() {
   const supabase = await createClient();
 

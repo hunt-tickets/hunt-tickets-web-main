@@ -249,7 +249,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
           {ticketBreakdown.length === 0 && transactionsWithoutQR.length === 0 && (
             <Card className="bg-white/[0.02] border-white/5 min-h-[60vh]">
               <CardContent className="h-full flex items-center justify-center py-16">
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 text-center">
                   <div className="rounded-full bg-white/5 p-4">
                     <QrCode className="h-12 w-12 text-white/40" />
                   </div>
@@ -257,7 +257,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                     <h3 className="text-lg font-semibold text-white mb-2">
                       No hay datos de acceso aún
                     </h3>
-                    <p className="text-sm text-white/60 max-w-md">
+                    <p className="text-sm text-white/60 max-w-md mx-auto">
                       Los datos de control de acceso aparecerán aquí cuando se generen códigos QR o se realicen ventas para este evento.
                     </p>
                   </div>
@@ -494,7 +494,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
         transactionsWithoutQR.length === 0 ? (
           <Card className="bg-white/[0.02] border-white/5 min-h-[60vh]">
             <CardContent className="h-full flex items-center justify-center py-16">
-              <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-4 text-center">
                 <div className="rounded-full bg-white/5 p-4">
                   <CheckCircle2 className="h-12 w-12 text-green-400" />
                 </div>
@@ -502,7 +502,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                   <h3 className="text-lg font-semibold text-white mb-2">
                     ¡Perfecto!
                   </h3>
-                  <p className="text-sm text-white/60 max-w-md">
+                  <p className="text-sm text-white/60 max-w-md mx-auto">
                     Todas las transacciones tienen códigos QR generados
                   </p>
                 </div>
@@ -551,7 +551,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
         currentQRCodes.length === 0 ? (
           <Card className="bg-white/[0.02] border-white/5 min-h-[60vh]">
             <CardContent className="h-full flex items-center justify-center py-16">
-              <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-4 text-center">
                 <div className="rounded-full bg-white/5 p-4">
                   <QrCode className="h-12 w-12 text-white/40" />
                 </div>
@@ -559,7 +559,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                   <h3 className="text-lg font-semibold text-white mb-2">
                     {searchTerm ? "No se encontraron entradas" : "No hay entradas"}
                   </h3>
-                  <p className="text-sm text-white/60 max-w-md">
+                  <p className="text-sm text-white/60 max-w-md mx-auto">
                     {searchTerm ? "Intenta con otro término de búsqueda" : "Las entradas aparecerán aquí cuando haya ventas"}
                   </p>
                 </div>
