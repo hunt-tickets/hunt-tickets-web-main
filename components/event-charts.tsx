@@ -193,7 +193,7 @@ interface SalesFunnelChartProps {
 }
 
 export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnelChartProps) {
-  const data = [
+  const stages = [
     { name: 'Visitas', value: visits, color: '#3b82f6' },
     { name: 'Añadido al carrito', value: addedToCart, color: '#8b5cf6' },
     { name: 'Compras completadas', value: completed, color: '#10b981' }
@@ -206,98 +206,14 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
     addedToCart > 0 ? (completed / addedToCart) * 100 : 0
   ];
 
-  const option = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      backgroundColor: '#18181b',
-      borderColor: '#303030',
-      borderWidth: 1,
-      textStyle: {
-        color: '#fff'
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatter: (params: any) => {
-        const index = data.findIndex(d => d.name === params.name);
-        const rate = conversionRates[index];
-        return `<strong>${params.name}</strong><br/>
-                Cantidad: ${params.value}<br/>
-                Conversión: ${rate.toFixed(1)}%`;
-      }
-    },
-    series: [
-      {
-        type: 'funnel',
-        orient: 'horizontal',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 0,
-        height: '100%',
-        min: 0,
-        max: visits,
-        minSize: '10%',
-        maxSize: '100%',
-        sort: 'descending',
-        gap: 8,
-        funnelAlign: 'center',
-        smooth: true,
-        label: {
-          show: true,
-          position: 'inside',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          formatter: (params: any) => {
-            const index = data.findIndex(d => d.name === params.name);
-            const rate = conversionRates[index];
-            return `{name|${params.name}}\n{value|${params.value}} {rate|${rate.toFixed(1)}%}`;
-          },
-          rich: {
-            name: {
-              color: '#fff',
-              fontSize: 12,
-              fontWeight: 'bold',
-              lineHeight: 16
-            },
-            value: {
-              color: '#fff',
-              fontSize: 13,
-              fontWeight: 'bold',
-              lineHeight: 16
-            },
-            rate: {
-              color: '#888',
-              fontSize: 10,
-              lineHeight: 16
-            }
-          }
-        },
-        emphasis: {
-          label: {
-            fontSize: 13
-          },
-          itemStyle: {
-            borderColor: '#fff',
-            borderWidth: 2,
-            shadowBlur: 15,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-            opacity: 1
-          }
-        },
-        itemStyle: {
-          borderRadius: 12,
-          borderWidth: 0,
-          opacity: 0.9
-        },
-        data: data.map(d => ({
-          name: d.name,
-          value: d.value,
-          itemStyle: {
-            color: d.color
-          }
-        }))
-      }
-    ]
-  };
+  const width = 600;
+  const height = 300;
+  const padding = 40;
+  const usableWidth = width - padding * 2;
+  const usableHeight = height - padding * 2;
+  const sectionHeight = usableHeight / stages.length;
+
+  const maxValue = Math.max(...stages.map(s => s.value));
 
   return (
     <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
@@ -305,8 +221,71 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
         <CardTitle className="text-base">Embudo de Ventas</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
+        <div className="flex justify-center">
+          <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="w-full">
+            {/* Smooth curved funnel sections */}
+            {stages.map((stage, index) => {
+              const ratio = stage.value / maxValue;
+              const nextRatio = index < stages.length - 1 ? stages[index + 1].value / maxValue : 0.3;
+
+              const y = padding + index * sectionHeight;
+              const nextY = padding + (index + 1) * sectionHeight;
+
+              const topWidth = usableWidth * ratio;
+              const bottomWidth = usableWidth * nextRatio;
+              const topLeft = (usableWidth - topWidth) / 2;
+              const bottomLeft = (usableWidth - bottomWidth) / 2;
+
+              return (
+                <g key={index}>
+                  {/* Curved trapezoid using smooth bezier curves */}
+                  <path
+                    d={`
+                      M ${padding + topLeft} ${y}
+                      L ${padding + topLeft + topWidth} ${y}
+                      C ${padding + topLeft + topWidth + (bottomLeft - topLeft - topWidth) / 3} ${y + sectionHeight / 2},
+                        ${padding + bottomLeft + bottomWidth + (topLeft - bottomLeft - bottomWidth) / 3} ${nextY - sectionHeight / 2},
+                        ${padding + bottomLeft + bottomWidth} ${nextY}
+                      L ${padding + bottomLeft} ${nextY}
+                      C ${padding + bottomLeft - (bottomLeft - topLeft - bottomWidth) / 3} ${nextY - sectionHeight / 2},
+                        ${padding + topLeft - (topLeft - bottomLeft + bottomWidth) / 3} ${y + sectionHeight / 2},
+                        ${padding + topLeft} ${y}
+                      Z
+                    `}
+                    fill={stage.color}
+                    fillOpacity="0.85"
+                    stroke={stage.color}
+                    strokeWidth="0.5"
+                    strokeOpacity="0.3"
+                    className="transition-opacity hover:fill-opacity-100"
+                  />
+
+                  {/* Text label */}
+                  <text
+                    x={width / 2}
+                    y={y + sectionHeight / 2 + 5}
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize="14"
+                    fontWeight="bold"
+                    className="pointer-events-none"
+                  >
+                    {stage.name}
+                  </text>
+                  <text
+                    x={width / 2}
+                    y={y + sectionHeight / 2 + 22}
+                    textAnchor="middle"
+                    fill="#888"
+                    fontSize="12"
+                    className="pointer-events-none"
+                  >
+                    {stage.value} ({conversionRates[index].toFixed(0)}%)
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
         </div>
       </CardContent>
     </Card>
