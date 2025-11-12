@@ -2,7 +2,7 @@
 
 import { useState, Fragment } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, GripVertical, Edit2, Plus, X } from "lucide-react";
+import { Users, GripVertical, Edit2, Plus, X, Lock, LockOpen } from "lucide-react";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { Input } from "@/components/ui/input";
@@ -154,6 +154,7 @@ export function EventTeamContent({
   const [isAddingStage, setIsAddingStage] = useState(false);
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
+  const [blockedSlots, setBlockedSlots] = useState<Array<{ date: string; hour: string; stageId: string }>>([]);
 
   // Calculate event days dynamically in user's local timezone
   const eventDays: EventDay[] = [];
@@ -441,6 +442,27 @@ export function EventTeamContent({
         return slotHourNum !== hourNum;
       }));
     }
+  };
+
+  const handleToggleBlockSlot = (date: string, hour: string) => {
+    const slotKey = `${date}-${hour}-${selectedStage}`;
+    const isBlocked = blockedSlots.some(
+      slot => slot.date === date && slot.hour === hour && slot.stageId === selectedStage
+    );
+
+    if (isBlocked) {
+      setBlockedSlots(blockedSlots.filter(
+        slot => !(slot.date === date && slot.hour === hour && slot.stageId === selectedStage)
+      ));
+    } else {
+      setBlockedSlots([...blockedSlots, { date, hour, stageId: selectedStage }]);
+    }
+  };
+
+  const isSlotBlocked = (date: string, hour: string) => {
+    return blockedSlots.some(
+      slot => slot.date === date && slot.hour === hour && slot.stageId === selectedStage
+    );
   };
 
   return (
@@ -803,12 +825,19 @@ export function EventTeamContent({
                               );
                             }
 
+                            const blocked = isSlotBlocked(day.date, hour);
+
                             return (
                               <div
                                 key={`${day.date}-${hour}`}
-                                onDragOver={handleDragOver}
-                                onDrop={() => handleDrop(day.date, hour, selectedStage)}
-                                className="border-r border-white/5 last:border-r-0 border-b border-white/5 hover:bg-white/[0.02] transition-colors relative overflow-visible"
+                                onDragOver={blocked ? undefined : handleDragOver}
+                                onDrop={blocked ? undefined : () => handleDrop(day.date, hour, selectedStage)}
+                                onClick={() => handleToggleBlockSlot(day.date, hour)}
+                                className={`border-r border-white/5 last:border-r-0 border-b border-white/5 relative overflow-visible cursor-pointer transition-all ${
+                                  blocked
+                                    ? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/20'
+                                    : 'hover:bg-white/[0.02]'
+                                }`}
                                 style={{
                                   gridColumn: dayIndex + 2,
                                   gridRow: hourIndex + 1
@@ -953,8 +982,12 @@ export function EventTeamContent({
                                     );
                                   })
                                 ) : (
-                                  <div className="h-full flex items-center justify-center">
-                                    <span className="text-xs text-white/20">+</span>
+                                  <div className="h-full flex items-center justify-center" title={blocked ? "Click para desbloquear este horario" : ""}>
+                                    {blocked ? (
+                                      <Lock className="h-4 w-4 text-red-400/60" />
+                                    ) : (
+                                      <span className="text-xs text-white/20">+</span>
+                                    )}
                                   </div>
                                 )}
                               </div>
