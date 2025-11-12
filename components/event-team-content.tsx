@@ -2,7 +2,7 @@
 
 import { useState, Fragment } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, GripVertical, Edit2, Plus, X, Lock, LockOpen } from "lucide-react";
+import { Users, GripVertical, Edit2, Plus, X, Lock } from "lucide-react";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { Input } from "@/components/ui/input";
@@ -157,7 +157,7 @@ export function EventTeamContent({
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
   const [blockedSlots, setBlockedSlots] = useState<Array<{ date: string; hour: string; stageId: string }>>([]);
   const [draggingSlot, setDraggingSlot] = useState<ScheduleSlot | null>(null);
-  const [dragPreview, setDragPreview] = useState<{ day: string; hour: string; stage: string } | null>(null);
+  const [dragPreview, setDragPreview] = useState<{ day: string; time: string; stage: string } | null>(null);
 
   // Calculate event days dynamically in user's local timezone
   const eventDays: EventDay[] = [];
@@ -313,7 +313,20 @@ export function EventTeamContent({
     const stage = cell.getAttribute('data-cell-stage');
 
     if (date && hour && stage) {
-      setDragPreview({ day: date, hour, stage });
+      // Calculate position within the cell
+      const rect = cell.getBoundingClientRect();
+      const relativeY = e.clientY - rect.top;
+      const percentageY = Math.max(0, Math.min(1, relativeY / rect.height));
+
+      // Snap to 15-minute intervals (0, 15, 30, 45)
+      const intervalIndex = Math.floor(percentageY * 4);
+      const minutes = Math.max(0, Math.min(3, intervalIndex)) * 15;
+
+      // Create the time with minutes
+      const hourNum = parseInt(hour.split(':')[0]);
+      const time = `${String(hourNum).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+      setDragPreview({ day: date, time, stage });
     }
   };
 
@@ -325,21 +338,9 @@ export function EventTeamContent({
     }
 
     e.preventDefault();
-    // Simulate the drop
-    const dropElement = document.querySelector(
-      `[data-cell-date="${dragPreview.day}"][data-cell-hour="${dragPreview.hour}"][data-cell-stage="${dragPreview.stage}"]`
-    ) as HTMLElement;
 
-    if (dropElement) {
-      const rect = dropElement.getBoundingClientRect();
-      const mockEvent = new DragEvent('drop', {
-        clientX: e.clientX,
-        clientY: e.clientY,
-        bubbles: true,
-      }) as any;
-      mockEvent.currentTarget = dropElement;
-      handleDrop(dragPreview.day, dragPreview.hour, dragPreview.stage, mockEvent);
-    }
+    // Call handleDrop with the time that includes minutes
+    handleDrop(dragPreview.day, dragPreview.time, dragPreview.stage);
 
     setDraggingSlot(null);
     setDragPreview(null);
@@ -349,26 +350,15 @@ export function EventTeamContent({
     e.preventDefault();
   };
 
-  const handleDrop = (day: string, hour: string, stageId: string, e: React.DragEvent) => {
+  const handleDrop = (day: string, time: string, stageId: string) => {
     // Convert times to minutes for comparison
     const timeToMinutes = (t: string) => {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
     };
 
-    // Get the drop position relative to the cell
-    const dropElement = e.currentTarget as HTMLElement;
-    const rect = dropElement.getBoundingClientRect();
-    const relativeY = e.clientY - rect.top;
-    const percentageY = relativeY / rect.height;
-
-    // Calculate which 15-minute interval (0, 15, 30, 45)
-    const intervalIndex = Math.floor(percentageY * 4);
-    const minutes = Math.max(0, Math.min(3, intervalIndex)) * 15;
-
-    // Construct the start time with 15-minute precision
-    const hourNum = parseInt(hour.split(':')[0]);
-    const startTime = `${String(hourNum).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    // Use the pre-calculated time with 15-minute precision from dragPreview
+    const startTime = time;
     const startMinutes = timeToMinutes(startTime);
 
     // If we're moving an existing slot
@@ -951,7 +941,9 @@ export function EventTeamContent({
                             const hasArtists = slotsInThisHour.length > 0;
                             const canBlock = !hasArtists;
 
-                            const isPreview = dragPreview?.day === day.date && dragPreview?.hour === hour && dragPreview?.stage === selectedStage;
+                            // Check if this cell matches the drag preview (compare hour part of time)
+                            const previewHour = dragPreview?.time ? dragPreview.time.split(':')[0] + ':00' : null;
+                            const isPreview = dragPreview?.day === day.date && previewHour === hour && dragPreview?.stage === selectedStage;
 
                             return (
                               <div
@@ -960,7 +952,7 @@ export function EventTeamContent({
                                 data-cell-hour={hour}
                                 data-cell-stage={selectedStage}
                                 onDragOver={blocked ? undefined : handleDragOver}
-                                onDrop={blocked ? undefined : (e) => handleDrop(day.date, hour, selectedStage, e)}
+                                onDrop={blocked ? undefined : () => handleDrop(day.date, hour, selectedStage)}
                                 onClick={canBlock ? () => handleToggleBlockSlot(day.date, hour) : undefined}
                                 className={`border-r border-white/5 last:border-r-0 border-b border-white/5 relative overflow-visible transition-all ${
                                   canBlock ? 'cursor-pointer' : ''
@@ -997,7 +989,7 @@ export function EventTeamContent({
                                       <div
                                         key={slot.id}
                                         onMouseDown={(e) => handleSlotMouseDown(slot, e)}
-                                        onClick={(e) => {
+                                        onClick={() => {
                                           if (!draggingSlot) {
                                             handleEditSlot(slot);
                                           }
