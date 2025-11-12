@@ -317,16 +317,16 @@
   }
 }
 
-/* Chatbase widget adjustments for mobile */
+/* Chatbase widget adjustments for mobile - only in profile routes with menu bar */
 @media (max-width: 768px) {
-  /* Adjust chatbase widget to not overlap with bottom navigation */
-  #chatbase-bubble-button,
-  iframe[id*="chatbase"] {
+  /* Only adjust when profile menu bar is present (not in admin routes) */
+  body:has([data-profile-menu-bar]) #chatbase-bubble-button,
+  body:has([data-profile-menu-bar]) iframe[id*="chatbase"] {
     bottom: 80px !important; /* 64px (menu bar) + 16px (spacing) */
   }
 
   /* When chat window is open */
-  #chatbase-bubble-window {
+  body:has([data-profile-menu-bar]) #chatbase-bubble-window {
     bottom: 80px !important;
     max-height: calc(100vh - 160px) !important; /* Account for header and bottom nav */
   }
