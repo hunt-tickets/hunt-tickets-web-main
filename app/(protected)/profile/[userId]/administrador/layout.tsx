@@ -1,5 +1,12 @@
 import React, { ReactNode } from "react";
 import { AdminSidebar } from "@/components/admin-sidebar";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Eventos",
+  };
+}
 
 interface AdministradorLayoutProps {
   children: ReactNode;
@@ -17,10 +24,8 @@ const AdministradorLayout = async ({ children, params }: AdministradorLayoutProp
       <AdminSidebar userId={userId} />
 
       {/* Main Content - with left margin to accommodate fixed sidebar */}
-      <main className="lg:ml-64 min-h-screen">
-        <div className="px-6 sm:px-8 lg:px-12 py-8 lg:py-12 pt-20 lg:pt-12">
-          {children}
-        </div>
+      <main className="lg:ml-64 min-h-screen p-6">
+        {children}
       </main>
     </div>
   );

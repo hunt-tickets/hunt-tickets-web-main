@@ -721,63 +721,97 @@ export async function updateTicket(ticketId: string, ticketData: {
 export async function getEventProducers(eventId: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("event_producers")
-    .select(`
-      id,
-      created_at,
-      producer:producers!inner(
-        id,
-        name,
-        logo
-      )
-    `)
+  // First, get the events_producers entries
+  const { data: eventProducers, error: epError } = await supabase
+    .from("events_producers")
+    .select("id, created_at, producer_id")
     .eq("event_id", eventId)
     .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Error fetching event producers:", error);
-    return null;
+  if (epError) {
+    console.error("Error fetching events_producers:", epError);
+    return [];
   }
 
-  // Transform the data to ensure producer is an object, not an array
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return data?.map((item: any) => ({
-    ...item,
-    producer: Array.isArray(item.producer) ? item.producer[0] : item.producer
-  })) || null;
+  if (!eventProducers || eventProducers.length === 0) {
+    return [];
+  }
+
+  // Then get the producers for those producer_ids
+  const producerIds = eventProducers.map(ep => ep.producer_id);
+
+  const { data: producers, error: producersError } = await supabase
+    .from("producers")
+    .select("id, name, logo")
+    .in("id", producerIds);
+
+  if (producersError) {
+    console.error("Error fetching producers:", producersError);
+    return [];
+  }
+
+  // Combine the data
+  return eventProducers.map(ep => {
+    const producer = producers?.find(p => p.id === ep.producer_id);
+    return {
+      id: ep.id,
+      created_at: ep.created_at,
+      producer: producer || {
+        id: ep.producer_id,
+        name: null,
+        logo: null
+      }
+    };
+  });
 }
 
 export async function getEventArtists(eventId: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("event_artists")
-    .select(`
-      id,
-      created_at,
-      artist:artists!inner(
-        id,
-        name,
-        description,
-        category,
-        logo
-      )
-    `)
+  // First, get the lineup entries
+  const { data: lineup, error: lineupError } = await supabase
+    .from("lineup")
+    .select("id, created_at, artist_id")
     .eq("event_id", eventId)
     .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Error fetching event artists:", error);
-    return null;
+  if (lineupError) {
+    console.error("Error fetching lineup:", lineupError);
+    return [];
   }
 
-  // Transform the data to ensure artist is an object, not an array
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return data?.map((item: any) => ({
-    ...item,
-    artist: Array.isArray(item.artist) ? item.artist[0] : item.artist
-  })) || null;
+  if (!lineup || lineup.length === 0) {
+    return [];
+  }
+
+  // Then get the artists for those artist_ids
+  const artistIds = lineup.map(l => l.artist_id);
+
+  const { data: artists, error: artistsError } = await supabase
+    .from("artists")
+    .select("id, name, description, category, logo")
+    .in("id", artistIds);
+
+  if (artistsError) {
+    console.error("Error fetching artists:", artistsError);
+    return [];
+  }
+
+  // Combine the data
+  return lineup.map(l => {
+    const artist = artists?.find(a => a.id === l.artist_id);
+    return {
+      id: l.id,
+      created_at: l.created_at,
+      artist: artist || {
+        id: l.artist_id,
+        name: null,
+        description: null,
+        category: null,
+        logo: null
+      }
+    };
+  });
 }
 
 export async function getAllProducers() {

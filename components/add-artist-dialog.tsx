@@ -32,9 +32,10 @@ interface Artist {
 interface AddArtistDialogProps {
   eventId: string;
   availableArtists: Artist[];
+  className?: string;
 }
 
-export function AddArtistDialog({ eventId, availableArtists }: AddArtistDialogProps) {
+export function AddArtistDialog({ eventId, availableArtists, className }: AddArtistDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedArtistId, setSelectedArtistId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -72,10 +73,10 @@ export function AddArtistDialog({ eventId, availableArtists }: AddArtistDialogPr
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300"
+          className={`rounded-lg bg-white/90 hover:bg-white border border-white/80 text-black transition-all duration-300 ${className || ''}`}
         >
           <UserPlus className="h-4 w-4 mr-2" />
-          Agregar Artista
+          Agregar
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px] rounded-2xl bg-background/95 backdrop-blur-xl border-white/10 shadow-2xl">

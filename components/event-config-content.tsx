@@ -5,7 +5,7 @@ import { Settings } from "lucide-react";
 
 export function EventConfigContent() {
   return (
-    <div className="max-w-7xl mx-auto">
+    <div>
       <Card>
         <CardContent className="py-12 text-center">
           <Settings className="h-10 w-10 text-muted-foreground mx-auto mb-4" />

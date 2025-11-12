@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Ticket, HelpCircle } from "lucide-react";
+import { Ticket, HelpCircle, Map } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { CreateTicketDialog } from "@/components/create-ticket-dialog";
 import { EditTicketSheet } from "@/components/edit-ticket-sheet";
 import { ChannelSalesChart, TicketRevenueDistributionChart } from "@/components/event-charts";
@@ -59,6 +61,10 @@ export function EventTicketsContent({
   ticketTypes,
   variableFee,
 }: EventTicketsContentProps) {
+  const router = useRouter();
+  const params = useParams();
+  const userId = params.userId as string;
+
   const [selectedTicketType, setSelectedTicketType] = useState<string>("all");
   const [selectedPriceTab, setSelectedPriceTab] = useState<Record<string, 'app' | 'cash'>>({});
 
@@ -71,7 +77,7 @@ export function EventTicketsContent({
   };
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="flex items-center gap-2">
@@ -92,6 +98,15 @@ export function EventTicketsContent({
         <div className="flex items-center gap-2">
           <SendCourtesyDialog eventId={eventId} />
           <CreateTicketDialog eventId={eventId} ticketTypes={ticketTypes} />
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-lg"
+            onClick={() => router.push(`/profile/${userId}/administrador/event/${eventId}/mapa`)}
+          >
+            <Map className="h-4 w-4 mr-2" />
+            Mapa
+          </Button>
         </div>
       </div>
 

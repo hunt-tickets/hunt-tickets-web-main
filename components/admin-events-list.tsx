@@ -39,7 +39,7 @@ export function AdminEventsList({ events, userId, eventVenues = [] }: AdminEvent
             onSearchChange={setSearchQuery}
           />
         </div>
-        <div className="w-full sm:w-auto flex items-center">
+        <div className="flex sm:w-auto items-center justify-center sm:justify-start">
           <CreateEventDialog eventVenues={eventVenues} />
         </div>
       </div>
@@ -55,11 +55,6 @@ export function AdminEventsList({ events, userId, eventVenues = [] }: AdminEvent
               date={event.date}
               location={`${event.venue_name}, ${event.venue_city}`}
               image={event.flyer}
-              price={
-                event.tickets && event.tickets.length > 0
-                  ? Math.min(...event.tickets.map((t) => t.price))
-                  : undefined
-              }
               href={`/profile/${userId}/administrador/event/${event.id}`}
             />
           ))}

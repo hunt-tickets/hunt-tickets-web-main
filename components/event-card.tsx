@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { formatPrice } from "@/lib/utils/format";
 
 interface EventCardProps {
   id: string; // Event ID for navigation
@@ -10,7 +9,6 @@ interface EventCardProps {
   date: string; // Date string from API
   location: string;
   image: string;
-  price?: number; // Optional price
   href?: string; // Optional custom URL (defaults to /eventos/{id})
 }
 
@@ -20,7 +18,6 @@ export function EventCard({
   date,
   location,
   image,
-  price,
   href,
 }: EventCardProps) {
   // Parse date to extract day and month
@@ -65,7 +62,6 @@ export function EventCard({
           {/* Event details */}
           <div className="flex flex-col gap-1 sm:gap-1.5 text-white/90 text-sm sm:text-base">
             <span className="line-clamp-1">{location}</span>
-            {price && <span className="font-medium">Desde ${formatPrice(price)}</span>}
           </div>
         </div>
       </div>

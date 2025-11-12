@@ -42,7 +42,7 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
   const [eventData, producers, artists, allProducers, allArtists] = await Promise.all([
     supabase
       .from("events")
-      .select("id, name, status")
+      .select("id, name, status, date, end_date")
       .eq("id", eventId)
       .single(),
     getEventProducers(eventId),
@@ -77,6 +77,8 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
         artists={artists || []}
         allProducers={allProducers || []}
         allArtists={allArtists || []}
+        eventStartDate={event.date}
+        eventEndDate={event.end_date}
       />
     </div>
   );

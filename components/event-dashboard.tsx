@@ -59,7 +59,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
     : 0;
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4">
       {/* Key Metrics */}
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
         <Card className="bg-white/[0.02] border-white/5">

@@ -13,7 +13,7 @@ interface AdminSidebarProps {
 
 const menuItems = [
   {
-    title: "Administrar Eventos",
+    title: "Eventos",
     icon: Calendar,
     href: "/administrador",
     description: "Crea y gestiona eventos",

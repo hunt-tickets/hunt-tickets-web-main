@@ -253,7 +253,7 @@ export function EventProgressContent({
   if (!mounted) return null;
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4">
       {/* Key Progress Metrics */}
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-white/[0.02] border-white/5">

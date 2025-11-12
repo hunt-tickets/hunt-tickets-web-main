@@ -70,10 +70,10 @@ export function AddProducerDialog({ eventId, availableProducers }: AddProducerDi
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300"
+          className="rounded-full bg-white/90 hover:bg-white border border-white/80 text-black transition-all duration-300"
         >
           <UserPlus className="h-4 w-4 mr-2" />
-          Agregar Productor
+          Agregar
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px] rounded-2xl bg-background/95 backdrop-blur-xl border-white/10 shadow-2xl">

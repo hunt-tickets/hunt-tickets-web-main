@@ -152,7 +152,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
   }, [qrCodes]);
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4">
       {/* Main Tabs */}
       <div className="flex gap-2">
         <button

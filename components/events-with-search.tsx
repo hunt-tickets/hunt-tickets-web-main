@@ -183,11 +183,6 @@ export function EventsWithSearch({ events, limit = 6 }: EventsWithSearchProps) {
               date={event.date}
               location={`${event.venue_name}, ${event.venue_city}`}
               image={event.flyer}
-              price={
-                event.tickets && event.tickets.length > 0
-                  ? Math.min(...event.tickets.map((t) => t.price))
-                  : undefined
-              }
             />
           ))}
         </div>

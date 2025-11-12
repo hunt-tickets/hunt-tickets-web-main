@@ -69,7 +69,7 @@ export function EventSidebar({ userId, eventId, eventName }: EventSidebarProps) 
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-full bg-[#202020] border border-[#303030] hover:bg-[#2a2a2a] transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 rounded-full bg-[#202020] border border-[#303030] hover:bg-[#2a2a2a] transition-colors"
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? (
@@ -82,7 +82,7 @@ export function EventSidebar({ userId, eventId, eventName }: EventSidebarProps) 
       {/* Overlay for mobile */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[45]"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -90,7 +90,7 @@ export function EventSidebar({ userId, eventId, eventName }: EventSidebarProps) 
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-screen w-64 bg-[#202020] border-r border-[#2a2a2a] z-40 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
+          "fixed top-0 left-0 h-screen w-64 bg-[#202020] border-r border-[#2a2a2a] z-50 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

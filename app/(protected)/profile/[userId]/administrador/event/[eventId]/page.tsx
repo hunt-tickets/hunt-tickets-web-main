@@ -74,8 +74,8 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   // Empty state
   if (!financialReport) {
     return (
-      <div className="min-h-screen p-4 md:p-6">
-        <div className="mx-auto max-w-7xl space-y-4">
+      <div className="min-h-screen">
+        <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>

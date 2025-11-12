@@ -1,7 +1,22 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Receipt, Download } from "lucide-react";
+import { Receipt, Download, MoreVertical, Mail, Edit } from "lucide-react";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@/components/ui/sheet";
 
 interface Transaction {
   id: string;
@@ -74,12 +89,26 @@ export function EventTransactionsContent({
   completeTransactions,
   isAdmin,
 }: EventTransactionsContentProps) {
+  const [selectedTransaction, setSelectedTransaction] = useState<CompleteTransaction | null>(null);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handleEdit = (transactionId: string) => {
+    const complete = completeTransactions.find(t => t.id === transactionId);
+    if (complete) {
+      setSelectedTransaction(complete);
+    }
+  };
+
+  const handleResendEmail = (transactionId: string) => {
+    // TODO: Implementar reenvío de correo
+    console.log("Reenviar correo para transacción:", transactionId);
   };
 
   const handleDownloadCSV = () => {
@@ -201,20 +230,20 @@ export function EventTransactionsContent({
   };
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold">Transacciones del Evento</h3>
           <p className="text-sm text-muted-foreground">
-            {transactions.length} transaccion{transactions.length !== 1 ? 'es' : ''} registrada{transactions.length !== 1 ? 's' : ''}
+            {transactions.length.toLocaleString('es-CO')} transaccion{transactions.length !== 1 ? 'es' : ''} registrada{transactions.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={handleDownloadCSV}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
         >
           <Download className="h-4 w-4" />
-          Descargar CSV Completo
+          Descargar
         </button>
       </div>
 
@@ -222,19 +251,19 @@ export function EventTransactionsContent({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
           <div className="text-xs text-white/40 mb-1">Total Transacciones</div>
-          <div className="text-2xl font-bold">{transactions.length}</div>
+          <div className="text-2xl font-bold">{transactions.length.toLocaleString('es-CO')}</div>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
           <div className="text-xs text-white/40 mb-1">Por App</div>
-          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'app').length}</div>
+          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'app').length.toLocaleString('es-CO')}</div>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
           <div className="text-xs text-white/40 mb-1">Por Web</div>
-          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'web').length}</div>
+          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'web').length.toLocaleString('es-CO')}</div>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
           <div className="text-xs text-white/40 mb-1">En Efectivo</div>
-          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'cash').length}</div>
+          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'cash').length.toLocaleString('es-CO')}</div>
         </div>
       </div>
 
@@ -264,11 +293,16 @@ export function EventTransactionsContent({
                     <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Cant.</th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-white/40 uppercase tracking-wider">Total</th>
                     <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Canal</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {transactions.map((transaction) => (
-                    <tr key={transaction.id} className="hover:bg-white/[0.02] transition-colors">
+                    <tr
+                      key={transaction.id}
+                      className="hover:bg-white/[0.02] transition-colors cursor-pointer"
+                      onClick={() => handleEdit(transaction.id)}
+                    >
                       <td className="px-4 py-3 text-sm">
                         <div className="text-white/90">
                           {new Date(transaction.created_at).toLocaleDateString('es-CO', {
@@ -318,6 +352,35 @@ export function EventTransactionsContent({
                           {transaction.source === 'app' ? 'App' : transaction.source === 'web' ? 'Web' : 'Efectivo'}
                         </span>
                       </td>
+                      <td className="px-4 py-3 text-center" onClick={(e) => e.stopPropagation()}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 hover:bg-white/10"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-[#202020] border-[#303030]">
+                            <DropdownMenuItem
+                              onClick={() => handleEdit(transaction.id)}
+                              className="cursor-pointer text-sm text-white/90 hover:text-white hover:bg-white/10"
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleResendEmail(transaction.id)}
+                              className="cursor-pointer text-sm text-white/90 hover:text-white hover:bg-white/10"
+                            >
+                              <Mail className="mr-2 h-4 w-4" />
+                              Reenviar Correo
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -326,6 +389,166 @@ export function EventTransactionsContent({
           </CardContent>
         </Card>
       )}
+
+      {/* Transaction Details Sheet */}
+      <Sheet open={!!selectedTransaction} onOpenChange={(open) => !open && setSelectedTransaction(null)}>
+        <SheetContent side="right" className="w-full sm:max-w-2xl p-0 bg-[#101010] border-l border-[#303030] overflow-hidden">
+          <SheetHeader className="px-6 py-6 border-b border-[#303030] sticky top-0 z-10 bg-[#101010]">
+            <SheetTitle className="text-xl font-bold text-white">Detalles de Transacción</SheetTitle>
+            <SheetClose className="absolute right-4 top-4" />
+          </SheetHeader>
+
+          {selectedTransaction && (
+            <div className="overflow-y-auto h-[calc(100vh-80px)]">
+              <div className="p-6 space-y-6">
+                {/* Cliente Card */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 space-y-4">
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wider">👤 Cliente</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-white/40 mb-1">Nombre</p>
+                      <p className="text-sm text-white font-medium">{selectedTransaction.user_fullname}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40 mb-1">Email</p>
+                      <p className="text-sm text-white/90 break-all">{selectedTransaction.user_email}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Entrada Card */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 space-y-4">
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wider">🎫 Entrada</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-white/40 mb-1">Tipo</p>
+                      <p className="text-sm text-white font-medium">{selectedTransaction.ticket_name}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40 mb-1">Cantidad</p>
+                      <p className="text-sm text-white font-medium">{selectedTransaction.quantity.toLocaleString('es-CO')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detalles Financieros */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 space-y-4">
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wider">💰 Detalles Financieros</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center pb-3 border-b border-white/5">
+                      <span className="text-xs text-white/40">Precio Unitario</span>
+                      <span className="text-sm text-white font-medium">{formatCurrency(selectedTransaction.price)}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-white/5">
+                      <span className="text-xs text-white/40">Cantidad</span>
+                      <span className="text-sm text-white font-medium">{selectedTransaction.quantity}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-white/5">
+                      <span className="text-xs text-white/40">Comisión Hunt</span>
+                      <span className="text-sm text-orange-400 font-medium">{formatCurrency(selectedTransaction.variable_fee)}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-white/5">
+                      <span className="text-xs text-white/40">Impuesto</span>
+                      <span className="text-sm text-blue-400 font-medium">{formatCurrency(selectedTransaction.tax)}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2">
+                      <span className="text-sm text-white font-semibold">Total</span>
+                      <span className="text-lg text-green-400 font-bold">{formatCurrency(selectedTransaction.total)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Información de Transacción */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 space-y-4">
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wider">📋 Transacción</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-white/40 mb-1">ID Transacción</p>
+                      <p className="text-xs text-white/90 font-mono bg-white/5 rounded p-2 break-all">{selectedTransaction.order_id}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs text-white/40 mb-1">Estado</p>
+                        <div className="inline-block px-3 py-1.5 bg-blue-500/20 text-blue-300 rounded-full text-xs font-medium">
+                          {selectedTransaction.status}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-white/40 mb-1">Canal</p>
+                        <div className={`inline-block px-3 py-1.5 rounded-full text-xs font-medium ${
+                          selectedTransaction.type === 'app'
+                            ? 'bg-purple-500/20 text-purple-300'
+                            : selectedTransaction.type === 'web'
+                            ? 'bg-cyan-500/20 text-cyan-300'
+                            : 'bg-green-500/20 text-green-300'
+                        }`}>
+                          {selectedTransaction.type}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40 mb-1">Fecha</p>
+                      <p className="text-sm text-white">{new Date(selectedTransaction.created_at).toLocaleString('es-CO')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Información del Promotor */}
+                {selectedTransaction.promoter_fullname && (
+                  <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 space-y-4">
+                    <h3 className="text-sm font-semibold text-white uppercase tracking-wider">👨‍💼 Promotor</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs text-white/40 mb-1">Nombre</p>
+                        <p className="text-sm text-white font-medium">{selectedTransaction.promoter_fullname}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-white/40 mb-1">Email</p>
+                        <p className="text-sm text-white/90 break-all">{selectedTransaction.promoter_email}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Bold Information */}
+                {isAdmin && selectedTransaction.bold_id && (
+                  <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 space-y-4">
+                    <h3 className="text-sm font-semibold text-white uppercase tracking-wider">💳 Pago (Bold)</h3>
+                    <div className="space-y-3">
+                      {selectedTransaction.bold_id && (
+                        <div>
+                          <p className="text-xs text-white/40 mb-1">ID Bold</p>
+                          <p className="text-xs text-white/90 font-mono bg-white/5 rounded p-2 break-all">{selectedTransaction.bold_id}</p>
+                        </div>
+                      )}
+                      {selectedTransaction.bold_estado && (
+                        <div>
+                          <p className="text-xs text-white/40 mb-1">Estado</p>
+                          <p className="text-sm text-white">{selectedTransaction.bold_estado}</p>
+                        </div>
+                      )}
+                      {selectedTransaction.bold_metodo_pago && (
+                        <div>
+                          <p className="text-xs text-white/40 mb-1">Método de Pago</p>
+                          <p className="text-sm text-white">{selectedTransaction.bold_metodo_pago}</p>
+                        </div>
+                      )}
+                      {selectedTransaction.bold_fecha && (
+                        <div>
+                          <p className="text-xs text-white/40 mb-1">Fecha</p>
+                          <p className="text-sm text-white">{selectedTransaction.bold_fecha}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pb-6" />
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

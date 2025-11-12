@@ -66,7 +66,7 @@ export function EventAdvancesContent({
   const advancePercentage = settlementAmount > 0 ? (totalAdvances / settlementAmount) * 100 : 0;
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4">
       {/* Summary Cards */}
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="bg-white/[0.02] border-white/5">
