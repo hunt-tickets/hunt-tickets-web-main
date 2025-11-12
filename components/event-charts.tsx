@@ -206,6 +206,9 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
   ];
 
   const maxValue = Math.max(...stages.map(s => s.value));
+  const svgWidth = 600;
+  const svgHeight = 320;
+  const padding = 20;
 
   return (
     <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
@@ -213,36 +216,63 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
         <CardTitle className="text-base">Embudo de Ventas</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6 py-4">
-          {stages.map((stage, index) => {
-            const widthPercent = (stage.value / maxValue) * 100;
-            const rate = conversionRates[index];
+        <div className="flex justify-center">
+          <svg width="100%" height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="max-w-full">
+            {stages.map((stage, index) => {
+              const widthRatio = stage.value / maxValue;
+              const nextRatio = index < stages.length - 1 ? stages[index + 1].value / maxValue : 0.3;
 
-            return (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-white">{stage.name}</span>
-                  <span className="text-xs text-white/50">{stage.value} ({rate.toFixed(0)}%)</span>
-                </div>
+              const y = padding + index * 90;
+              const nextY = y + 80;
 
-                {/* Funnel bar with smooth curves */}
-                <div className="relative h-12 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500 flex items-center justify-center"
-                    style={{
-                      width: `${widthPercent}%`,
-                      backgroundColor: stage.color,
-                      opacity: 0.8
-                    }}
+              const maxWidth = svgWidth - padding * 2;
+              const currentWidth = maxWidth * widthRatio;
+              const nextWidth = maxWidth * nextRatio;
+
+              const x1 = (svgWidth - currentWidth) / 2;
+              const x2 = x1 + currentWidth;
+              const nextX1 = (svgWidth - nextWidth) / 2;
+              const nextX2 = nextX1 + nextWidth;
+
+              return (
+                <g key={index}>
+                  {/* Smooth funnel section */}
+                  <path
+                    d={`M ${x1} ${y} L ${x2} ${y} Q ${x2 + (nextX2 - x2) * 0.3} ${y + 40}, ${nextX2} ${nextY} L ${nextX1} ${nextY} Q ${x1 - (nextX1 - x1) * 0.3} ${y + 40}, ${x1} ${y} Z`}
+                    fill={stage.color}
+                    fillOpacity="0.8"
+                    stroke={stage.color}
+                    strokeWidth="1"
+                    strokeOpacity="0.3"
+                    className="hover:fill-opacity-100 transition-opacity"
+                  />
+
+                  {/* Label */}
+                  <text
+                    x={svgWidth / 2}
+                    y={y + 25}
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize="14"
+                    fontWeight="bold"
+                    className="pointer-events-none"
                   >
-                    <span className="text-xs font-bold text-white/80 px-3">
-                      {((widthPercent / 100) * 100).toFixed(0)}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                    {stage.name}
+                  </text>
+                  <text
+                    x={svgWidth / 2}
+                    y={y + 45}
+                    textAnchor="middle"
+                    fill="#888"
+                    fontSize="12"
+                    className="pointer-events-none"
+                  >
+                    {stage.value} ({conversionRates[index].toFixed(0)}%)
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
         </div>
       </CardContent>
     </Card>
