@@ -15,7 +15,9 @@ import {
   Upload,
   Trash2,
   Eye,
-  EyeOff
+  EyeOff,
+  DollarSign,
+  Percent
 } from "lucide-react";
 
 export function EventConfigContent() {
@@ -30,10 +32,13 @@ export function EventConfigContent() {
   });
 
   const [paymentConfig, setPaymentConfig] = useState({
-    stripKey: "",
     mercadopagoKey: "",
-    bankTransfer: false,
-    paypalEmail: "",
+  });
+
+  const [huntCosts, setHuntCosts] = useState({
+    commissionPercentage: 8,
+    costPerTicket: 500,
+    description: "Comisión de Hunt por venta de tickets",
   });
 
   const [images, setImages] = useState({
@@ -42,7 +47,6 @@ export function EventConfigContent() {
   });
 
   const [showKeys, setShowKeys] = useState({
-    stripe: false,
     mercadopago: false,
   });
 
@@ -63,10 +67,18 @@ export function EventConfigContent() {
   };
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setPaymentConfig(prev => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: value
+    }));
+  };
+
+  const handleHuntCostsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setHuntCosts(prev => ({
+      ...prev,
+      [name]: isNaN(Number(value)) ? value : Number(value)
     }));
   };
 
@@ -88,6 +100,7 @@ export function EventConfigContent() {
     console.log(`Guardando configuración de ${section}`, {
       formData,
       paymentConfig,
+      huntCosts,
       images
     });
     // TODO: Implement API call to save configuration
@@ -339,52 +352,17 @@ export function EventConfigContent() {
 
       {/* Payment Section */}
       {activeTab === "payment" && (
-        <Card className="bg-white/[0.02] border-white/5">
-          <CardHeader>
-            <CardTitle>Configuración de Pagos</CardTitle>
-            <CardDescription>Configura los métodos de pago para tu evento</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Stripe */}
-            <div className="space-y-3 pb-4 border-b border-white/10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-base font-semibold">Stripe</Label>
-                  <p className="text-xs text-white/50">Pasarela de pago internacional</p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="stripeKey" className="text-sm">API Key</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="stripeKey"
-                    name="stripKey"
-                    type={showKeys.stripe ? "text" : "password"}
-                    value={paymentConfig.stripKey}
-                    onChange={handlePaymentChange}
-                    placeholder="sk_live_..."
-                    className="rounded-lg bg-white/5 border-white/10 flex-1"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowKeys(prev => ({ ...prev, stripe: !prev.stripe }))}
-                    className="rounded-lg"
-                  >
-                    {showKeys.stripe ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Mercado Pago */}
-            <div className="space-y-3 pb-4 border-b border-white/10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-base font-semibold">Mercado Pago</Label>
-                  <p className="text-xs text-white/50">Pasarela popular en Latinoamérica</p>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Left Column - Mercado Pago */}
+          <Card className="bg-white/[0.02] border-white/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                Mercado Pago
+              </CardTitle>
+              <CardDescription>Conecta tu cuenta de Mercado Pago</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="mercadopagoKey" className="text-sm">Access Token</Label>
                 <div className="flex gap-2">
@@ -407,53 +385,115 @@ export function EventConfigContent() {
                   </Button>
                 </div>
               </div>
-            </div>
 
-            {/* Bank Transfer */}
-            <div className="space-y-3 pb-4 border-b border-white/10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-base font-semibold">Transferencia Bancaria</Label>
-                  <p className="text-xs text-white/50">Aceptar transferencias directas</p>
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                <p className="text-xs text-white/60">
+                  Para obtener tu Access Token, visita tu cuenta de Mercado Pago en Configuración → Credenciales → Producción
+                </p>
+              </div>
+
+              <Button
+                onClick={() => handleSaveConfig("mercado-pago")}
+                className="w-full rounded-lg"
+              >
+                Guardar Mercado Pago
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Right Column - Hunt Costs */}
+          <Card className="bg-white/[0.02] border-white/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Costos de Hunt
+              </CardTitle>
+              <CardDescription>Comisión y costos por ticket</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Commission Percentage */}
+              <div className="space-y-2">
+                <Label htmlFor="commissionPercentage" className="text-sm flex items-center gap-2">
+                  <Percent className="h-4 w-4" />
+                  Porcentaje de Comisión
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="commissionPercentage"
+                    name="commissionPercentage"
+                    type="number"
+                    value={huntCosts.commissionPercentage}
+                    onChange={handleHuntCostsChange}
+                    placeholder="8"
+                    className="rounded-lg bg-white/5 border-white/10 flex-1"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                  />
+                  <span className="flex items-center px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white/60">
+                    %
+                  </span>
                 </div>
-                <input
-                  type="checkbox"
-                  name="bankTransfer"
-                  checked={paymentConfig.bankTransfer}
-                  onChange={handlePaymentChange}
-                  className="h-4 w-4 rounded cursor-pointer"
+              </div>
+
+              {/* Cost Per Ticket */}
+              <div className="space-y-2">
+                <Label htmlFor="costPerTicket" className="text-sm flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Costo por Ticket
+                </Label>
+                <div className="flex gap-2">
+                  <span className="flex items-center px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white/60">
+                    $
+                  </span>
+                  <Input
+                    id="costPerTicket"
+                    name="costPerTicket"
+                    type="number"
+                    value={huntCosts.costPerTicket}
+                    onChange={handleHuntCostsChange}
+                    placeholder="500"
+                    className="rounded-lg bg-white/5 border-white/10 flex-1"
+                    min="0"
+                    step="100"
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-sm">Descripción</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={huntCosts.description}
+                  onChange={handleHuntCostsChange}
+                  placeholder="Descripción de los costos"
+                  className="rounded-lg bg-white/5 border-white/10 min-h-[80px] text-sm"
                 />
               </div>
-            </div>
 
-            {/* PayPal */}
-            <div className="space-y-3">
-              <div>
-                <Label className="text-base font-semibold">PayPal</Label>
-                <p className="text-xs text-white/50">Email de cuenta PayPal</p>
+              {/* Summary */}
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/60">Comisión:</span>
+                  <span className="text-white font-medium">{huntCosts.commissionPercentage}%</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/60">Costo por ticket:</span>
+                  <span className="text-white font-medium">${huntCosts.costPerTicket.toLocaleString()}</span>
+                </div>
               </div>
-              <Input
-                id="paypalEmail"
-                name="paypalEmail"
-                type="email"
-                value={paymentConfig.paypalEmail}
-                onChange={handlePaymentChange}
-                placeholder="tu@email.com"
-                className="rounded-lg bg-white/5 border-white/10"
-              />
-            </div>
 
-            {/* Save Button */}
-            <div className="flex justify-end pt-4 border-t border-white/10">
               <Button
-                onClick={() => handleSaveConfig("pagos")}
-                className="rounded-lg"
+                onClick={() => handleSaveConfig("costos-hunt")}
+                className="w-full rounded-lg"
               >
-                Guardar Configuración de Pagos
+                Guardar Costos
               </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );
