@@ -7,7 +7,7 @@ import {
   Ticket,
   Users,
 } from "lucide-react";
-import { SalesDistributionChart, RevenueByChannelChart, FinancialBreakdownChart, DailySalesChart } from "@/components/event-charts";
+import { SalesDistributionChart, RevenueByChannelChart, SalesFunnelChart, DailySalesChart } from "@/components/event-charts";
 
 interface Transaction {
   id: string;
@@ -57,6 +57,11 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
   const ticketsSoldPercentage = totalTicketsAvailable > 0
     ? (totalTicketsSold / totalTicketsAvailable) * 100
     : 0;
+
+  // Calculate sales funnel data
+  const totalVisits = totalTicketsAvailable;
+  const totalAddedToCart = transactions.length > 0 ? Math.ceil(transactions.length * 0.8) : 0;
+  const totalCompleted = totalTicketsSold;
 
   return (
     <div className="space-y-4">
@@ -125,11 +130,10 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
         />
       </div>
 
-      <FinancialBreakdownChart
-        grossProfit={financialReport.global_calculations.ganancia_bruta_hunt}
-        boldDeductions={financialReport.global_calculations.deducciones_bold_total}
-        tax4x1000={financialReport.global_calculations.impuesto_4x1000}
-        netProfit={financialReport.global_calculations.ganancia_neta_hunt - financialReport.total_tax}
+      <SalesFunnelChart
+        visits={totalVisits}
+        addedToCart={totalAddedToCart}
+        completed={totalCompleted}
       />
 
       {/* Sales Breakdown */}

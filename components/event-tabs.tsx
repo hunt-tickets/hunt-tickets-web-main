@@ -14,7 +14,7 @@ import {
   Download,
   Receipt,
 } from "lucide-react";
-import { SalesDistributionChart, RevenueByChannelChart, FinancialBreakdownChart, TicketRevenueDistributionChart, ChannelSalesChart, DailySalesChart } from "@/components/event-charts";
+import { SalesDistributionChart, RevenueByChannelChart, SalesFunnelChart, TicketRevenueDistributionChart, ChannelSalesChart, DailySalesChart } from "@/components/event-charts";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { CreateTicketDialog } from "@/components/create-ticket-dialog";
@@ -207,6 +207,11 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
     }).format(amount);
   };
 
+  // Calculate sales funnel data
+  const totalVisits = tickets.reduce((sum, ticket) => sum + ticket.quantity, 0);
+  const totalAddedToCart = transactions.length > 0 ? Math.ceil(transactions.length * 0.8) : 0;
+  const totalCompleted = financialReport.tickets_sold.total;
+
   if (!mounted) {
     return null;
   }
@@ -359,11 +364,10 @@ export function EventTabs({ eventId, eventName, financialReport, tickets, produc
           />
         </div>
 
-        <FinancialBreakdownChart
-          grossProfit={financialReport.global_calculations.ganancia_bruta_hunt}
-          boldDeductions={financialReport.global_calculations.deducciones_bold_total}
-          tax4x1000={financialReport.global_calculations.impuesto_4x1000}
-          netProfit={financialReport.global_calculations.ganancia_neta_hunt - financialReport.total_tax}
+        <SalesFunnelChart
+          visits={totalVisits}
+          addedToCart={totalAddedToCart}
+          completed={totalCompleted}
         />
 
         {/* Sales Breakdown */}

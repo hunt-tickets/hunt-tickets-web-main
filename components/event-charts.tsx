@@ -186,130 +186,110 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
   );
 }
 
-interface FinancialBreakdownChartProps {
-  grossProfit: number;
-  boldDeductions: number;
-  tax4x1000: number;
-  netProfit: number;
+interface SalesFunnelChartProps {
+  visits: number;
+  addedToCart: number;
+  completed: number;
 }
 
-export function FinancialBreakdownChart({ grossProfit, boldDeductions, tax4x1000, netProfit }: FinancialBreakdownChartProps) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnelChartProps) {
+  const data = [
+    { name: 'Visitas', value: visits, color: '#3b82f6' },
+    { name: 'Añadido al carrito', value: addedToCart, color: '#8b5cf6' },
+    { name: 'Compras completadas', value: completed, color: '#10b981' }
+  ];
+
+  // Calculate conversion rates
+  const conversionRates = [
+    100,
+    visits > 0 ? (addedToCart / visits) * 100 : 0,
+    addedToCart > 0 ? (completed / addedToCart) * 100 : 0
+  ];
 
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
-      trigger: 'axis',
+      trigger: 'item',
       backgroundColor: '#18181b',
       borderColor: '#303030',
       borderWidth: 1,
       textStyle: {
         color: '#fff'
       },
-      axisPointer: {
-        type: 'shadow'
-      },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
-        let result = 'Ganancia<br/>';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        params.forEach((param: any) => {
-          result += `${param.marker} ${param.seriesName}: ${formatCurrency(param.value)}<br/>`;
-        });
-        return result;
-      }
-    },
-    legend: {
-      data: ['Ganancia Bruta', 'Deducciones Bold', 'Impuesto 4x1000', 'Ganancia Neta'],
-      textStyle: {
-        color: '#888'
-      },
-      top: 0
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      top: '15%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'value',
-      axisLine: {
-        lineStyle: {
-          color: '#303030'
-        }
-      },
-      axisLabel: {
-        color: '#888',
-        formatter: (value: number) => `$${(value / 1000).toFixed(0)}K`
-      },
-      splitLine: {
-        lineStyle: {
-          color: '#303030',
-          type: 'dashed'
-        }
-      }
-    },
-    yAxis: {
-      type: 'category',
-      data: ['Ganancia'],
-      axisLine: {
-        lineStyle: {
-          color: '#303030'
-        }
-      },
-      axisLabel: {
-        color: '#888'
+        const index = data.findIndex(d => d.name === params.name);
+        const rate = conversionRates[index];
+        return `<strong>${params.name}</strong><br/>
+                Cantidad: ${params.value}<br/>
+                Conversión: ${rate.toFixed(1)}%`;
       }
     },
     series: [
       {
-        name: 'Ganancia Bruta',
-        type: 'bar',
-        stack: 'total',
-        data: [grossProfit],
+        type: 'funnel',
+        left: '10%',
+        top: 60,
+        bottom: 60,
+        width: '80%',
+        min: 0,
+        max: visits,
+        minSize: '50%',
+        maxSize: '100%',
+        sort: 'descending',
+        gap: 2,
+        label: {
+          show: true,
+          position: 'inside',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter: (params: any) => {
+            const index = data.findIndex(d => d.name === params.name);
+            const rate = conversionRates[index];
+            return `{name|${params.name}}\n{value|${params.value}}\n{rate|${rate.toFixed(1)}%}`;
+          },
+          rich: {
+            name: {
+              color: '#fff',
+              fontSize: 12,
+              fontWeight: 'bold',
+              lineHeight: 18
+            },
+            value: {
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+              lineHeight: 18
+            },
+            rate: {
+              color: '#888',
+              fontSize: 10,
+              lineHeight: 16
+            }
+          }
+        },
+        emphasis: {
+          label: {
+            fontSize: 13
+          },
+          itemStyle: {
+            borderColor: '#fff',
+            borderWidth: 2,
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        },
         itemStyle: {
-          color: '#10b981',
-          borderRadius: [0, 8, 8, 0]
-        }
-      },
-      {
-        name: 'Deducciones Bold',
-        type: 'bar',
-        stack: 'deductions',
-        data: [boldDeductions],
-        itemStyle: {
-          color: '#ef4444',
-          borderRadius: [0, 8, 8, 0]
-        }
-      },
-      {
-        name: 'Impuesto 4x1000',
-        type: 'bar',
-        stack: 'deductions',
-        data: [tax4x1000],
-        itemStyle: {
-          color: '#f59e0b',
-          borderRadius: [0, 8, 8, 0]
-        }
-      },
-      {
-        name: 'Ganancia Neta',
-        type: 'bar',
-        stack: 'net',
-        data: [netProfit],
-        itemStyle: {
-          color: '#8b5cf6',
-          borderRadius: [0, 8, 8, 0]
-        }
+          borderRadius: [6, 6, 0, 0],
+          borderWidth: 1,
+          borderColor: 'rgba(255, 255, 255, 0.1)'
+        },
+        data: data.map(d => ({
+          name: d.name,
+          value: d.value,
+          itemStyle: {
+            color: d.color
+          }
+        }))
       }
     ]
   };
@@ -317,7 +297,7 @@ export function FinancialBreakdownChart({ grossProfit, boldDeductions, tax4x1000
   return (
     <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
       <CardHeader>
-        <CardTitle className="text-base">Desglose Financiero Hunt</CardTitle>
+        <CardTitle className="text-base">Embudo de Ventas</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
