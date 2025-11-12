@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { AddTeamMemberDialog } from "@/components/add-team-member-dialog";
 
 interface Producer {
   id: string;
@@ -201,6 +202,11 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
 
         {activeTab === "equipo" && (
           <div className="space-y-4">
+            {/* Add Member Button */}
+            <div className="flex justify-end">
+              <AddTeamMemberDialog producerId={producer.id} />
+            </div>
+
             {/* Team Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="bg-white/[0.02] border-white/5">
