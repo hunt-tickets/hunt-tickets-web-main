@@ -292,25 +292,35 @@ export function EventTeamContent({
     e.preventDefault();
   };
 
-  const handleDrop = (day: string, hour: string, stageId: string) => {
+  const handleDrop = (day: string, hour: string, stageId: string, e: React.DragEvent) => {
     // Convert times to minutes for comparison
     const timeToMinutes = (t: string) => {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
     };
 
-    const startTime = hour;
-    const startHour = parseInt(hour.split(':')[0]);
-    const endHour = startHour + 1;
-    const endTime = `${String(endHour).padStart(2, '0')}:00`;
+    // Get the drop position relative to the cell
+    const dropElement = e.currentTarget as HTMLElement;
+    const rect = dropElement.getBoundingClientRect();
+    const relativeY = e.clientY - rect.top;
+    const percentageY = relativeY / rect.height;
+
+    // Calculate which 15-minute interval (0, 15, 30, 45)
+    const intervalIndex = Math.floor(percentageY * 4);
+    const minutes = Math.max(0, Math.min(3, intervalIndex)) * 15;
+
+    // Construct the start time with 15-minute precision
+    const hourNum = parseInt(hour.split(':')[0]);
+    const startTime = `${String(hourNum).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
     const startMinutes = timeToMinutes(startTime);
-    const endMinutes = timeToMinutes(endTime);
 
     // If we're moving an existing slot
     if (draggedSlot) {
       const durationMinutes = timeToMinutes(draggedSlot.endTime) - timeToMinutes(draggedSlot.startTime);
-      const newEndHour = parseInt(hour.split(':')[0]) + Math.ceil(durationMinutes / 60);
-      const newEndTime = `${String(newEndHour).padStart(2, '0')}:00`;
+      const totalNewMinutes = startMinutes + durationMinutes;
+      const newEndHour = Math.floor(totalNewMinutes / 60);
+      const newEndMinute = totalNewMinutes % 60;
+      const newEndTime = `${String(newEndHour).padStart(2, '0')}:${String(newEndMinute).padStart(2, '0')}`;
       const newEndMinutes = timeToMinutes(newEndTime);
 
       // Check if there's a collision (excluding the current slot)
@@ -331,7 +341,7 @@ export function EventTeamContent({
       // Update the slot with new position
       setSchedule(schedule.map(slot =>
         slot.id === draggedSlot.id
-          ? { ...slot, day, startTime, endTime, stageId }
+          ? { ...slot, day, startTime, endTime: newEndTime, stageId }
           : slot
       ));
       setDraggedSlot(null);
@@ -340,6 +350,13 @@ export function EventTeamContent({
 
     // If we're adding a new artist
     if (!draggedArtist) return;
+
+    // Calculate end time (1 hour after start time, maintaining minutes)
+    const totalEndMinutes = startMinutes + 60;
+    const endHour = Math.floor(totalEndMinutes / 60);
+    const endMinute = totalEndMinutes % 60;
+    const endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+    const endMinutes = timeToMinutes(endTime);
 
     // Check if there's a collision (only within the same stage)
     const hasCollision = schedule.some(slot => {
@@ -871,7 +888,7 @@ export function EventTeamContent({
                               <div
                                 key={`${day.date}-${hour}`}
                                 onDragOver={blocked ? undefined : handleDragOver}
-                                onDrop={blocked ? undefined : () => handleDrop(day.date, hour, selectedStage)}
+                                onDrop={blocked ? undefined : (e) => handleDrop(day.date, hour, selectedStage, e)}
                                 onClick={canBlock ? () => handleToggleBlockSlot(day.date, hour) : undefined}
                                 className={`border-r border-white/5 last:border-r-0 border-b border-white/5 relative overflow-visible transition-all ${
                                   canBlock ? 'cursor-pointer' : ''
