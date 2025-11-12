@@ -228,16 +228,20 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
     series: [
       {
         type: 'funnel',
-        left: '10%',
-        top: 60,
-        bottom: 60,
-        width: '80%',
+        orient: 'horizontal',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
+        height: '100%',
         min: 0,
         max: visits,
-        minSize: '50%',
+        minSize: '10%',
         maxSize: '100%',
         sort: 'descending',
-        gap: 2,
+        gap: 8,
+        funnelAlign: 'center',
+        smooth: true,
         label: {
           show: true,
           position: 'inside',
@@ -245,20 +249,20 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
           formatter: (params: any) => {
             const index = data.findIndex(d => d.name === params.name);
             const rate = conversionRates[index];
-            return `{name|${params.name}}\n{value|${params.value}}\n{rate|${rate.toFixed(1)}%}`;
+            return `{name|${params.name}}\n{value|${params.value}} {rate|${rate.toFixed(1)}%}`;
           },
           rich: {
             name: {
               color: '#fff',
               fontSize: 12,
               fontWeight: 'bold',
-              lineHeight: 18
+              lineHeight: 16
             },
             value: {
               color: '#fff',
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: 'bold',
-              lineHeight: 18
+              lineHeight: 16
             },
             rate: {
               color: '#888',
@@ -274,14 +278,15 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
           itemStyle: {
             borderColor: '#fff',
             borderWidth: 2,
-            shadowBlur: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            shadowBlur: 15,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+            opacity: 1
           }
         },
         itemStyle: {
-          borderRadius: [6, 6, 0, 0],
-          borderWidth: 1,
-          borderColor: 'rgba(255, 255, 255, 0.1)'
+          borderRadius: 12,
+          borderWidth: 0,
+          opacity: 0.9
         },
         data: data.map(d => ({
           name: d.name,
