@@ -195,23 +195,15 @@ interface SalesFunnelChartProps {
 export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnelChartProps) {
   const stages = [
     { name: 'Visitas', value: visits, color: '#3b82f6' },
-    { name: 'Añadido al carrito', value: addedToCart, color: '#8b5cf6' },
-    { name: 'Compras completadas', value: completed, color: '#10b981' }
+    { name: 'Carrito', value: addedToCart, color: '#8b5cf6' },
+    { name: 'Completado', value: completed, color: '#10b981' }
   ];
 
-  // Calculate conversion rates
   const conversionRates = [
     100,
     visits > 0 ? (addedToCart / visits) * 100 : 0,
     addedToCart > 0 ? (completed / addedToCart) * 100 : 0
   ];
-
-  const width = 600;
-  const height = 300;
-  const padding = 40;
-  const usableWidth = width - padding * 2;
-  const usableHeight = height - padding * 2;
-  const sectionHeight = usableHeight / stages.length;
 
   const maxValue = Math.max(...stages.map(s => s.value));
 
@@ -221,71 +213,36 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
         <CardTitle className="text-base">Embudo de Ventas</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-center">
-          <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="w-full">
-            {/* Smooth curved funnel sections */}
-            {stages.map((stage, index) => {
-              const ratio = stage.value / maxValue;
-              const nextRatio = index < stages.length - 1 ? stages[index + 1].value / maxValue : 0.3;
+        <div className="space-y-6 py-4">
+          {stages.map((stage, index) => {
+            const widthPercent = (stage.value / maxValue) * 100;
+            const rate = conversionRates[index];
 
-              const y = padding + index * sectionHeight;
-              const nextY = padding + (index + 1) * sectionHeight;
+            return (
+              <div key={index} className="space-y-2">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-white">{stage.name}</span>
+                  <span className="text-xs text-white/50">{stage.value} ({rate.toFixed(0)}%)</span>
+                </div>
 
-              const topWidth = usableWidth * ratio;
-              const bottomWidth = usableWidth * nextRatio;
-              const topLeft = (usableWidth - topWidth) / 2;
-              const bottomLeft = (usableWidth - bottomWidth) / 2;
-
-              return (
-                <g key={index}>
-                  {/* Curved trapezoid using smooth bezier curves */}
-                  <path
-                    d={`
-                      M ${padding + topLeft} ${y}
-                      L ${padding + topLeft + topWidth} ${y}
-                      C ${padding + topLeft + topWidth + (bottomLeft - topLeft - topWidth) / 3} ${y + sectionHeight / 2},
-                        ${padding + bottomLeft + bottomWidth + (topLeft - bottomLeft - bottomWidth) / 3} ${nextY - sectionHeight / 2},
-                        ${padding + bottomLeft + bottomWidth} ${nextY}
-                      L ${padding + bottomLeft} ${nextY}
-                      C ${padding + bottomLeft - (bottomLeft - topLeft - bottomWidth) / 3} ${nextY - sectionHeight / 2},
-                        ${padding + topLeft - (topLeft - bottomLeft + bottomWidth) / 3} ${y + sectionHeight / 2},
-                        ${padding + topLeft} ${y}
-                      Z
-                    `}
-                    fill={stage.color}
-                    fillOpacity="0.85"
-                    stroke={stage.color}
-                    strokeWidth="0.5"
-                    strokeOpacity="0.3"
-                    className="transition-opacity hover:fill-opacity-100"
-                  />
-
-                  {/* Text label */}
-                  <text
-                    x={width / 2}
-                    y={y + sectionHeight / 2 + 5}
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="14"
-                    fontWeight="bold"
-                    className="pointer-events-none"
+                {/* Funnel bar with smooth curves */}
+                <div className="relative h-12 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500 flex items-center justify-center"
+                    style={{
+                      width: `${widthPercent}%`,
+                      backgroundColor: stage.color,
+                      opacity: 0.8
+                    }}
                   >
-                    {stage.name}
-                  </text>
-                  <text
-                    x={width / 2}
-                    y={y + sectionHeight / 2 + 22}
-                    textAnchor="middle"
-                    fill="#888"
-                    fontSize="12"
-                    className="pointer-events-none"
-                  >
-                    {stage.value} ({conversionRates[index].toFixed(0)}%)
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+                    <span className="text-xs font-bold text-white/80 px-3">
+                      {((widthPercent / 100) * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
