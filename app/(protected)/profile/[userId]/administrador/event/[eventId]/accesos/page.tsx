@@ -1,8 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
-import { getEventAccessStats } from "@/lib/supabase/actions/access-control-optimized";
-import { EventAccessControlOptimized } from "@/components/event-access-control-optimized";
+import { getEventAccessControl } from "@/lib/supabase/actions/access-control";
+import { EventAccessControlContent } from "@/components/event-access-control-content";
 
 interface AccesosPageProps {
   params: Promise<{
@@ -38,14 +38,14 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
     notFound();
   }
 
-  // Fetch event details and ONLY statistics (not all data)
-  const [eventData, stats] = await Promise.all([
+  // Fetch event details and access control data
+  const [eventData, accessData] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, status")
       .eq("id", eventId)
       .single(),
-    getEventAccessStats(eventId), // Solo carga las estadísticas, no todos los datos
+    getEventAccessControl(eventId),
   ]);
 
   if (eventData.error || !eventData.data) {
@@ -67,10 +67,10 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
         </Badge>
       </div>
 
-      {/* Access Control Content - Optimized version */}
-      <EventAccessControlOptimized
-        eventId={eventId}
-        initialStats={stats}
+      {/* Access Control Content */}
+      <EventAccessControlContent
+        qrCodes={accessData?.qrCodes || []}
+        transactionsWithoutQR={accessData?.transactionsMissingQR || []}
       />
     </div>
   );

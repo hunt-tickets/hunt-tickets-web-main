@@ -2,8 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, CheckCircle2, Clock, QrCode, BarChart3, List } from "lucide-react";
+import { Search, CheckCircle2, Clock, QrCode, BarChart3, List, ChevronDown, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { toggleQRScanStatus } from "@/lib/supabase/actions/toggle-scan";
+import { toast } from "sonner";
 
 interface QRCode {
   id: string;
@@ -51,17 +53,52 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "scanned" | "pending" | "noqr">("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isFocused, setIsFocused] = useState(false);
+  const [localQRCodes, setLocalQRCodes] = useState(qrCodes);
+  const [updatingQR, setUpdatingQR] = useState<string | null>(null);
   const itemsPerPage = 50;
+
+  // Handle toggle scan status
+  const handleToggleScan = async (qrId: string, currentStatus: boolean) => {
+    setUpdatingQR(qrId);
+
+    // Optimistic update
+    setLocalQRCodes(prev =>
+      prev.map(qr =>
+        qr.id === qrId
+          ? { ...qr, scan: !currentStatus, updated_at: new Date().toISOString() }
+          : qr
+      )
+    );
+
+    const result = await toggleQRScanStatus(qrId, currentStatus);
+
+    if (!result.success) {
+      // Revert on error
+      setLocalQRCodes(prev =>
+        prev.map(qr =>
+          qr.id === qrId
+            ? { ...qr, scan: currentStatus }
+            : qr
+        )
+      );
+      toast.error(result.error || "Error al actualizar el estado");
+    } else {
+      toast.success(result.newStatus ? "Marcada como escaneada" : "Marcada como pendiente");
+    }
+
+    setUpdatingQR(null);
+  };
 
   // Filter by tab
   const tabFilteredQRCodes = useMemo(() => {
     if (activeTab === "scanned") {
-      return qrCodes.filter(qr => qr.scan === true);
+      return localQRCodes.filter(qr => qr.scan === true);
     } else if (activeTab === "pending") {
-      return qrCodes.filter(qr => qr.scan === false);
+      return localQRCodes.filter(qr => qr.scan === false);
     }
-    return qrCodes;
-  }, [qrCodes, activeTab]);
+    return localQRCodes;
+  }, [localQRCodes, activeTab]);
 
   // Filter by search
   const filteredQRCodes = useMemo(() => {
@@ -85,17 +122,17 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
 
   // Calculate statistics
   const stats = useMemo(() => {
-    const scanned = qrCodes.filter(qr => qr.scan === true).length;
-    const pending = qrCodes.filter(qr => qr.scan === false).length;
-    const scanRate = qrCodes.length > 0 ? (scanned / qrCodes.length) * 100 : 0;
+    const scanned = localQRCodes.filter(qr => qr.scan === true).length;
+    const pending = localQRCodes.filter(qr => qr.scan === false).length;
+    const scanRate = localQRCodes.length > 0 ? (scanned / localQRCodes.length) * 100 : 0;
 
     return {
-      total: qrCodes.length,
+      total: localQRCodes.length,
       scanned,
       pending,
       scanRate: scanRate.toFixed(1),
     };
-  }, [qrCodes]);
+  }, [localQRCodes]);
 
   // Reset to first page when search or tab changes
   const handleSearchChange = (value: string) => {
@@ -120,7 +157,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
       scanRate: number;
     }>();
 
-    qrCodes.forEach(qr => {
+    localQRCodes.forEach(qr => {
       const current = breakdown.get(qr.ticket_name) || {
         total: 0,
         scanned: 0,
@@ -149,7 +186,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
 
     // Sort by total descending
     return result.sort((a, b) => b.total - a.total);
-  }, [qrCodes]);
+  }, [localQRCodes]);
 
   return (
     <div className="space-y-4">
@@ -308,7 +345,6 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                         <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Comprados</th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Generados</th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Faltantes</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Canal</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -341,9 +377,6 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                               {tx.missingQRs}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm text-white/70">
-                            {tx.source === 'app' ? 'App' : tx.source === 'web' ? 'Web' : 'Efectivo'}
-                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -368,69 +401,71 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
       {/* List Tab Content */}
       {mainTab === "list" && (
         <div className="space-y-4">
-          {/* Tabs */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => handleTabChange("all")}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
-                activeTab === "all"
-                  ? "bg-white/10 text-white border border-white/20"
-                  : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-              }`}
-            >
-              Todas ({qrCodes.length})
-            </button>
-            <button
-              onClick={() => handleTabChange("scanned")}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-                activeTab === "scanned"
-                  ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                  : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-              }`}
-            >
-              <CheckCircle2 className="h-4 w-4" />
-              Escaneadas ({stats.scanned})
-            </button>
-            <button
-              onClick={() => handleTabChange("pending")}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-                activeTab === "pending"
-                  ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
-                  : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-              }`}
-            >
-              <Clock className="h-4 w-4" />
-              Pendientes ({stats.pending})
-            </button>
-            <button
-              onClick={() => handleTabChange("noqr")}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-                activeTab === "noqr"
-                  ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                  : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-              }`}
-            >
-              <QrCode className="h-4 w-4" />
-              Sin QR ({transactionsWithoutQR.length})
-            </button>
+          {/* Search and Filter Row */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            {/* Search - Left side, takes most space */}
+            <div className="relative flex-1">
+              {/* Search Icon */}
+              <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-10">
+                <Search className={`h-4 w-4 sm:h-5 sm:w-5 transition-colors duration-200 ${
+                  isFocused ? 'text-white/80' : 'text-white/50'
+                }`} />
+              </div>
+
+              <Input
+                type="text"
+                placeholder="Buscar por usuario, email, entrada, pedido..."
+                className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 h-11 sm:h-12 text-base bg-white/10 border rounded-3xl text-white placeholder:text-white/50 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0 transition-all duration-200 ${
+                  isFocused
+                    ? 'border-white/40 bg-white/15'
+                    : 'border-white/20 hover:border-white/30 hover:bg-white/12'
+                }`}
+                value={searchTerm}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+
+              {/* Clear button */}
+              {searchTerm && (
+                <button
+                  onClick={() => handleSearchChange("")}
+                  className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-white/10 transition-colors"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/70 hover:text-white" />
+                </button>
+              )}
+            </div>
+
+            {/* Filter Select - Right side */}
+            <div className="relative sm:min-w-fit">
+              <select
+                value={activeTab}
+                onChange={(e) => handleTabChange(e.target.value as "all" | "scanned" | "pending" | "noqr")}
+                className="appearance-none pl-4 pr-10 py-2.5 sm:py-3 text-sm font-medium rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 focus:bg-white/10 focus:border-white/20 focus:outline-none transition-all cursor-pointer whitespace-nowrap"
+              >
+                <option value="all" className="bg-zinc-900">
+                  Todas - {localQRCodes.length.toLocaleString('es-CO')}
+                </option>
+                <option value="scanned" className="bg-zinc-900">
+                  ✓ Escaneadas - {stats.scanned.toLocaleString('es-CO')}
+                </option>
+                <option value="pending" className="bg-zinc-900">
+                  ⏱ Pendientes - {stats.pending.toLocaleString('es-CO')}
+                </option>
+                <option value="noqr" className="bg-zinc-900">
+                  ⚠ Sin QR - {transactionsWithoutQR.length.toLocaleString('es-CO')}
+                </option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40 pointer-events-none" />
+            </div>
           </div>
 
-      {/* Search */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
-          <Input
-            type="text"
-            placeholder="Buscar por usuario, email, entrada, pedido..."
-            value={searchTerm}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-10 bg-white/5 border-white/10"
-          />
-        </div>
-        <div className="text-sm text-white/60">
-          {filteredQRCodes.length} entrada{filteredQRCodes.length !== 1 ? 's' : ''} encontrada{filteredQRCodes.length !== 1 ? 's' : ''}
-        </div>
-      </div>
+          {/* Results count */}
+          <div className="text-sm text-white/60">
+            {filteredQRCodes.length} entrada{filteredQRCodes.length !== 1 ? 's' : ''} encontrada{filteredQRCodes.length !== 1 ? 's' : ''}
+          </div>
 
       {/* Content based on active tab */}
       {activeTab === "noqr" ? (
@@ -452,17 +487,8 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
             {transactionsWithoutQR.map((tx) => (
               <div
                 key={tx.id}
-                className="relative bg-gradient-to-br from-red-500/10 to-red-500/5 border border-red-500/20 rounded-lg p-4 hover:border-red-500/40 transition-all"
+                className="relative bg-white/[0.02] border border-white/5 rounded-lg p-4 hover:border-white/10 transition-all"
               >
-                {/* Perforated edge effect */}
-                <div className="absolute top-0 left-8 right-8 h-px bg-red-500/20"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, transparent 40%, currentColor 40%)',
-                    backgroundSize: '8px 2px',
-                    backgroundPosition: '0 0'
-                  }}
-                />
-
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
@@ -475,7 +501,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-2 mb-3">
+                <div className="grid grid-cols-3 gap-2">
                   <div className="text-center">
                     <div className="text-xs text-white/40 mb-1">Comprados</div>
                     <div className="text-lg font-bold text-blue-400">{tx.quantity}</div>
@@ -488,12 +514,6 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                     <div className="text-xs text-white/40 mb-1">Faltantes</div>
                     <div className="text-lg font-bold text-red-400">{tx.missingQRs}</div>
                   </div>
-                </div>
-
-                {/* Footer */}
-                <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-white/40">
-                  <span>{tx.source === 'app' ? 'App' : tx.source === 'web' ? 'Web' : 'Efectivo'}</span>
-                  <span>{new Date(tx.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })}</span>
                 </div>
               </div>
             ))}
@@ -518,26 +538,12 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {currentQRCodes.map((qr) => {
                 const isScanned = qr.scan;
-                const borderColor = isScanned ? "green-500/20" : "yellow-500/20";
-                const bgGradient = isScanned
-                  ? "from-green-500/10 to-green-500/5"
-                  : "from-yellow-500/10 to-yellow-500/5";
 
                 return (
                   <div
                     key={qr.id}
-                    className={`relative bg-gradient-to-br ${bgGradient} border border-${borderColor} rounded-lg p-4 hover:border-opacity-60 transition-all`}
+                    className="relative bg-white/[0.02] border border-white/5 rounded-lg p-4 hover:border-white/10 transition-all"
                   >
-                    {/* Perforated edge effect */}
-                    <div
-                      className={`absolute top-0 left-8 right-8 h-px ${isScanned ? 'bg-green-500/20' : 'bg-yellow-500/20'}`}
-                      style={{
-                        backgroundImage: 'radial-gradient(circle, transparent 40%, currentColor 40%)',
-                        backgroundSize: '8px 2px',
-                        backgroundPosition: '0 0'
-                      }}
-                    />
-
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -545,21 +551,37 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                         <p className="text-xs text-white/60">{qr.user_name}</p>
                         <p className="text-xs text-white/40 truncate max-w-[200px]">{qr.user_email}</p>
                       </div>
-                      {isScanned ? (
-                        <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
-                          <CheckCircle2 className="h-3 w-3" />
-                          Escaneado
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
-                          <Clock className="h-3 w-3" />
-                          Pendiente
-                        </span>
-                      )}
+                      <button
+                        onClick={() => handleToggleScan(qr.id, qr.scan)}
+                        disabled={updatingQR === qr.id}
+                        className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full transition-all ${
+                          isScanned
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30'
+                            : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30'
+                        } ${updatingQR === qr.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                      >
+                        {updatingQR === qr.id ? (
+                          <div className="h-3 w-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            {isScanned ? (
+                              <>
+                                <CheckCircle2 className="h-3 w-3" />
+                                Escaneado
+                              </>
+                            ) : (
+                              <>
+                                <Clock className="h-3 w-3" />
+                                Pendiente
+                              </>
+                            )}
+                          </>
+                        )}
+                      </button>
                     </div>
 
                     {/* Details */}
-                    <div className="space-y-2 mb-3">
+                    <div className="space-y-2">
                       {qr.order_id && (
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-white/40">Pedido</span>
@@ -569,10 +591,11 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-white/40">Compra</span>
                         <span className="text-white/70">
-                          {new Date(qr.created_at).toLocaleDateString('es-CO', {
+                          {new Date(qr.created_at).toLocaleDateString(undefined, {
                             day: '2-digit',
                             month: 'short',
-                            year: 'numeric'
+                            year: 'numeric',
+                            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                           })}
                         </span>
                       </div>
@@ -586,30 +609,18 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-white/40">Fecha escaneo</span>
                               <span className="text-white/70">
-                                {new Date(qr.updated_at).toLocaleDateString('es-CO', {
+                                {new Date(qr.updated_at).toLocaleDateString(undefined, {
                                   day: '2-digit',
-                                  month: 'short'
+                                  month: 'short',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                                 })}
                               </span>
                             </div>
                           )}
                         </>
                       )}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
-                      <span className="text-white/40">
-                        {qr.source === 'app' ? 'App' : qr.source === 'web' ? 'Web' : 'Efectivo'}
-                      </span>
-                      <div className="flex gap-1">
-                        {qr.apple && (
-                          <span className="px-1.5 py-0.5 bg-white/10 rounded text-[10px] text-white/60">Apple</span>
-                        )}
-                        {qr.google && (
-                          <span className="px-1.5 py-0.5 bg-white/10 rounded text-[10px] text-white/60">Google</span>
-                        )}
-                      </div>
                     </div>
                   </div>
                 );

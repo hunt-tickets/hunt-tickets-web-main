@@ -316,3 +316,18 @@
     transform: translateY(0px) scale(1);
   }
 }
+
+/* Chatbase widget adjustments for mobile */
+@media (max-width: 768px) {
+  /* Adjust chatbase widget to not overlap with bottom navigation */
+  #chatbase-bubble-button,
+  iframe[id*="chatbase"] {
+    bottom: 80px !important; /* 64px (menu bar) + 16px (spacing) */
+  }
+
+  /* When chat window is open */
+  #chatbase-bubble-window {
+    bottom: 80px !important;
+    max-height: calc(100vh - 160px) !important; /* Account for header and bottom nav */
+  }
+}

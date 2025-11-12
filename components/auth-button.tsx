@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { User } from "lucide-react";
+import { User, Calendar } from "lucide-react";
 import { LogoutButton } from "./logout-button";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
@@ -90,6 +90,16 @@ export function AuthButton() {
           >
             <User className="mr-2 h-4 w-4" />
             Perfil
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href={`/profile/${user.id}/administrador`}
+            className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-all duration-200 hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground dark:hover:bg-accent/50 dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground"
+            onClick={() => setOpen(false)}
+          >
+            <Calendar className="mr-2 h-4 w-4" />
+            Administrar eventos
           </Link>
         </DropdownMenuItem>
 

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -9,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   User,
   Mail,
@@ -20,7 +18,6 @@ import {
   Key,
   UserCircle,
   Fingerprint,
-  Settings,
 } from "lucide-react";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
 import Image from "next/image";
@@ -91,27 +88,11 @@ export default async function ProfilePage() {
             </p>
           </div>
           <div className="hidden sm:flex gap-2">
-            {(profile?.admin || isProducer) && (
-              <Link href={`/profile/${user.id}/administrador`}>
-                <Button variant="default" className="gap-2">
-                  <Settings className="h-4 w-4" />
-                  Administrar Eventos
-                </Button>
-              </Link>
-            )}
             <EditProfileDialog profile={profile} />
           </div>
         </div>
         {/* Mobile buttons */}
         <div className="flex sm:hidden flex-col gap-2">
-          {(profile?.admin || isProducer) && (
-            <Link href={`/profile/${user.id}/administrador`} className="w-full">
-              <Button variant="default" className="w-full gap-2">
-                <Settings className="h-4 w-4" />
-                Administrar Eventos
-              </Button>
-            </Link>
-          )}
           <EditProfileDialog profile={profile} />
         </div>
       </div>

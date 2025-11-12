@@ -61,8 +61,8 @@ const ProfileTabs = () => {
 
   return (
     <>
-      {/* Desktop: Full width tabs */}
-      <div className="hidden md:flex w-full gap-2 p-1 bg-background/50 backdrop-blur-sm rounded-full border border-[#303030]">
+      {/* Desktop: Entradas-style tabs */}
+      <div className="hidden md:flex gap-2 overflow-x-auto pb-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.value;
@@ -70,15 +70,11 @@ const ProfileTabs = () => {
             <button
               key={tab.value}
               onClick={() => handleTabChange(tab.value)}
-              className={`
-                flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full
-                text-sm font-medium transition-all duration-300
-                ${
-                  isActive
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-foreground/70 hover:text-foreground hover:bg-background/80'
-                }
-              `}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-white/5 hover:bg-white/10 text-white/60"
+              }`}
             >
               <Icon className="h-4 w-4" />
               {tab.label}

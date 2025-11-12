@@ -19,6 +19,9 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   // Hide header and footer for admin routes
   const isAdminRoute = pathname?.includes("/administrador");
 
+  // Hide footer for profile routes
+  const isProfileRoute = pathname?.startsWith("/profile");
+
   if (isAuthRoute || isAdminRoute) {
     return <>{children}</>;
   }
@@ -27,7 +30,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     <>
       <Header />
       {children}
-      <Footer />
+      {!isProfileRoute && <Footer />}
     </>
   );
 }
