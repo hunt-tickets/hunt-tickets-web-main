@@ -445,7 +445,13 @@ export function EventTeamContent({
   };
 
   const handleToggleBlockSlot = (date: string, hour: string) => {
-    const slotKey = `${date}-${hour}-${selectedStage}`;
+    // Check if there are artists already scheduled in this slot
+    const slotsInThisHour = getSlotsInHour(date, hour, selectedStage);
+    if (slotsInThisHour.length > 0) {
+      // Don't allow blocking if there are already artists scheduled
+      return;
+    }
+
     const isBlocked = blockedSlots.some(
       slot => slot.date === date && slot.hour === hour && slot.stageId === selectedStage
     );
@@ -826,14 +832,18 @@ export function EventTeamContent({
                             }
 
                             const blocked = isSlotBlocked(day.date, hour);
+                            const hasArtists = slotsInThisHour.length > 0;
+                            const canBlock = !hasArtists;
 
                             return (
                               <div
                                 key={`${day.date}-${hour}`}
                                 onDragOver={blocked ? undefined : handleDragOver}
                                 onDrop={blocked ? undefined : () => handleDrop(day.date, hour, selectedStage)}
-                                onClick={() => handleToggleBlockSlot(day.date, hour)}
-                                className={`border-r border-white/5 last:border-r-0 border-b border-white/5 relative overflow-visible cursor-pointer transition-all ${
+                                onClick={canBlock ? () => handleToggleBlockSlot(day.date, hour) : undefined}
+                                className={`border-r border-white/5 last:border-r-0 border-b border-white/5 relative overflow-visible transition-all ${
+                                  canBlock ? 'cursor-pointer' : ''
+                                } ${
                                   blocked
                                     ? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/20'
                                     : 'hover:bg-white/[0.02]'
