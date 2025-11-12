@@ -143,6 +143,7 @@ export function EventTeamContent({
 }: EventTeamContentProps) {
   const [schedule, setSchedule] = useState<ScheduleSlot[]>([]);
   const [draggedArtist, setDraggedArtist] = useState<Artist | null>(null);
+  const [draggedSlot, setDraggedSlot] = useState<ScheduleSlot | null>(null);
   const [editingSlot, setEditingSlot] = useState<ScheduleSlot | null>(null);
   const [editStartTime, setEditStartTime] = useState("");
   const [editEndTime, setEditEndTime] = useState("");
@@ -292,22 +293,53 @@ export function EventTeamContent({
   };
 
   const handleDrop = (day: string, hour: string, stageId: string) => {
-    if (!draggedArtist) return;
-
-    // Use the hour as start time (e.g., "21:00")
-    const startTime = hour;
-    const startHour = parseInt(hour.split(':')[0]);
-    const endHour = startHour + 1;
-    const endTime = `${String(endHour).padStart(2, '0')}:00`;
-
     // Convert times to minutes for comparison
     const timeToMinutes = (t: string) => {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
     };
 
+    const startTime = hour;
+    const startHour = parseInt(hour.split(':')[0]);
+    const endHour = startHour + 1;
+    const endTime = `${String(endHour).padStart(2, '0')}:00`;
     const startMinutes = timeToMinutes(startTime);
     const endMinutes = timeToMinutes(endTime);
+
+    // If we're moving an existing slot
+    if (draggedSlot) {
+      const durationMinutes = timeToMinutes(draggedSlot.endTime) - timeToMinutes(draggedSlot.startTime);
+      const newEndHour = parseInt(hour.split(':')[0]) + Math.ceil(durationMinutes / 60);
+      const newEndTime = `${String(newEndHour).padStart(2, '0')}:00`;
+      const newEndMinutes = timeToMinutes(newEndTime);
+
+      // Check if there's a collision (excluding the current slot)
+      const hasCollision = schedule.some(slot => {
+        if (slot.id === draggedSlot.id || slot.day !== day || slot.stageId !== stageId) return false;
+        const slotStartMinutes = timeToMinutes(slot.startTime);
+        const slotEndMinutes = timeToMinutes(slot.endTime);
+        return (startMinutes >= slotStartMinutes && startMinutes < slotEndMinutes) ||
+               (newEndMinutes > slotStartMinutes && newEndMinutes <= slotEndMinutes) ||
+               (startMinutes <= slotStartMinutes && newEndMinutes >= slotEndMinutes);
+      });
+
+      if (hasCollision) {
+        setDraggedSlot(null);
+        return;
+      }
+
+      // Update the slot with new position
+      setSchedule(schedule.map(slot =>
+        slot.id === draggedSlot.id
+          ? { ...slot, day, startTime, endTime, stageId }
+          : slot
+      ));
+      setDraggedSlot(null);
+      return;
+    }
+
+    // If we're adding a new artist
+    if (!draggedArtist) return;
 
     // Check if there's a collision (only within the same stage)
     const hasCollision = schedule.some(slot => {
@@ -873,10 +905,13 @@ export function EventTeamContent({
                                     return (
                                       <div
                                         key={slot.id}
+                                        draggable="true"
+                                        onDragStart={() => setDraggedSlot(slot)}
+                                        onDragEnd={() => setDraggedSlot(null)}
                                         onClick={() => handleEditSlot(slot)}
                                         onMouseEnter={() => handleSlotMouseEnter(slot.id)}
                                         onMouseLeave={handleSlotMouseLeave}
-                                        className="absolute left-0 right-0 px-2 overflow-visible z-10"
+                                        className="absolute left-0 right-0 px-2 overflow-visible z-10 cursor-grab active:cursor-grabbing"
                                         style={{
                                           top: `${topPosition}%`,
                                           height: `${height}%`,
