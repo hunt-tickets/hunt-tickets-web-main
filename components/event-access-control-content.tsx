@@ -227,16 +227,16 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
         </div>
         <div className="p-4 rounded-xl border border-green-500/20 bg-green-500/5">
           <div className="text-xs text-green-400/60 mb-1">Escaneadas</div>
-          <div className="text-2xl font-bold text-green-400">{stats.scanned}</div>
+          <div className="text-2xl font-bold text-white">{stats.scanned}</div>
           <div className="text-xs text-green-400/40 mt-1">{stats.scanRate}% del total</div>
         </div>
         <div className="p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
           <div className="text-xs text-yellow-400/60 mb-1">Pendientes</div>
-          <div className="text-2xl font-bold text-yellow-400">{stats.pending}</div>
+          <div className="text-2xl font-bold text-white">{stats.pending}</div>
         </div>
         <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/5">
           <div className="text-xs text-red-400/60 mb-1">Sin QR</div>
-          <div className="text-2xl font-bold text-red-400">{totalTicketsWithoutQR}</div>
+          <div className="text-2xl font-bold text-white">{totalTicketsWithoutQR}</div>
           <div className="text-xs text-red-400/40 mt-1">{transactionsWithoutQR.length} transacciones</div>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
@@ -247,8 +247,8 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
 
           {/* Empty State */}
           {ticketBreakdown.length === 0 && transactionsWithoutQR.length === 0 && (
-            <Card className="bg-white/[0.02] border-white/5">
-              <CardContent className="py-16 text-center">
+            <Card className="bg-white/[0.02] border-white/5 min-h-[60vh]">
+              <CardContent className="h-full flex items-center justify-center py-16">
                 <div className="flex flex-col items-center gap-4">
                   <div className="rounded-full bg-white/5 p-4">
                     <QrCode className="h-12 w-12 text-white/40" />
@@ -492,15 +492,21 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
       {activeTab === "noqr" ? (
         /* Transactions without QR */
         transactionsWithoutQR.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <CheckCircle2 className="h-10 w-10 text-green-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-1">
-                ¡Perfecto!
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Todas las transacciones tienen códigos QR generados
-              </p>
+          <Card className="bg-white/[0.02] border-white/5 min-h-[60vh]">
+            <CardContent className="h-full flex items-center justify-center py-16">
+              <div className="flex flex-col items-center gap-4">
+                <div className="rounded-full bg-white/5 p-4">
+                  <CheckCircle2 className="h-12 w-12 text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    ¡Perfecto!
+                  </h3>
+                  <p className="text-sm text-white/60 max-w-md">
+                    Todas las transacciones tienen códigos QR generados
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ) : (
@@ -543,15 +549,21 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
       ) : (
         /* QR Codes as Tickets */
         currentQRCodes.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <QrCode className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-1">
-                {searchTerm ? "No se encontraron entradas" : "No hay entradas"}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {searchTerm ? "Intenta con otro término de búsqueda" : "Las entradas aparecerán aquí cuando haya ventas"}
-              </p>
+          <Card className="bg-white/[0.02] border-white/5 min-h-[60vh]">
+            <CardContent className="h-full flex items-center justify-center py-16">
+              <div className="flex flex-col items-center gap-4">
+                <div className="rounded-full bg-white/5 p-4">
+                  <QrCode className="h-12 w-12 text-white/40" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {searchTerm ? "No se encontraron entradas" : "No hay entradas"}
+                  </h3>
+                  <p className="text-sm text-white/60 max-w-md">
+                    {searchTerm ? "Intenta con otro término de búsqueda" : "Las entradas aparecerán aquí cuando haya ventas"}
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ) : (
