@@ -156,6 +156,8 @@ export function EventTeamContent({
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
   const [blockedSlots, setBlockedSlots] = useState<Array<{ date: string; hour: string; stageId: string }>>([]);
+  const [draggingSlot, setDraggingSlot] = useState<ScheduleSlot | null>(null);
+  const [dragPreview, setDragPreview] = useState<{ day: string; hour: string; stage: string } | null>(null);
 
   // Calculate event days dynamically in user's local timezone
   const eventDays: EventDay[] = [];
@@ -286,6 +288,61 @@ export function EventTeamContent({
 
   const handleDragStart = (artist: Artist) => {
     setDraggedArtist(artist);
+  };
+
+  const handleSlotMouseDown = (slot: ScheduleSlot, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDraggingSlot(slot);
+    setShowTooltip(null);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!draggingSlot) return;
+
+    // Find which cell the cursor is over
+    const element = document.elementFromPoint(e.clientX, e.clientY);
+    if (!element) return;
+
+    // Look for the calendar cell data
+    const cell = element.closest('[data-cell-date]') as HTMLElement | null;
+    if (!cell) return;
+
+    const date = cell.getAttribute('data-cell-date');
+    const hour = cell.getAttribute('data-cell-hour');
+    const stage = cell.getAttribute('data-cell-stage');
+
+    if (date && hour && stage) {
+      setDragPreview({ day: date, hour, stage });
+    }
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!draggingSlot || !dragPreview) {
+      setDraggingSlot(null);
+      setDragPreview(null);
+      return;
+    }
+
+    e.preventDefault();
+    // Simulate the drop
+    const dropElement = document.querySelector(
+      `[data-cell-date="${dragPreview.day}"][data-cell-hour="${dragPreview.hour}"][data-cell-stage="${dragPreview.stage}"]`
+    ) as HTMLElement;
+
+    if (dropElement) {
+      const rect = dropElement.getBoundingClientRect();
+      const mockEvent = new DragEvent('drop', {
+        clientX: e.clientX,
+        clientY: e.clientY,
+        bubbles: true,
+      }) as any;
+      mockEvent.currentTarget = dropElement;
+      handleDrop(dragPreview.day, dragPreview.hour, dragPreview.stage, mockEvent);
+    }
+
+    setDraggingSlot(null);
+    setDragPreview(null);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -795,7 +852,17 @@ export function EventTeamContent({
               </div>
 
               {/* Calendario del evento - Columna derecha */}
-              <div className="flex-1 min-w-0 flex">
+              <div
+                className="flex-1 min-w-0 flex"
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={() => {
+                  if (draggingSlot) {
+                    setDraggingSlot(null);
+                    setDragPreview(null);
+                  }
+                }}
+              >
                 <Card className="bg-white/[0.02] border-white/5 overflow-hidden flex-1">
                 <div className="overflow-x-auto overflow-y-visible">
                   <div style={{ minWidth: `${(eventDays.length + 1) * 150}px` }}>
@@ -884,9 +951,14 @@ export function EventTeamContent({
                             const hasArtists = slotsInThisHour.length > 0;
                             const canBlock = !hasArtists;
 
+                            const isPreview = dragPreview?.day === day.date && dragPreview?.hour === hour && dragPreview?.stage === selectedStage;
+
                             return (
                               <div
                                 key={`${day.date}-${hour}`}
+                                data-cell-date={day.date}
+                                data-cell-hour={hour}
+                                data-cell-stage={selectedStage}
                                 onDragOver={blocked ? undefined : handleDragOver}
                                 onDrop={blocked ? undefined : (e) => handleDrop(day.date, hour, selectedStage, e)}
                                 onClick={canBlock ? () => handleToggleBlockSlot(day.date, hour) : undefined}
@@ -896,6 +968,8 @@ export function EventTeamContent({
                                   blocked
                                     ? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/20'
                                     : 'hover:bg-white/[0.02]'
+                                } ${
+                                  isPreview && draggingSlot ? 'ring-2 ring-blue-500 ring-inset' : ''
                                 }`}
                                 style={{
                                   gridColumn: dayIndex + 2,
@@ -922,13 +996,17 @@ export function EventTeamContent({
                                     return (
                                       <div
                                         key={slot.id}
-                                        draggable="true"
-                                        onDragStart={() => setDraggedSlot(slot)}
-                                        onDragEnd={() => setDraggedSlot(null)}
-                                        onClick={() => handleEditSlot(slot)}
+                                        onMouseDown={(e) => handleSlotMouseDown(slot, e)}
+                                        onClick={(e) => {
+                                          if (!draggingSlot) {
+                                            handleEditSlot(slot);
+                                          }
+                                        }}
                                         onMouseEnter={() => handleSlotMouseEnter(slot.id)}
                                         onMouseLeave={handleSlotMouseLeave}
-                                        className="absolute left-0 right-0 px-2 overflow-visible z-10 cursor-grab active:cursor-grabbing"
+                                        className={`absolute left-0 right-0 px-2 overflow-visible z-10 ${
+                                          draggingSlot?.id === slot.id ? 'opacity-50' : 'opacity-100'
+                                        } cursor-grab active:cursor-grabbing transition-opacity`}
                                         style={{
                                           top: `${topPosition}%`,
                                           height: `${height}%`,
