@@ -67,7 +67,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
     <div className="space-y-4">
       {/* Key Metrics */}
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/10">
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <CreditCard className="h-3.5 w-3.5 text-white/40" />
@@ -82,7 +82,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
           </CardContent>
         </Card>
 
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/10">
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Ticket className="h-3.5 w-3.5 text-white/40" />
@@ -97,7 +97,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
           </CardContent>
         </Card>
 
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/10">
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Users className="h-3.5 w-3.5 text-white/40" />
@@ -138,7 +138,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
 
       {/* Sales Breakdown */}
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/10">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Ventas Hunt-Tickets</CardTitle>
           </CardHeader>
@@ -157,7 +157,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
                 {formatCurrency(financialReport.hunt_sales.variable_fee)}
               </span>
             </div>
-            <div className="pt-3 mt-2 border-t border-white/5 flex justify-between items-center">
+            <div className="pt-3 mt-2 border-t border-white/10 flex justify-between items-center">
               <span className="text-sm font-semibold">Total</span>
               <span className="text-lg font-bold">
                 {formatCurrency(financialReport.hunt_sales.total)}
@@ -166,7 +166,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
           </CardContent>
         </Card>
 
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/10">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Ventas Efectivo</CardTitle>
           </CardHeader>
@@ -189,7 +189,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
                 {formatCurrency(financialReport.producer_sales.variable_fee)}
               </span>
             </div>
-            <div className="pt-3 mt-2 border-t border-white/5 flex justify-between items-center">
+            <div className="pt-3 mt-2 border-t border-white/10 flex justify-between items-center">
               <span className="text-sm font-semibold">Total</span>
               <span className="text-lg font-bold">
                 {formatCurrency(financialReport.producer_sales.total)}
@@ -241,7 +241,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
                     -{formatCurrency(financialReport.total_tax)}
                   </span>
                 </div>
-                <div className="pt-3 mt-2 border-t border-white/5 flex justify-between items-center">
+                <div className="pt-3 mt-2 border-t border-white/10 flex justify-between items-center">
                   <span className="text-sm font-semibold">Ganancia Neta Hunt</span>
                   <span className="text-lg font-bold text-green-400">
                     {formatCurrency(
@@ -252,7 +252,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
               </div>
             </div>
 
-            <div className="pt-4 border-t border-white/5">
+            <div className="pt-4 border-t border-white/10">
               <h4 className="text-xs text-white/40 uppercase tracking-wider mb-3">
                 Liquidación Productor
               </h4>
@@ -270,7 +270,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
       {/* Datafono Calculations */}
       {financialReport.datafono_calculations &&
         financialReport.datafono_calculations.total_amount > 0 && (
-          <Card className="bg-white/[0.02] border-white/5">
+          <Card className="bg-white/[0.02] border-white/10">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">
                 Transacciones Datáfono
@@ -321,7 +321,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
                       )}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm pt-2 border-t border-white/5">
+                  <div className="flex justify-between text-sm pt-2 border-t border-white/10">
                     <span className="font-semibold">Neto Productor</span>
                     <span className="font-bold text-cyan-400">
                       {formatCurrency(

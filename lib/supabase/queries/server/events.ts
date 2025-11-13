@@ -117,8 +117,8 @@ export const getAllActiveEvents = async (
         name: (event.name as string) || "Evento sin nombre",
         flyer: (event.flyer as string) || "/placeholder.svg",
         date: event.date
-          ? eventDate.toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
+          ? event.date as string
+          : new Date().toISOString(),
         hour: eventDate.toLocaleTimeString("es-CO", {
           hour: "2-digit",
           minute: "2-digit",
@@ -241,8 +241,8 @@ export const getPopularEvents = async (
         name: (event.name as string) || "Evento sin nombre",
         flyer: (event.flyer as string) || "/placeholder.svg",
         date: event.date
-          ? eventDate.toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
+          ? event.date as string
+          : new Date().toISOString(),
         // Extract hour from the timestamp
         hour: eventDate.toLocaleTimeString("es-CO", {
           hour: "2-digit",
@@ -454,7 +454,7 @@ export const getEventById = async (
     id: data.id,
     name: data.name || "Evento sin nombre",
     flyer: data.flyer || "/placeholder.svg",
-    date: eventDate.toISOString().split("T")[0],
+    date: data.date || new Date().toISOString(),
     hour: eventDate.toLocaleTimeString("es-CO", {
       hour: "2-digit",
       minute: "2-digit",
@@ -619,7 +619,7 @@ export const getEventsByProducerId = async (
       id: event.id,
       name: event.name || "Evento sin nombre",
       flyer: event.flyer || "/placeholder.svg",
-      date: eventDate.toISOString().split("T")[0],
+      date: event.date || new Date().toISOString(),
       hour: eventDate.toLocaleTimeString("es-CO", {
         hour: "2-digit",
         minute: "2-digit",

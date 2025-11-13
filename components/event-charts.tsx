@@ -34,10 +34,30 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
         radius: ['40%', '70%'],
         center: ['50%', '50%'],
         avoidLabelOverlap: false,
+        padAngle: 3,
         itemStyle: {
           borderRadius: 10,
-          borderColor: '#0a0a0a',
-          borderWidth: 2
+          borderColor: '#404040',
+          borderWidth: 2,
+          color: {
+            type: 'pattern',
+            image: (() => {
+              const canvas = document.createElement('canvas');
+              canvas.width = 6;
+              canvas.height = 6;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+                ctx.fillRect(0, 0, 6, 6);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+                ctx.beginPath();
+                ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+              }
+              return canvas;
+            })(),
+            repeat: 'repeat'
+          }
         },
         label: {
           show: true,
@@ -52,19 +72,38 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
             fontWeight: 'bold',
             color: '#fff'
           },
+          scale: false,
           itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            color: {
+              type: 'pattern',
+              image: (() => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 6;
+                canvas.height = 6;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                  ctx.fillRect(0, 0, 6, 6);
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                  ctx.beginPath();
+                  ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                  ctx.fill();
+                }
+                return canvas;
+              })(),
+              repeat: 'repeat'
+            },
+            borderColor: '#404040',
+            shadowBlur: 0
           }
         },
-        data: data
+        data: data.map(item => ({ ...item, itemStyle: undefined }))
       }
     ]
   };
 
   return (
-    <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+    <Card className="bg-white/[0.02] border-white/10">
       <CardHeader>
         <CardTitle className="text-base">Distribución por Canal</CardTitle>
       </CardHeader>
@@ -161,11 +200,18 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
     series: [
       {
         type: 'bar',
-        data: data.map(d => ({ value: d.value, itemStyle: { color: d.color, borderRadius: [8, 8, 0, 0] } })),
+        data: data.map(d => ({ value: d.value })),
+        itemStyle: {
+          color: 'rgba(255, 255, 255, 0.18)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          borderWidth: 1,
+          borderRadius: [6, 6, 0, 0]
+        },
         emphasis: {
           itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            color: 'rgba(255, 255, 255, 0.28)',
+            borderColor: 'rgba(255, 255, 255, 0.3)',
+            shadowBlur: 0
           }
         }
       }
@@ -173,7 +219,7 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
   };
 
   return (
-    <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+    <Card className="bg-white/[0.02] border-white/10">
       <CardHeader>
         <CardTitle className="text-base">Ingresos por Canal</CardTitle>
       </CardHeader>
@@ -211,7 +257,7 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
   const padding = 20;
 
   return (
-    <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+    <Card className="bg-white/[0.02] border-white/10">
       <CardHeader>
         <CardTitle className="text-base">Embudo de Ventas</CardTitle>
       </CardHeader>
@@ -486,11 +532,30 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
         radius: ['45%', '75%'],
         center: ['50%', '50%'],
         avoidLabelOverlap: false,
-        padAngle: 2,
+        padAngle: 3,
         itemStyle: {
-          borderRadius: 6,
-          borderColor: '#0a0a0a',
-          borderWidth: 2
+          borderRadius: 10,
+          borderColor: '#404040',
+          borderWidth: 2,
+          color: {
+            type: 'pattern',
+            image: (() => {
+              const canvas = document.createElement('canvas');
+              canvas.width = 6;
+              canvas.height = 6;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+                ctx.fillRect(0, 0, 6, 6);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+                ctx.beginPath();
+                ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+              }
+              return canvas;
+            })(),
+            repeat: 'repeat'
+          }
         },
         label: {
           show: true,
@@ -520,12 +585,29 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
           }
         },
         emphasis: {
+          scale: false,
           itemStyle: {
-            shadowBlur: 15,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-            borderColor: '#fff',
-            borderWidth: 3
+            color: {
+              type: 'pattern',
+              image: (() => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 6;
+                canvas.height = 6;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                  ctx.fillRect(0, 0, 6, 6);
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                  ctx.beginPath();
+                  ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                  ctx.fill();
+                }
+                return canvas;
+              })(),
+              repeat: 'repeat'
+            },
+            borderColor: '#404040',
+            shadowBlur: 0
           },
           label: {
             fontSize: 12
@@ -539,7 +621,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
             color: '#303030'
           }
         },
-        data: data
+        data: data.map(item => ({ name: item.name, value: item.value }))
       }
     ]
   };
@@ -669,32 +751,15 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
         type: 'bar',
         data: revenues,
         itemStyle: {
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              { offset: 0, color: '#06b6d4' },
-              { offset: 1, color: '#0891b2' }
-            ]
-          },
+          color: 'rgba(255, 255, 255, 0.18)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          borderWidth: 1,
           borderRadius: [6, 6, 0, 0]
         },
         emphasis: {
           itemStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                { offset: 0, color: '#22d3ee' },
-                { offset: 1, color: '#06b6d4' }
-              ]
-            }
+            color: 'rgba(255, 255, 255, 0.28)',
+            borderColor: 'rgba(255, 255, 255, 0.3)'
           }
         }
       }
@@ -702,7 +767,7 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
   };
 
   return (
-    <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
+    <Card className="bg-white/[0.02] border-white/10">
       <CardHeader>
         <CardTitle className="text-base">Ventas Diarias</CardTitle>
       </CardHeader>

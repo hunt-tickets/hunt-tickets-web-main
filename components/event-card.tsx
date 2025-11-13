@@ -20,10 +20,33 @@ export function EventCard({
   image,
   href,
 }: EventCardProps) {
-  // Parse date to extract day and month
-  const eventDate = new Date(date);
-  const day = eventDate.getDate();
-  const month = eventDate.toLocaleDateString('es-ES', { month: 'short' });
+  // Parse date and convert from UTC to browser's timezone
+  // Handle multiple formats: "2025-11-15 20:00:00+00", "2025-11-15T20:00:00Z", or "2025-11-15"
+
+  let localDate: Date;
+
+  // Check if date includes time (has ':' character)
+  const hasTime = date.includes(':');
+
+  if (!hasTime) {
+    // Date only format: "2025-11-15"
+    // Treat as local date, no timezone conversion needed
+    localDate = new Date(date + 'T00:00:00');
+  } else if (date.includes(' ') && date.includes('+')) {
+    // Format: "2025-11-15 20:00:00+00"
+    const dateTimeParts = date.split('+')[0].split(' ');
+    const isoDateString = `${dateTimeParts[0]}T${dateTimeParts[1]}Z`;
+    localDate = new Date(isoDateString);
+  } else {
+    // Standard ISO format with time - use directly
+    // Add Z if not present to ensure UTC interpretation
+    const dateString = date.endsWith('Z') ? date : `${date}Z`;
+    localDate = new Date(dateString);
+  }
+
+  // Extract day and month from the date
+  const day = localDate.getDate();
+  const month = localDate.toLocaleDateString('es-ES', { month: 'short' });
 
   return (
     <Link href={href || `/eventos/${id}`} className="block">

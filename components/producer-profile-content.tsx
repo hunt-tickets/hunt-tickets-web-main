@@ -2,17 +2,10 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, LayoutDashboard, Settings, Mail, Shield, MoreVertical, Trash2, Edit } from "lucide-react";
+import { Users, LayoutDashboard, Settings, Mail, Shield, MoreVertical, Trash2, Edit, Download, HelpCircle } from "lucide-react";
+import ReactECharts from 'echarts-for-react';
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -51,6 +44,9 @@ type TabType = "dashboard" | "equipo" | "configuracion";
 
 export function ProducerProfileContent({ producer, team, userId }: ProducerProfileContentProps) {
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ x: number; y: number; above: boolean } | null>(null);
+  const [timeRange, setTimeRange] = useState<"3" | "6" | "12">("12");
 
   const displayName = producer.name || "Sin nombre";
 
@@ -142,140 +138,458 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
         </div>
       </div>
 
-      {/* Desktop Tabs */}
-      <div className="hidden md:flex gap-2 overflow-x-auto pb-2">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.value;
-          return (
-            <button
-              key={tab.value}
-              onClick={() => setActiveTab(tab.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-white/5 hover:bg-white/10 text-white/60"
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Tabs */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex gap-2">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.value;
+            return (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                  isActive
+                    ? "bg-white/10 text-white border border-white/20"
+                    : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
 
-      {/* Mobile Tabs */}
-      <div className="flex md:hidden gap-2 overflow-x-auto pb-2">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.value;
-          return (
-            <button
-              key={tab.value}
-              onClick={() => setActiveTab(tab.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-white/5 hover:bg-white/10 text-white/60"
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              {tab.label}
-            </button>
-          );
-        })}
+        {/* Add Member Button - Only show in Equipo tab */}
+        {activeTab === "equipo" && (
+          <AddTeamMemberDialog producerId={producer.id} />
+        )}
       </div>
 
       {/* Tab Content */}
       <div className="mt-6">
         {activeTab === "dashboard" && (
-          <Card className="bg-white/[0.02] border-white/5 p-6">
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <LayoutDashboard className="h-12 w-12 text-white/40 mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Dashboard</h3>
-              <p className="text-sm text-white/60 max-w-md">
-                Aquí verás las estadísticas y métricas del productor
-              </p>
+          <div className="space-y-6">
+            {/* Monthly Sales Chart */}
+            <Card className="bg-white/[0.02] border-white/10">
+              <CardContent className="pt-6">
+                <div className="mb-6 flex items-start justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">Ventas Mensuales</h3>
+                    <p className="text-sm text-white/50">Ingresos por mes</p>
+                  </div>
+
+                  {/* Time Range Filters and Actions */}
+                  <div className="flex gap-3">
+                    <div className="flex gap-2 items-center">
+                      <button
+                        onClick={() => setTimeRange("3")}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+                          timeRange === "3"
+                            ? "bg-white/10 text-white border border-white/20"
+                            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                        }`}
+                      >
+                        3M
+                      </button>
+                      <button
+                        onClick={() => setTimeRange("6")}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+                          timeRange === "6"
+                            ? "bg-white/10 text-white border border-white/20"
+                            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                        }`}
+                      >
+                        6M
+                      </button>
+                      <button
+                        onClick={() => setTimeRange("12")}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+                          timeRange === "12"
+                            ? "bg-white/10 text-white border border-white/20"
+                            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                        }`}
+                      >
+                        12M
+                      </button>
+
+                      {/* Help Icon with Tooltip */}
+                      <div className="relative group">
+                        <button className="flex items-center justify-center h-6 w-6 rounded-full transition-all bg-white/5 hover:bg-white/10 border border-white/10">
+                          <HelpCircle className="h-3.5 w-3.5 text-white/60" />
+                        </button>
+
+                        {/* Tooltip */}
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                          <div className="bg-[#18181b] border border-white/10 rounded-lg px-3 py-2 text-xs shadow-xl">
+                            <div className="text-white/80">Selecciona el rango de tiempo para visualizar</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="h-6 w-px bg-white/10" />
+
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-full transition-all bg-white/90 hover:bg-white text-black border border-white/80">
+                      Ventas Históricas
+                      <Download className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Dummy chart bars */}
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-end gap-2 h-48">
+                    {[
+                      { month: 'Ene', value: 65, amount: '$12,450', tickets: 456 },
+                      { month: 'Feb', value: 78, amount: '$15,230', tickets: 523 },
+                      { month: 'Mar', value: 92, amount: '$18,920', tickets: 678 },
+                      { month: 'Abr', value: 58, amount: '$10,780', tickets: 389 },
+                      { month: 'May', value: 85, amount: '$16,430', tickets: 598 },
+                      { month: 'Jun', value: 100, amount: '$21,340', tickets: 756 },
+                      { month: 'Jul', value: 72, amount: '$14,120', tickets: 502 },
+                      { month: 'Ago', value: 88, amount: '$17,650', tickets: 634 },
+                      { month: 'Sep', value: 95, amount: '$19,890', tickets: 712 },
+                      { month: 'Oct', value: 82, amount: '$16,320', tickets: 587 },
+                      { month: 'Nov', value: 70, amount: '$13,580', tickets: 489 },
+                      { month: 'Dic', value: 90, amount: '$18,450', tickets: 658 }
+                    ].slice(-parseInt(timeRange)).map((data, index) => (
+                      <div key={index} className="flex-1 flex flex-col items-center relative group">
+                        {/* Bar */}
+                        <div className="w-full flex flex-col justify-end" style={{ height: '160px' }}>
+                          <div
+                            className="w-full bg-white/[0.18] border border-white/20 rounded-t-lg transition-all duration-300 hover:bg-white/[0.28] hover:border-white/30 relative cursor-pointer overflow-hidden"
+                            style={{ height: `${data.value}%` }}
+                          >
+                            {/* Dot pattern */}
+                            <div
+                              className="absolute inset-0 opacity-30 pointer-events-none"
+                              style={{
+                                backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 0.3px, transparent 0.3px)',
+                                backgroundSize: '6px 6px'
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Tooltip on hover - Outside the bar */}
+                        <div className="absolute bottom-[170px] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                          <div className="bg-[#18181b] border border-white/10 rounded-lg px-3 py-2 text-xs whitespace-nowrap shadow-xl">
+                            <div className="font-semibold text-white mb-1">{data.month}</div>
+                            <div className="text-white/80 mb-0.5">{data.amount}</div>
+                            <div className="text-white/60 text-[10px]">{data.tickets} tickets</div>
+                          </div>
+                        </div>
+
+                        {/* Month label */}
+                        <span className="text-xs text-white/50 mt-2">{data.month}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
+                  <div className="text-center">
+                    <div className="text-xs text-white/40 mb-1">
+                      {timeRange === "12" ? "Total Anual" : `Total ${timeRange} meses`}
+                    </div>
+                    <div className="text-lg font-bold">
+                      {timeRange === "12" && "$195,160"}
+                      {timeRange === "6" && "$102,570"}
+                      {timeRange === "3" && "$48,650"}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-white/40 mb-1">Promedio Mensual</div>
+                    <div className="text-lg font-bold">
+                      {timeRange === "12" && "$16,263"}
+                      {timeRange === "6" && "$17,095"}
+                      {timeRange === "3" && "$16,217"}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-white/40 mb-1">Mejor Mes</div>
+                    <div className="text-lg font-bold">
+                      {timeRange === "12" && "Jun - $21,340"}
+                      {timeRange === "6" && "Sep - $19,890"}
+                      {timeRange === "3" && "Nov - $13,580"}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Age and Gender Distribution */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Age Distribution */}
+              <Card className="bg-white/[0.02] border-white/10">
+                <CardContent className="pt-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-white mb-1">Distribución por Edad</h3>
+                    <p className="text-sm text-white/50">Rango de edades del público</p>
+                  </div>
+                  <div className="h-[300px]">
+                    <ReactECharts
+                      option={{
+                        backgroundColor: 'transparent',
+                        tooltip: {
+                          trigger: 'item',
+                          backgroundColor: '#18181b',
+                          borderColor: '#303030',
+                          borderWidth: 1,
+                          textStyle: { color: '#fff' },
+                          formatter: '{b}: {c}%'
+                        },
+                        series: [{
+                          type: 'pie',
+                          radius: ['40%', '70%'],
+                          center: ['50%', '50%'],
+                          avoidLabelOverlap: false,
+                          padAngle: 3,
+                          itemStyle: {
+                            borderRadius: 10,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 2,
+                            color: {
+                              type: 'pattern',
+                              image: (() => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = 6;
+                                canvas.height = 6;
+                                const ctx = canvas.getContext('2d');
+                                if (ctx) {
+                                  ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+                                  ctx.fillRect(0, 0, 6, 6);
+                                  ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+                                  ctx.beginPath();
+                                  ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                                  ctx.fill();
+                                }
+                                return canvas;
+                              })(),
+                              repeat: 'repeat'
+                            }
+                          },
+                          label: {
+                            show: true,
+                            formatter: '{b}\n{d}%',
+                            color: '#888',
+                            fontSize: 11
+                          },
+                          emphasis: {
+                            label: {
+                              show: true,
+                              fontSize: 13,
+                              fontWeight: 'bold',
+                              color: '#fff'
+                            },
+                            scale: false,
+                            itemStyle: {
+                              color: {
+                                type: 'pattern',
+                                image: (() => {
+                                  const canvas = document.createElement('canvas');
+                                  canvas.width = 6;
+                                  canvas.height = 6;
+                                  const ctx = canvas.getContext('2d');
+                                  if (ctx) {
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                                    ctx.fillRect(0, 0, 6, 6);
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                                    ctx.beginPath();
+                                    ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                                    ctx.fill();
+                                  }
+                                  return canvas;
+                                })(),
+                                repeat: 'repeat'
+                              },
+                              borderColor: 'rgba(255, 255, 255, 0.3)',
+                              shadowBlur: 0
+                            }
+                          },
+                          data: [
+                            { name: '18-24 años', value: 35 },
+                            { name: '25-34 años', value: 42 },
+                            { name: '35-44 años', value: 18 },
+                            { name: '45+ años', value: 5 }
+                          ]
+                        }]
+                      }}
+                      style={{ height: '100%', width: '100%' }}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Gender Distribution */}
+              <Card className="bg-white/[0.02] border-white/10">
+                <CardContent className="pt-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-white mb-1">Distribución por Género</h3>
+                    <p className="text-sm text-white/50">Composición del público</p>
+                  </div>
+                  <div className="h-[300px]">
+                    <ReactECharts
+                      option={{
+                        backgroundColor: 'transparent',
+                        tooltip: {
+                          trigger: 'item',
+                          backgroundColor: '#18181b',
+                          borderColor: '#303030',
+                          borderWidth: 1,
+                          textStyle: { color: '#fff' },
+                          formatter: '{b}: {c}%'
+                        },
+                        series: [{
+                          type: 'pie',
+                          radius: ['40%', '70%'],
+                          center: ['50%', '50%'],
+                          avoidLabelOverlap: false,
+                          padAngle: 3,
+                          itemStyle: {
+                            borderRadius: 10,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 2,
+                            color: {
+                              type: 'pattern',
+                              image: (() => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = 6;
+                                canvas.height = 6;
+                                const ctx = canvas.getContext('2d');
+                                if (ctx) {
+                                  ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+                                  ctx.fillRect(0, 0, 6, 6);
+                                  ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+                                  ctx.beginPath();
+                                  ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                                  ctx.fill();
+                                }
+                                return canvas;
+                              })(),
+                              repeat: 'repeat'
+                            }
+                          },
+                          label: {
+                            show: true,
+                            formatter: '{b}\n{d}%',
+                            color: '#888',
+                            fontSize: 11
+                          },
+                          emphasis: {
+                            label: {
+                              show: true,
+                              fontSize: 13,
+                              fontWeight: 'bold',
+                              color: '#fff'
+                            },
+                            scale: false,
+                            itemStyle: {
+                              color: {
+                                type: 'pattern',
+                                image: (() => {
+                                  const canvas = document.createElement('canvas');
+                                  canvas.width = 6;
+                                  canvas.height = 6;
+                                  const ctx = canvas.getContext('2d');
+                                  if (ctx) {
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                                    ctx.fillRect(0, 0, 6, 6);
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                                    ctx.beginPath();
+                                    ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+                                    ctx.fill();
+                                  }
+                                  return canvas;
+                                })(),
+                                repeat: 'repeat'
+                              },
+                              borderColor: 'rgba(255, 255, 255, 0.3)',
+                              shadowBlur: 0
+                            }
+                          },
+                          data: [
+                            { name: 'Masculino', value: 52 },
+                            { name: 'Femenino', value: 45 },
+                            { name: 'Otro', value: 3 }
+                          ]
+                        }]
+                      }}
+                      style={{ height: '100%', width: '100%' }}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </Card>
+          </div>
         )}
 
         {activeTab === "equipo" && (
           <div className="space-y-4">
-            {/* Add Member Button */}
-            <div className="flex justify-end">
-              <AddTeamMemberDialog producerId={producer.id} />
-            </div>
-
             {/* Team Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="bg-white/[0.02] border-white/5">
-                <CardContent className="pt-6">
+                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <p className="text-sm text-white/50">Total Miembros</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-xl font-bold text-white">
                         {displayTeam.length}
                       </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
 
-              <Card className="bg-white/[0.02] border-white/5">
-                <CardContent className="pt-6">
+                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
                       <Shield className="h-5 w-5 text-amber-400" />
                     </div>
                     <div>
                       <p className="text-sm text-white/50">Administradores</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-xl font-bold text-white">
                         {displayTeam.filter(m => m.rol === "Administrador").length}
                       </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
 
-              <Card className="bg-white/[0.02] border-white/5">
-                <CardContent className="pt-6">
+                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
                       <Users className="h-5 w-5 text-blue-400" />
                     </div>
                     <div>
                       <p className="text-sm text-white/50">Analistas</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-xl font-bold text-white">
                         {displayTeam.filter(m => m.rol === "Analista").length}
                       </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
 
-              <Card className="bg-white/[0.02] border-white/5">
-                <CardContent className="pt-6">
+                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
                       <Users className="h-5 w-5 text-green-400" />
                     </div>
                     <div>
                       <p className="text-sm text-white/50">Vendedores</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-xl font-bold text-white">
                         {displayTeam.filter(m => m.rol === "Vendedor").length}
                       </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
             </div>
 
             {/* Team Table */}
-            <Card className="bg-white/[0.02] border-white/5">
+            <div className="rounded-xl border border-white/10 bg-white/[0.02]">
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -310,7 +624,25 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
                       return (
                         <TableRow
                           key={member.id}
-                          className="border-b border-white/5 hover:bg-white/[0.02] transition-all duration-200 group"
+                          onClick={(e) => {
+                            const clickY = e.clientY;
+                            const clickX = e.clientX;
+                            const windowHeight = window.innerHeight;
+
+                            // Check if there's enough space below, otherwise show above
+                            const spaceBelow = windowHeight - clickY;
+                            const menuHeight = 150; // Approximate menu height
+                            const showAbove = spaceBelow < menuHeight;
+
+                            if (openDropdownId === member.id) {
+                              setOpenDropdownId(null);
+                              setMenuPosition(null);
+                            } else {
+                              setOpenDropdownId(member.id);
+                              setMenuPosition({ x: clickX, y: clickY, above: showAbove });
+                            }
+                          }}
+                          className="border-b border-white/5 hover:bg-white/[0.02] transition-all duration-200 group cursor-pointer"
                         >
                           {/* Miembro */}
                           <TableCell className="py-5 pl-6">
@@ -381,41 +713,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
                           {/* Acciones */}
                           <TableCell className="text-center py-5 pr-6">
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex justify-center">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0 hover:bg-white/[0.05]"
-                                  >
-                                    <MoreVertical className="h-4 w-4 text-white/60" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                  align="center"
-                                  className="w-48 bg-[#1a1a1a] border-white/10 shadow-xl rounded-xl p-2"
-                                >
-                                  <DropdownMenuItem
-                                    className="cursor-pointer rounded-lg px-3 py-2.5 hover:bg-white/[0.08] focus:bg-white/[0.08] transition-colors"
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      <Edit className="h-4 w-4 text-white/60" />
-                                      <span className="text-sm font-medium text-white">Cambiar Rol</span>
-                                    </div>
-                                  </DropdownMenuItem>
-
-                                  <DropdownMenuSeparator className="my-2 bg-white/5" />
-
-                                  <DropdownMenuItem
-                                    className="cursor-pointer rounded-lg px-3 py-2.5 hover:bg-red-500/10 focus:bg-red-500/10 transition-colors group"
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      <Trash2 className="h-4 w-4 text-red-400" />
-                                      <span className="text-sm font-medium text-red-400 group-hover:text-red-300">Eliminar</span>
-                                    </div>
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                              <MoreVertical className="h-4 w-4 text-white/60" />
                             </div>
                           </TableCell>
                         </TableRow>
@@ -424,7 +722,58 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
                   </TableBody>
                 </Table>
               </div>
-            </Card>
+            </div>
+
+            {/* Context Menu */}
+            {openDropdownId && menuPosition && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => {
+                    setOpenDropdownId(null);
+                    setMenuPosition(null);
+                  }}
+                />
+                <div
+                  className="fixed z-50 w-48 bg-[#1a1a1a] border border-white/10 shadow-xl rounded-xl p-2"
+                  style={{
+                    left: `${menuPosition.x}px`,
+                    top: `${menuPosition.y}px`,
+                    transform: menuPosition.above ? 'translate(-50%, -100%)' : 'translate(-50%, 0)'
+                  }}
+                >
+                  <button
+                    className="w-full cursor-pointer rounded-lg px-3 py-2.5 hover:bg-white/[0.08] focus:bg-white/[0.08] transition-colors text-left"
+                    onClick={() => {
+                      setOpenDropdownId(null);
+                      setMenuPosition(null);
+                      // Handle change role
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Edit className="h-4 w-4 text-white/60" />
+                      <span className="text-sm font-medium text-white">Cambiar Rol</span>
+                    </div>
+                  </button>
+
+                  <div className="my-2 h-px bg-white/5" />
+
+                  <button
+                    className="w-full cursor-pointer rounded-lg px-3 py-2.5 hover:bg-red-500/10 focus:bg-red-500/10 transition-colors text-left group"
+                    onClick={() => {
+                      setOpenDropdownId(null);
+                      setMenuPosition(null);
+                      // Handle delete
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Trash2 className="h-4 w-4 text-red-400" />
+                      <span className="text-sm font-medium text-red-400 group-hover:text-red-300">Eliminar</span>
+                    </div>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
