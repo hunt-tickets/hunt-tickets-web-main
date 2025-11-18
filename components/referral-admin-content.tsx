@@ -87,7 +87,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
         {/* Referral Info Section - 2 Columns */}
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Left Column - Referral Code */}
-        <Card className="bg-white/[0.02] border-white/10">
+        <Card className="bg-white/[0.02] border-white/10 min-w-0">
           <CardContent className="p-4 sm:p-8 space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2">
               <Gift className="h-5 w-5 text-white/60" />
@@ -134,7 +134,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
         </Card>
 
         {/* Right Column - Benefits */}
-        <Card className="bg-gradient-to-br from-gray-50 via-white to-gray-100 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-gray-50 via-white to-gray-100 border-0 shadow-lg min-w-0">
           <CardContent className="p-4 sm:p-8">
             <div className="flex items-center gap-2 mb-6">
               <div className="p-1.5 rounded-lg bg-black/5">
@@ -198,7 +198,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/5 min-w-0">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
               <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
@@ -211,7 +211,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/5 min-w-0">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
               <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
@@ -224,7 +224,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/5 min-w-0">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
               <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
@@ -237,7 +237,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/[0.02] border-white/5">
+        <Card className="bg-white/[0.02] border-white/5 min-w-0">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
               <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
@@ -252,7 +252,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
       </div>
 
       {/* Referred Producers Table */}
-      <Card className="bg-white/[0.02] border-white/5">
+      <Card className="bg-white/[0.02] border-white/5 min-w-0">
         <CardContent className="p-4 sm:p-6">
           <div className="mb-4">
             <h3 className="text-sm sm:text-base font-semibold">Productores Referidos</h3>
