@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -65,8 +65,7 @@ export function AuthRequiredDialog({
     setMessage(null);
 
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email: loginEmail,
         options: {
           shouldCreateUser: false, // Only login existing users
@@ -111,8 +110,7 @@ export function AuthRequiredDialog({
     }
 
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
+      const { error } = await supabaseClient.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
@@ -144,11 +142,10 @@ export function AuthRequiredDialog({
     setError(null);
 
     try {
-      const supabase = createClient();
       const {
         data: { session },
         error,
-      } = await supabase.auth.verifyOtp({
+      } = await supabaseClient.auth.verifyOtp({
         email: loginEmail,
         token: loginOtp,
         type: "email",

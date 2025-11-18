@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,13 +27,12 @@ export function LoginForm({
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
     setMessage(null);
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: true,
@@ -50,7 +49,6 @@ export function LoginForm({
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
@@ -58,7 +56,7 @@ export function LoginForm({
       const {
         data: { session },
         error,
-      } = await supabase.auth.verifyOtp({
+      } = await supabaseClient.auth.verifyOtp({
         email,
         token: otp,
         type: "email",

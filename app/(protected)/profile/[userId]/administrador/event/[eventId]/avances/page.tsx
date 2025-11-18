@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventAdvances } from "@/lib/supabase/actions/advances";
-import { getEventFinancialReport } from "@/lib/actions/events";
+import { getEventFinancialReport } from "@/lib/supabase/actions/events";
 import { EventAdvancesContent } from "@/components/event-advances-content";
 import { EventStickyHeader } from "@/components/event-sticky-header";
 
@@ -59,10 +59,7 @@ export default async function AvancesPage({ params }: AvancesPageProps) {
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeader
-        eventName={event.name}
-        subtitle="Avances de Pago"
-      />
+      <EventStickyHeader eventName={event.name} subtitle="Avances de Pago" />
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">

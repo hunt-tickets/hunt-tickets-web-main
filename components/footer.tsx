@@ -1,9 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import { Instagram } from "lucide-react";
-import { FaWhatsapp, FaGooglePlay, FaApple, FaLinkedin } from 'react-icons/fa';
-import { SiGmail } from 'react-icons/si';
+import { FaWhatsapp, FaGooglePlay, FaApple, FaLinkedin } from "react-icons/fa";
+import { SiGmail } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -11,7 +9,6 @@ import { Button } from "@/components/ui/button";
  * Includes hover effects, proper icon imports, and responsive design
  */
 const Footer = () => {
-
   return (
     <footer className="w-full border-t dark:border-t-[#303030] bg-white dark:bg-[#101010] pb-[68px] md:pb-0 relative z-10">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -19,7 +16,10 @@ const Footer = () => {
           {/* Logo & Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="inline-flex items-center">
-              <span className="text-2xl font-bold tracking-tight transition-all duration-300 ease-out hover:tracking-wide inline-block" style={{ fontFamily: 'LOT, sans-serif' }}>
+              <span
+                className="text-2xl font-bold tracking-tight transition-all duration-300 ease-out hover:tracking-wide inline-block"
+                style={{ fontFamily: "LOT, sans-serif" }}
+              >
                 HUNT
               </span>
             </Link>
@@ -77,7 +77,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/resources/terms-and-conditions"
+                  href="/terminos-y-condiciones"
                   className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Términos y condiciones
@@ -85,7 +85,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/resources/terms-and-conditions"
+                  href="/terminos-y-condiciones"
                   className="text-sm text-[#B0B0B0] hover:text-foreground transition-colors"
                 >
                   Política de privacidad
@@ -148,10 +148,7 @@ const Footer = () => {
                   <span className="sr-only">LinkedIn</span>
                 </Button>
               </Link>
-              <Link
-                href="mailto:"
-                className="inline-block"
-              >
+              <Link href="mailto:" className="inline-block">
                 <Button variant="ghost" size="icon" className="h-9 w-9">
                   <SiGmail className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Gmail</span>
@@ -167,17 +164,13 @@ const Footer = () => {
                   <span className="sr-only">WhatsApp</span>
                 </Button>
               </Link>
-              <Link
-                href="#"
-              >
+              <Link href="#">
                 <Button variant="ghost" size="icon" className="h-9 w-9">
                   <FaApple className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Apple</span>
                 </Button>
               </Link>
-              <Link
-                href="#"
-              >
+              <Link href="#">
                 <Button variant="ghost" size="icon" className="h-9 w-9">
                   <FaGooglePlay className="h-5 w-5 text-[#B0B0B0] hover:text-foreground transition-colors" />
                   <span className="sr-only">Google Play</span>

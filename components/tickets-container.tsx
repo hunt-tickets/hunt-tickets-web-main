@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { Ticket } from "@/lib/supabase/types";
 import { TicketQuantitySelector } from "./ticket-quantity-selector";
@@ -32,13 +32,11 @@ export function TicketsContainer({
 
   // Subscribe to Auth
   useEffect(() => {
-    const supabase = createClient();
-
     // Get initial user
     const getUser = async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await supabaseClient.auth.getUser();
       setUser(user);
     };
 
@@ -47,7 +45,7 @@ export function TicketsContainer({
     // Listen for auth state changes (login/logout)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -198,7 +196,7 @@ export function TicketsContainer({
           >
             Acepto las{" "}
             <Link
-              href="/resources/terms-and-conditions"
+              href="/terminos-y-condiciones"
               className="text-primary hover:underline font-medium"
               target="_blank"
             >

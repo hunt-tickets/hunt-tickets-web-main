@@ -1,7 +1,7 @@
 "use client";
 
 import { SignUpPage, Testimonial, SignUpFormData } from "@/components/ui/sign-up";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -32,13 +32,12 @@ export const AuthSignUp = () => {
   const router = useRouter();
 
   const handleSignUp = async (data: SignUpFormData) => {
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
     try {
       // Generate a temporary password or use email OTP
-      const { error: signUpError } = await supabase.auth.signInWithOtp({
+      const { error: signUpError } = await supabaseClient.auth.signInWithOtp({
         email: data.email,
         options: {
           shouldCreateUser: true,

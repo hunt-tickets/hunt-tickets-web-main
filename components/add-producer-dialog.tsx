@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserPlus, Users } from "lucide-react";
-import { addProducerToEvent } from "@/lib/actions/events";
+import { addProducerToEvent } from "@/lib/supabase/actions/events";
 import { useRouter } from "next/navigation";
 
 interface Producer {
@@ -32,7 +32,10 @@ interface AddProducerDialogProps {
   availableProducers: Producer[];
 }
 
-export function AddProducerDialog({ eventId, availableProducers }: AddProducerDialogProps) {
+export function AddProducerDialog({
+  eventId,
+  availableProducers,
+}: AddProducerDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedProducerId, setSelectedProducerId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +81,9 @@ export function AddProducerDialog({ eventId, availableProducers }: AddProducerDi
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px] rounded-2xl bg-background/95 backdrop-blur-xl border-white/10 shadow-2xl">
         <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl font-bold">Agregar Productor al Evento</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            Agregar Productor al Evento
+          </DialogTitle>
           <DialogDescription className="text-base text-muted-foreground">
             Selecciona un productor para agregarlo al equipo del evento.
           </DialogDescription>
@@ -97,7 +102,10 @@ export function AddProducerDialog({ eventId, availableProducers }: AddProducerDi
           ) : (
             <>
               <div className="space-y-3">
-                <label htmlFor="producer" className="text-sm font-medium leading-none">
+                <label
+                  htmlFor="producer"
+                  className="text-sm font-medium leading-none"
+                >
                   Productor
                 </label>
                 <Select
@@ -129,7 +137,9 @@ export function AddProducerDialog({ eventId, availableProducers }: AddProducerDi
                               <Users className="h-4 w-4 text-primary" />
                             </div>
                           )}
-                          <span className="font-medium">{producer.name || "Sin nombre"}</span>
+                          <span className="font-medium">
+                            {producer.name || "Sin nombre"}
+                          </span>
                         </div>
                       </SelectItem>
                     ))}

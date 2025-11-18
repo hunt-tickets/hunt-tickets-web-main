@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
@@ -8,10 +8,8 @@ export function LogoutButton() {
   const router = useRouter();
 
   const logout = async () => {
-    const supabase = createClient();
-
     // Sign out from Supabase
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
 
     // Refresh the router cache to update server components
     // This ensures the AuthButton re-renders with the logged-out state

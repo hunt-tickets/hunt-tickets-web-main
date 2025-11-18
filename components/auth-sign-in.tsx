@@ -1,7 +1,7 @@
 "use client";
 
 import { SignInPage, Testimonial } from "@/components/ui/sign-in";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
 
 const sampleTestimonials: Testimonial[] = [
@@ -72,14 +72,13 @@ export const AuthSignIn = () => {
   }, [errorCountdown]);
 
   const handleSendOtp = async (email: string) => {
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
     setMessage(null);
     setErrorCountdown(null);
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: true,
@@ -109,7 +108,6 @@ export const AuthSignIn = () => {
   };
 
   const handleVerifyOtp = async (email: string, otp: string) => {
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
     setErrorCountdown(null);
@@ -118,7 +116,7 @@ export const AuthSignIn = () => {
       const {
         data: { session },
         error,
-      } = await supabase.auth.verifyOtp({
+      } = await supabaseClient.auth.verifyOtp({
         email,
         token: otp,
         type: "email",
@@ -149,14 +147,13 @@ export const AuthSignIn = () => {
   };
 
   const handleResendOtp = async (email: string) => {
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
     setMessage(null);
     setErrorCountdown(null);
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: true,

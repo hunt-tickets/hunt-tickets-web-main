@@ -11,7 +11,7 @@ import "./globals.css";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
- 
+
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Hunt Tickets",
@@ -45,7 +45,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} ${amarante.variable} antialiased`}>
+      <body
+        className={`${geistSans.className} ${amarante.variable} antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -57,15 +59,13 @@ export default function RootLayout({
             expand={false}
             richColors
             toastOptions={{
-              className: 'sm:bottom-4 sm:right-4 top-4 right-4',
+              className: "sm:bottom-4 sm:right-4 top-4 right-4",
             }}
           />
-          <ConditionalLayout>
-            {children}
-          </ConditionalLayout>
+          <ConditionalLayout>{children}</ConditionalLayout>
           <ChatbaseWidget />
-          <Analytics />
         </ThemeProvider>
+        <Analytics />
 
         {/* Chatbase Widget */}
         <Script

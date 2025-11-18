@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
@@ -15,11 +15,10 @@ export function useTicketAvailability(ticketTierId: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = createClient();
     let channel: RealtimeChannel;
 
     async function fetchInitialData() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("ticket_inventory")
         .select("available_count")
         .eq("ticket_tier_id", ticketTierId)
@@ -32,7 +31,7 @@ export function useTicketAvailability(ticketTierId: string) {
     }
 
     function setupRealtimeSubscription() {
-      channel = supabase
+      channel = supabaseClient
         .channel(`ticket_availability:${ticketTierId}`)
         .on(
           "postgres_changes",
@@ -56,7 +55,7 @@ export function useTicketAvailability(ticketTierId: string) {
 
     return () => {
       if (channel) {
-        supabase.removeChannel(channel);
+        supabaseClient.removeChannel(channel);
       }
     };
   }, [ticketTierId]);
@@ -67,10 +66,9 @@ export function useTicketAvailability(ticketTierId: string) {
 // Hook for chat or live comments (example of presence)
 export function useLivePresence(roomId: string, userId: string) {
   const [presences, setPresences] = useState<Record<string, unknown>>({});
-  const supabase = createClient();
 
   useEffect(() => {
-    const channel = supabase.channel(`room:${roomId}`)
+    const channel = supabaseClient.channel(`room:${roomId}`)
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
         setPresences(state);
@@ -92,9 +90,9 @@ export function useLivePresence(roomId: string, userId: string) {
 
     return () => {
       channel.untrack();
-      supabase.removeChannel(channel);
+      supabaseClient.removeChannel(channel);
     };
-  }, [roomId, userId, supabase]);
+  }, [roomId, userId]);
 
   return presences;
 }

@@ -27,23 +27,35 @@ export function EventCard({
 
   let localDate: Date;
 
-  // Check if date includes time (has ':' character)
-  const hasTime = date.includes(':');
-
-  if (!hasTime) {
-    // Date only format: "2025-11-15"
-    // Treat as local date, no timezone conversion needed
-    localDate = new Date(date + 'T00:00:00');
-  } else if (date.includes(' ') && date.includes('+')) {
-    // Format: "2025-11-15 20:00:00+00"
-    const dateTimeParts = date.split('+')[0].split(' ');
-    const isoDateString = `${dateTimeParts[0]}T${dateTimeParts[1]}Z`;
-    localDate = new Date(isoDateString);
+  // Check if date is valid and not empty
+  if (!date || typeof date !== 'string' || date.trim() === '') {
+    localDate = new Date();
   } else {
-    // Standard ISO format with time - use directly
-    // Add Z if not present to ensure UTC interpretation
-    const dateString = date.endsWith('Z') ? date : `${date}Z`;
-    localDate = new Date(dateString);
+    // Check if date includes time (has ':' character)
+    const hasTime = date.includes(':');
+
+    if (!hasTime) {
+      // Date only format: "2025-11-15"
+      // Treat as local date, no timezone conversion needed
+      localDate = new Date(date + 'T00:00:00');
+    } else if (date.includes(' ') && date.includes('+')) {
+      // Format: "2025-11-15 20:00:00+00"
+      const dateTimeParts = date.split('+')[0].split(' ');
+      const isoDateString = `${dateTimeParts[0]}T${dateTimeParts[1]}Z`;
+      localDate = new Date(isoDateString);
+    } else {
+      // Standard ISO format with time
+      // Check if it already has timezone info (Z or +/-HH:MM)
+      const hasTimezone = date.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(date);
+      const dateString = hasTimezone ? date : `${date}Z`;
+      localDate = new Date(dateString);
+    }
+
+    // Validate the parsed date - if invalid, use current date as fallback
+    if (isNaN(localDate.getTime())) {
+      console.error(`[EventCard] Invalid date for event "${title}": "${date}"`);
+      localDate = new Date();
+    }
   }
 
   // Extract day and month from the date

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
@@ -26,13 +26,11 @@ export function AuthButton() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-
     // Get initial session
     const getUser = async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await supabaseClient.auth.getUser();
       setUser(user);
       setLoading(false);
     };
@@ -42,7 +40,7 @@ export function AuthButton() {
     // Listen for auth state changes (login/logout)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });

@@ -19,7 +19,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { createEvent, type EventFormState } from "@/lib/actions/events";
+import {
+  createEvent,
+  type EventFormState,
+} from "@/lib/supabase/actions/events";
 import { CreateEventSubmitButton } from "@/components/create-event-submit-button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, AlertCircle, Plus } from "lucide-react";
@@ -128,7 +131,10 @@ export function CreateEventDialog({
         <div className="flex flex-col h-full">
           {/* Header */}
           <SheetHeader className="px-6 py-6 border-b border-[#303030] bg-[#101010] sticky top-0 z-10">
-            <SheetTitle className="text-2xl font-bold" style={{ fontFamily: 'LOT, sans-serif' }}>
+            <SheetTitle
+              className="text-2xl font-bold"
+              style={{ fontFamily: "LOT, sans-serif" }}
+            >
               CREAR EVENTO
             </SheetTitle>
             <p className="text-sm text-[#B0B0B0] mt-2">
@@ -145,7 +151,10 @@ export function CreateEventDialog({
             >
               {/* Error message */}
               {state.message && !state.success && (
-                <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+                <Alert
+                  variant="destructive"
+                  className="border-destructive/50 bg-destructive/10"
+                >
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{state.message}</AlertDescription>
                 </Alert>
@@ -169,7 +178,8 @@ export function CreateEventDialog({
 
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-sm font-medium">
-                    Nombre del Evento <span className="text-destructive">*</span>
+                    Nombre del Evento{" "}
+                    <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="name"
@@ -215,7 +225,8 @@ export function CreateEventDialog({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="start_date" className="text-sm font-medium">
-                      Fecha de Inicio <span className="text-destructive">*</span>
+                      Fecha de Inicio{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="start_date"
@@ -253,7 +264,8 @@ export function CreateEventDialog({
 
                   <div className="space-y-2">
                     <Label htmlFor="end_date" className="text-sm font-medium">
-                      Fecha de Finalización <span className="text-destructive">*</span>
+                      Fecha de Finalización{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="end_date"
@@ -272,7 +284,8 @@ export function CreateEventDialog({
 
                   <div className="space-y-2">
                     <Label htmlFor="end_time" className="text-sm font-medium">
-                      Hora de Finalización <span className="text-destructive">*</span>
+                      Hora de Finalización{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="end_time"
@@ -336,7 +349,11 @@ export function CreateEventDialog({
                       <SelectTrigger className="h-10 bg-background/50 border-[#303030]">
                         <SelectValue placeholder="Seleccione edad" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent
+                        position="popper"
+                        side="bottom"
+                        align="start"
+                      >
                         <SelectItem value="0">0+</SelectItem>
                         <SelectItem value="12">12+</SelectItem>
                         <SelectItem value="15">15+</SelectItem>
@@ -529,7 +546,10 @@ export function CreateEventDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="guest_list_info" className="text-sm font-medium">
+                  <Label
+                    htmlFor="guest_list_info"
+                    className="text-sm font-medium"
+                  >
                     Información Adicional
                   </Label>
                   <Textarea

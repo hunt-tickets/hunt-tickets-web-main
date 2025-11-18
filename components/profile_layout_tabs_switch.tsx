@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import { User, Ticket, HelpCircle, Settings } from "lucide-react";
 
 const ProfileTabs = () => {
@@ -25,10 +25,9 @@ const ProfileTabs = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const supabase = createClient();
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await supabaseClient.auth.getUser();
 
       if (user) {
         setUserId(user.id);

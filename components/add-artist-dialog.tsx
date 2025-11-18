@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserPlus, Users } from "lucide-react";
-import { addArtistToEvent } from "@/lib/actions/events";
+import { addArtistToEvent } from "@/lib/supabase/actions/events";
 import { useRouter } from "next/navigation";
 
 interface Artist {
@@ -35,7 +35,11 @@ interface AddArtistDialogProps {
   className?: string;
 }
 
-export function AddArtistDialog({ eventId, availableArtists, className }: AddArtistDialogProps) {
+export function AddArtistDialog({
+  eventId,
+  availableArtists,
+  className,
+}: AddArtistDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedArtistId, setSelectedArtistId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +77,9 @@ export function AddArtistDialog({ eventId, availableArtists, className }: AddArt
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className={`rounded-lg bg-white/90 hover:bg-white border border-white/80 text-black transition-all duration-300 ${className || ''}`}
+          className={`rounded-lg bg-white/90 hover:bg-white border border-white/80 text-black transition-all duration-300 ${
+            className || ""
+          }`}
         >
           <UserPlus className="h-4 w-4 mr-2" />
           Agregar
@@ -81,7 +87,9 @@ export function AddArtistDialog({ eventId, availableArtists, className }: AddArt
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px] rounded-2xl bg-background/95 backdrop-blur-xl border-white/10 shadow-2xl">
         <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl font-bold">Agregar Artista al Evento</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            Agregar Artista al Evento
+          </DialogTitle>
           <DialogDescription className="text-base text-muted-foreground">
             Selecciona un artista para agregarlo al lineup del evento.
           </DialogDescription>
@@ -100,7 +108,10 @@ export function AddArtistDialog({ eventId, availableArtists, className }: AddArt
           ) : (
             <>
               <div className="space-y-3">
-                <label htmlFor="artist" className="text-sm font-medium leading-none">
+                <label
+                  htmlFor="artist"
+                  className="text-sm font-medium leading-none"
+                >
                   Artista
                 </label>
                 <Select
@@ -133,9 +144,13 @@ export function AddArtistDialog({ eventId, availableArtists, className }: AddArt
                             </div>
                           )}
                           <div className="flex flex-col">
-                            <span className="font-medium">{artist.name || "Sin nombre"}</span>
+                            <span className="font-medium">
+                              {artist.name || "Sin nombre"}
+                            </span>
                             {artist.category && (
-                              <span className="text-xs text-white/40">{artist.category}</span>
+                              <span className="text-xs text-white/40">
+                                {artist.category}
+                              </span>
                             )}
                           </div>
                         </div>

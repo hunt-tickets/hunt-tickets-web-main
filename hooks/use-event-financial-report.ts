@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 import type { EventFinancialReport } from "@/lib/supabase/types";
 
 export function useEventFinancialReport(eventId: string) {
@@ -17,8 +17,7 @@ export function useEventFinancialReport(eventId: string) {
         setLoading(true);
         setError(null);
 
-        const supabase = createClient();
-        const { data: report, error: rpcError } = await supabase.rpc(
+        const { data: report, error: rpcError } = await supabaseClient.rpc(
           "get_event_sales_summary_with_validation",
           {
             p_event_id: eventId,

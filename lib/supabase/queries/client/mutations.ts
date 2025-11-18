@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import { supabaseClient } from "@/lib/supabase/client";
 
 /**
  * Client-side mutations for user interactions
@@ -36,15 +36,13 @@ export async function purchaseTicket(
 
 // Update user preferences (non-sensitive)
 export async function updateUserPreferences(preferences: Record<string, unknown>) {
-  const supabase = createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
   if (!user) {
     throw new Error("Not authenticated");
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("user_preferences")
     .upsert({
       user_id: user.id,
@@ -63,16 +61,14 @@ export async function updateUserPreferences(preferences: Record<string, unknown>
 
 // Add to favorites (can be client-side for UX)
 export async function toggleFavorite(eventId: string) {
-  const supabase = createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
   if (!user) {
     throw new Error("Not authenticated");
   }
 
   // Check if already favorited
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseClient
     .from("user_favorites")
     .select("id")
     .eq("user_id", user.id)
@@ -81,7 +77,7 @@ export async function toggleFavorite(eventId: string) {
 
   if (existing) {
     // Remove favorite
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from("user_favorites")
       .delete()
       .eq("id", existing.id);
@@ -90,7 +86,7 @@ export async function toggleFavorite(eventId: string) {
     return false; // Not favorited anymore
   } else {
     // Add favorite
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from("user_favorites")
       .insert({
         user_id: user.id,
@@ -104,9 +100,7 @@ export async function toggleFavorite(eventId: string) {
 
 // Upload user avatar with optimization
 export async function uploadAvatar(file: File) {
-  const supabase = createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
   if (!user) {
     throw new Error("Not authenticated");
@@ -127,7 +121,7 @@ export async function uploadAvatar(file: File) {
   const filePath = `avatars/${fileName}`;
 
   // Upload to storage
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await supabaseClient.storage
     .from("user-uploads")
     .upload(filePath, file, {
       cacheControl: "3600",
@@ -139,19 +133,19 @@ export async function uploadAvatar(file: File) {
   }
 
   // Get public URL
-  const { data: { publicUrl } } = supabase.storage
+  const { data: { publicUrl } } = supabaseClient.storage
     .from("user-uploads")
     .getPublicUrl(filePath);
 
   // Update profile with new avatar URL
-  const { error: updateError } = await supabase
+  const { error: updateError } = await supabaseClient
     .from("profiles")
     .update({ avatar_url: publicUrl })
     .eq("id", user.id);
 
   if (updateError) {
     // Clean up uploaded file
-    await supabase.storage.from("user-uploads").remove([filePath]);
+    await supabaseClient.storage.from("user-uploads").remove([filePath]);
     throw updateError;
   }
 

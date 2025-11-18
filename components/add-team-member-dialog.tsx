@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserPlus, Loader2, Shield, Users, X } from "lucide-react";
-import { addTeamMemberToProducer } from "@/lib/actions/producers";
+import { addTeamMemberToProducer } from "@/lib/supabase/actions/producers";
 import { useRouter } from "next/navigation";
 
 interface AddTeamMemberDialogProps {

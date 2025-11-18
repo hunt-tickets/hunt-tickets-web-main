@@ -89,7 +89,7 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
       title: "Términos y Condiciones",
       description: "Lee nuestros términos de servicio",
       icon: FileText,
-      href: "/resources/terms-and-conditions",
+      href: "/terminos-y-condiciones",
       color: "text-green-600 dark:text-green-400",
       bgColor: "bg-green-50 dark:bg-green-950/30",
     },

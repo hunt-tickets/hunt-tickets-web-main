@@ -15,7 +15,12 @@ export default function Page() {
         <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'LOT, sans-serif' }}>Eventos Populares</h2>
+            <h2
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-white"
+              style={{ fontFamily: "LOT, sans-serif" }}
+            >
+              Eventos Populares
+            </h2>
           </div>
 
           {/* Popular Events component handles all event display logic */}

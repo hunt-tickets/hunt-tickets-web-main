@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useEventTabs } from "@/contexts/event-tabs-context";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,7 +29,7 @@ import {
   Globe,
   Coins,
   FileText,
-  MapPinned
+  MapPinned,
 } from "lucide-react";
 
 interface EventData {
@@ -54,7 +60,12 @@ interface EventConfigContentProps {
   eventId?: string;
 }
 
-export function EventConfigContent({ showTabsOnly = false, showContentOnly = false, eventData, eventId }: EventConfigContentProps = {}) {
+export function EventConfigContent({
+  showTabsOnly = false,
+  showContentOnly = false,
+  eventData,
+  eventId,
+}: EventConfigContentProps = {}) {
   const { configTab: activeTab, setConfigTab: setActiveTab } = useEventTabs();
   const [formData, setFormData] = useState({
     eventName: "",
@@ -93,7 +104,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
         city: eventData.venues?.city || "",
         country: "",
         startDate: eventData.date ? formatDateForInput(eventData.date) : "",
-        endDate: eventData.end_date ? formatDateForInput(eventData.end_date) : "",
+        endDate: eventData.end_date
+          ? formatDateForInput(eventData.end_date)
+          : "",
         age: eventData.age || 18,
         timezone: "America/Bogota",
         currency: "COP",
@@ -104,7 +117,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
         setImages((prev) => ({ ...prev, banner: eventData.flyer || null }));
       }
       if (eventData.flyer_apple) {
-        setWalletConfig((prev) => ({ ...prev, logo: eventData.flyer_apple || null }));
+        setWalletConfig((prev) => ({
+          ...prev,
+          logo: eventData.flyer_apple || null,
+        }));
       }
 
       // Initialize FAQs if available
@@ -169,22 +185,27 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     { id: "faqs", label: "FAQs", icon: HelpCircle },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, imageType: "banner") => {
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    imageType: "banner"
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        setImages(prev => ({
+        setImages((prev) => ({
           ...prev,
-          [imageType]: (event.target?.result as string) || null
+          [imageType]: (event.target?.result as string) || null,
         }));
       };
       reader.readAsDataURL(file);
@@ -193,20 +214,23 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
   const handleWalletColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setWalletConfig(prev => ({
+    setWalletConfig((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleWalletImageUpload = (e: React.ChangeEvent<HTMLInputElement>, imageType: "logo" | "icon" | "strip") => {
+  const handleWalletImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    imageType: "logo" | "icon" | "strip"
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        setWalletConfig(prev => ({
+        setWalletConfig((prev) => ({
           ...prev,
-          [imageType]: event.target?.result
+          [imageType]: event.target?.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -217,7 +241,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     if (!eventId) return;
 
     try {
-      const { updateEventConfiguration } = await import("@/lib/actions/events");
+      const { updateEventConfiguration } = await import(
+        "@/lib/supabase/actions/events"
+      );
 
       const result = await updateEventConfiguration(eventId, {
         faqs: updatedFaqs,
@@ -238,7 +264,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
     try {
       if (section === "información") {
-        const { updateEventConfiguration } = await import("@/lib/actions/events");
+        const { updateEventConfiguration } = await import(
+          "@/lib/supabase/actions/events"
+        );
 
         const result = await updateEventConfiguration(eventId, {
           name: formData.eventName,
@@ -340,7 +368,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
   // Content section
   const contentSection = (
     <div className="space-y-4">
-
       {/* Information Section */}
       {activeTab === "information" && (
         <div className="space-y-6">
@@ -351,7 +378,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 <FileText className="h-5 w-5 text-white/60" />
                 <div>
                   <CardTitle>Información Básica</CardTitle>
-                  <CardDescription>Detalles principales de tu evento</CardDescription>
+                  <CardDescription>
+                    Detalles principales de tu evento
+                  </CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -398,7 +427,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   id="age"
                   name="age"
                   value={formData.age}
-                  onChange={(e) => setFormData(prev => ({ ...prev, age: parseInt(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      age: parseInt(e.target.value),
+                    }))
+                  }
                   className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors"
                 >
                   <option value="0">Para todo público</option>
@@ -421,14 +455,19 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 <MapPinned className="h-5 w-5 text-white/60" />
                 <div>
                   <CardTitle>Ubicación</CardTitle>
-                  <CardDescription>Dónde se llevará a cabo el evento</CardDescription>
+                  <CardDescription>
+                    Dónde se llevará a cabo el evento
+                  </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-5">
               {/* Full Address */}
               <div className="space-y-2">
-                <Label htmlFor="location" className="text-sm font-medium flex items-center gap-2">
+                <Label
+                  htmlFor="location"
+                  className="text-sm font-medium flex items-center gap-2"
+                >
                   <MapPin className="h-4 w-4 text-white/40" />
                   Dirección
                 </Label>
@@ -481,7 +520,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 <Calendar className="h-5 w-5 text-white/60" />
                 <div>
                   <CardTitle>Fecha y Hora</CardTitle>
-                  <CardDescription>Cuándo se realizará el evento</CardDescription>
+                  <CardDescription>
+                    Cuándo se realizará el evento
+                  </CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -518,7 +559,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
               {/* Timezone */}
               <div className="space-y-2">
-                <Label htmlFor="timezone" className="text-sm font-medium flex items-center gap-2">
+                <Label
+                  htmlFor="timezone"
+                  className="text-sm font-medium flex items-center gap-2"
+                >
                   <Globe className="h-4 w-4 text-white/40" />
                   Zona Horaria
                 </Label>
@@ -526,15 +570,24 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   id="timezone"
                   name="timezone"
                   value={formData.timezone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, timezone: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      timezone: e.target.value,
+                    }))
+                  }
                   className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors"
                 >
                   <option value="America/Bogota">Colombia (GMT-5)</option>
                   <option value="America/Mexico_City">México (GMT-6)</option>
                   <option value="America/New_York">New York (GMT-5)</option>
-                  <option value="America/Los_Angeles">Los Angeles (GMT-8)</option>
+                  <option value="America/Los_Angeles">
+                    Los Angeles (GMT-8)
+                  </option>
                   <option value="America/Chicago">Chicago (GMT-6)</option>
-                  <option value="America/Argentina/Buenos_Aires">Buenos Aires (GMT-3)</option>
+                  <option value="America/Argentina/Buenos_Aires">
+                    Buenos Aires (GMT-3)
+                  </option>
                   <option value="America/Santiago">Santiago (GMT-4)</option>
                   <option value="America/Lima">Lima (GMT-5)</option>
                   <option value="Europe/Madrid">Madrid (GMT+1)</option>
@@ -561,7 +614,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="currency" className="text-sm font-medium flex items-center gap-2">
+                <Label
+                  htmlFor="currency"
+                  className="text-sm font-medium flex items-center gap-2"
+                >
                   <DollarSign className="h-4 w-4 text-white/40" />
                   Moneda
                 </Label>
@@ -569,7 +625,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   id="currency"
                   name="currency"
                   value={formData.currency}
-                  onChange={(e) => setFormData(prev => ({ ...prev, currency: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      currency: e.target.value,
+                    }))
+                  }
                   className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors"
                 >
                   <option value="COP">COP - Peso Colombiano</option>
@@ -596,12 +657,16 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 <ImageIcon className="h-5 w-5 text-white/60" />
                 <div>
                   <CardTitle>Flyer del Evento</CardTitle>
-                  <CardDescription>Imagen principal del evento (formato póster vertical)</CardDescription>
+                  <CardDescription>
+                    Imagen principal del evento (formato póster vertical)
+                  </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-xs text-white/50">Recomendado: 900x1200px (ratio 3:4), máximo 5MB</p>
+              <p className="text-xs text-white/50">
+                Recomendado: 900x1200px (ratio 3:4), máximo 5MB
+              </p>
 
               {images.banner ? (
                 <div className="relative aspect-[3/4] max-w-xs rounded-lg overflow-hidden border border-white/10 bg-white/5">
@@ -613,7 +678,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => setImages(prev => ({ ...prev, banner: null }))}
+                    onClick={() =>
+                      setImages((prev) => ({ ...prev, banner: null }))
+                    }
                     className="absolute top-2 right-2 rounded-lg"
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
@@ -624,8 +691,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 <label className="flex flex-col items-center justify-center aspect-[3/4] max-w-xs border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
                   <div className="flex flex-col items-center justify-center">
                     <Upload className="h-8 w-8 text-white/40 mb-2" />
-                    <p className="text-sm text-white/60 text-center px-4">Haz clic o arrastra una imagen</p>
-                    <p className="text-xs text-white/40 mt-1">Formato vertical 3:4</p>
+                    <p className="text-sm text-white/60 text-center px-4">
+                      Haz clic o arrastra una imagen
+                    </p>
+                    <p className="text-xs text-white/40 mt-1">
+                      Formato vertical 3:4
+                    </p>
                   </div>
                   <input
                     type="file"
@@ -673,7 +744,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {/* Background Color */}
                     <div className="space-y-2">
-                      <Label htmlFor="backgroundColor" className="text-xs text-white/60">
+                      <Label
+                        htmlFor="backgroundColor"
+                        className="text-xs text-white/60"
+                      >
                         Fondo
                       </Label>
                       <div className="relative">
@@ -688,7 +762,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
                           <div
                             className="w-5 h-5 rounded border border-white/20"
-                            style={{ backgroundColor: walletConfig.backgroundColor }}
+                            style={{
+                              backgroundColor: walletConfig.backgroundColor,
+                            }}
                           />
                           <span className="text-xs font-mono text-white/80 uppercase">
                             {walletConfig.backgroundColor}
@@ -699,7 +775,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
                     {/* Foreground Color */}
                     <div className="space-y-2">
-                      <Label htmlFor="foregroundColor" className="text-xs text-white/60">
+                      <Label
+                        htmlFor="foregroundColor"
+                        className="text-xs text-white/60"
+                      >
                         Texto
                       </Label>
                       <div className="relative">
@@ -714,7 +793,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
                           <div
                             className="w-5 h-5 rounded border border-white/20"
-                            style={{ backgroundColor: walletConfig.foregroundColor }}
+                            style={{
+                              backgroundColor: walletConfig.foregroundColor,
+                            }}
                           />
                           <span className="text-xs font-mono text-white/80 uppercase">
                             {walletConfig.foregroundColor}
@@ -725,7 +806,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
                     {/* Label Color */}
                     <div className="space-y-2">
-                      <Label htmlFor="labelColor" className="text-xs text-white/60">
+                      <Label
+                        htmlFor="labelColor"
+                        className="text-xs text-white/60"
+                      >
                         Etiquetas
                       </Label>
                       <div className="relative">
@@ -758,7 +842,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   {/* Strip Image */}
                   <div className="space-y-3">
                     <Label>Imagen Strip</Label>
-                    <p className="text-xs text-white/50">Recomendado: 375x123px (franja superior)</p>
+                    <p className="text-xs text-white/50">
+                      Recomendado: 375x123px (franja superior)
+                    </p>
 
                     {walletConfig.strip ? (
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
@@ -770,7 +856,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => setWalletConfig(prev => ({ ...prev, strip: null }))}
+                          onClick={() =>
+                            setWalletConfig((prev) => ({
+                              ...prev,
+                              strip: null,
+                            }))
+                          }
                           className="absolute top-2 right-2 rounded-lg h-8 w-8 p-0"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -798,7 +889,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     <div className="space-y-3">
                       <div>
                         <Label>Logo</Label>
-                        <p className="text-xs text-white/50">Recomendado: 160x50px</p>
+                        <p className="text-xs text-white/50">
+                          Recomendado: 160x50px
+                        </p>
                       </div>
 
                       {walletConfig.logo ? (
@@ -811,7 +904,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => setWalletConfig(prev => ({ ...prev, logo: null }))}
+                            onClick={() =>
+                              setWalletConfig((prev) => ({
+                                ...prev,
+                                logo: null,
+                              }))
+                            }
                             className="absolute top-2 right-2 rounded-lg h-8 w-8 p-0"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -837,7 +935,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     <div className="space-y-3">
                       <div>
                         <Label>Ícono</Label>
-                        <p className="text-xs text-white/50">Recomendado: 58x58px</p>
+                        <p className="text-xs text-white/50">
+                          Recomendado: 58x58px
+                        </p>
                       </div>
 
                       {walletConfig.icon ? (
@@ -850,7 +950,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => setWalletConfig(prev => ({ ...prev, icon: null }))}
+                            onClick={() =>
+                              setWalletConfig((prev) => ({
+                                ...prev,
+                                icon: null,
+                              }))
+                            }
                             className="absolute top-2 right-2 rounded-lg h-6 w-6 p-0"
                           >
                             <Trash2 className="h-3 w-3" />
@@ -860,7 +965,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
                           <div className="flex flex-col items-center justify-center">
                             <Upload className="h-5 w-5 text-white/40 mb-1" />
-                            <p className="text-xs text-white/60 text-center px-2">Subir Ícono</p>
+                            <p className="text-xs text-white/60 text-center px-2">
+                              Subir Ícono
+                            </p>
                           </div>
                           <input
                             type="file"
@@ -948,21 +1055,82 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         <div className="flex justify-center pt-4 pb-2">
                           <div className="bg-white rounded-lg p-4">
                             <svg width="120" height="120" viewBox="0 0 120 120">
-                              <rect width="120" height="120" fill="white"/>
-                              <rect x="10" y="10" width="30" height="30" fill="black"/>
-                              <rect x="15" y="15" width="20" height="20" fill="white"/>
-                              <rect x="20" y="20" width="10" height="10" fill="black"/>
-                              <rect x="80" y="10" width="30" height="30" fill="black"/>
-                              <rect x="85" y="15" width="20" height="20" fill="white"/>
-                              <rect x="90" y="20" width="10" height="10" fill="black"/>
-                              <rect x="10" y="80" width="30" height="30" fill="black"/>
-                              <rect x="15" y="85" width="20" height="20" fill="white"/>
-                              <rect x="20" y="90" width="10" height="10" fill="black"/>
+                              <rect width="120" height="120" fill="white" />
+                              <rect
+                                x="10"
+                                y="10"
+                                width="30"
+                                height="30"
+                                fill="black"
+                              />
+                              <rect
+                                x="15"
+                                y="15"
+                                width="20"
+                                height="20"
+                                fill="white"
+                              />
+                              <rect
+                                x="20"
+                                y="20"
+                                width="10"
+                                height="10"
+                                fill="black"
+                              />
+                              <rect
+                                x="80"
+                                y="10"
+                                width="30"
+                                height="30"
+                                fill="black"
+                              />
+                              <rect
+                                x="85"
+                                y="15"
+                                width="20"
+                                height="20"
+                                fill="white"
+                              />
+                              <rect
+                                x="90"
+                                y="20"
+                                width="10"
+                                height="10"
+                                fill="black"
+                              />
+                              <rect
+                                x="10"
+                                y="80"
+                                width="30"
+                                height="30"
+                                fill="black"
+                              />
+                              <rect
+                                x="15"
+                                y="85"
+                                width="20"
+                                height="20"
+                                fill="white"
+                              />
+                              <rect
+                                x="20"
+                                y="90"
+                                width="10"
+                                height="10"
+                                fill="black"
+                              />
                               {Array.from({ length: 80 }).map((_, i) => {
                                 const x = 10 + (i % 10) * 10;
                                 const y = 50 + Math.floor(i / 10) * 10;
                                 return Math.random() > 0.5 ? (
-                                  <rect key={i} x={x} y={y} width="8" height="8" fill="black"/>
+                                  <rect
+                                    key={i}
+                                    x={x}
+                                    y={y}
+                                    width="8"
+                                    height="8"
+                                    fill="black"
+                                  />
                                 ) : null;
                               })}
                             </svg>
@@ -973,7 +1141,8 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
                     {/* Helper text */}
                     <p className="text-xs text-white/40 text-center mt-4">
-                      Vista previa simplificada • Los detalles se generarán automáticamente
+                      Vista previa simplificada • Los detalles se generarán
+                      automáticamente
                     </p>
                   </div>
                 </div>
@@ -990,7 +1159,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <CardTitle className="text-xl">Preguntas Frecuentes</CardTitle>
+                  <CardTitle className="text-xl">
+                    Preguntas Frecuentes
+                  </CardTitle>
                   <CardDescription className="mt-1.5">
                     Crea y gestiona las preguntas más comunes de tus asistentes
                   </CardDescription>
@@ -1023,7 +1194,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="faq-question" className="text-sm font-medium">
+                      <Label
+                        htmlFor="faq-question"
+                        className="text-sm font-medium"
+                      >
                         Pregunta
                       </Label>
                       <Input
@@ -1031,7 +1205,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         value={editingFaq ? editingFaq.question : newQuestion}
                         onChange={(e) => {
                           if (editingFaq) {
-                            setEditingFaq({ ...editingFaq, question: e.target.value });
+                            setEditingFaq({
+                              ...editingFaq,
+                              question: e.target.value,
+                            });
                           } else {
                             setNewQuestion(e.target.value);
                           }
@@ -1041,7 +1218,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="faq-answer" className="text-sm font-medium">
+                      <Label
+                        htmlFor="faq-answer"
+                        className="text-sm font-medium"
+                      >
                         Respuesta
                       </Label>
                       <Textarea
@@ -1049,7 +1229,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         value={editingFaq ? editingFaq.answer : newAnswer}
                         onChange={(e) => {
                           if (editingFaq) {
-                            setEditingFaq({ ...editingFaq, answer: e.target.value });
+                            setEditingFaq({
+                              ...editingFaq,
+                              answer: e.target.value,
+                            });
                           } else {
                             setNewAnswer(e.target.value);
                           }
@@ -1076,17 +1259,22 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     <Button
                       onClick={() => {
                         if (editingFaq) {
-                          const updatedFaqs = faqs.map(faq => faq.id === editingFaq.id ? editingFaq : faq);
+                          const updatedFaqs = faqs.map((faq) =>
+                            faq.id === editingFaq.id ? editingFaq : faq
+                          );
                           setFaqs(updatedFaqs);
                           saveFaqs(updatedFaqs); // Save to database
                           setEditingFaq(null);
                         } else {
                           if (newQuestion.trim() && newAnswer.trim()) {
-                            const updatedFaqs = [...faqs, {
-                              id: Date.now().toString(),
-                              question: newQuestion,
-                              answer: newAnswer
-                            }];
+                            const updatedFaqs = [
+                              ...faqs,
+                              {
+                                id: Date.now().toString(),
+                                question: newQuestion,
+                                answer: newAnswer,
+                              },
+                            ];
                             setFaqs(updatedFaqs);
                             saveFaqs(updatedFaqs); // Save to database
                             setNewQuestion("");
@@ -1096,7 +1284,12 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                         }
                       }}
                       className="rounded-lg min-w-[100px] bg-white text-black hover:bg-white/90"
-                      disabled={editingFaq ? !editingFaq.question.trim() || !editingFaq.answer.trim() : !newQuestion.trim() || !newAnswer.trim()}
+                      disabled={
+                        editingFaq
+                          ? !editingFaq.question.trim() ||
+                            !editingFaq.answer.trim()
+                          : !newQuestion.trim() || !newAnswer.trim()
+                      }
                     >
                       {editingFaq ? "Actualizar" : "Agregar"}
                     </Button>
@@ -1114,7 +1307,8 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     No hay preguntas frecuentes
                   </h3>
                   <p className="text-sm text-white/40 max-w-md mx-auto">
-                    Crea preguntas frecuentes para ayudar a tus asistentes a resolver sus dudas rápidamente
+                    Crea preguntas frecuentes para ayudar a tus asistentes a
+                    resolver sus dudas rápidamente
                   </p>
                 </div>
               ) : faqs.length > 0 ? (
@@ -1180,8 +1374,14 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (window.confirm("¿Estás seguro de eliminar esta pregunta?")) {
-                                  const updatedFaqs = faqs.filter(f => f.id !== faq.id);
+                                if (
+                                  window.confirm(
+                                    "¿Estás seguro de eliminar esta pregunta?"
+                                  )
+                                ) {
+                                  const updatedFaqs = faqs.filter(
+                                    (f) => f.id !== faq.id
+                                  );
                                   setFaqs(updatedFaqs);
                                   saveFaqs(updatedFaqs); // Save to database
                                 }

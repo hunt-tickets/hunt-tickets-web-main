@@ -3,8 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getEventFinancialReport } from "@/lib/actions/events";
-import { getCompleteEventTransactions, getEventTickets, getTicketsSalesAnalytics } from "@/lib/supabase/actions/tickets";
+import { getEventFinancialReport } from "@/lib/supabase/actions/events";
+import {
+  getCompleteEventTransactions,
+  getEventTickets,
+  getTicketsSalesAnalytics,
+} from "@/lib/supabase/actions/tickets";
 import { EventDashboardTabs } from "@/components/event-dashboard-tabs";
 import { EventStickyHeader } from "@/components/event-sticky-header";
 
@@ -43,28 +47,30 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   }
 
   // Fetch event details, financial report, transactions, tickets, and analytics
-  const [eventData, financialReport, transactions, tickets, ticketsAnalytics] = await Promise.all([
-    supabase
-      .from("events")
-      .select("id, name, status, flyer")
-      .eq("id", eventId)
-      .single(),
-    getEventFinancialReport(eventId),
-    getCompleteEventTransactions(eventId),
-    getEventTickets(eventId),
-    getTicketsSalesAnalytics(eventId),
-  ]);
+  const [eventData, financialReport, transactions, tickets, ticketsAnalytics] =
+    await Promise.all([
+      supabase
+        .from("events")
+        .select("id, name, status, flyer")
+        .eq("id", eventId)
+        .single(),
+      getEventFinancialReport(eventId),
+      getCompleteEventTransactions(eventId),
+      getEventTickets(eventId),
+      getTicketsSalesAnalytics(eventId),
+    ]);
 
   // Combine tickets with their analytics
-  const ticketsWithAnalytics = tickets?.map((ticket) => ({
-    ...ticket,
-    analytics: ticketsAnalytics?.[ticket.id] || {
-      total: { quantity: 0, total: 0 },
-      app: { quantity: 0, total: 0 },
-      web: { quantity: 0, total: 0 },
-      cash: { quantity: 0, total: 0 },
-    },
-  })) || [];
+  const ticketsWithAnalytics =
+    tickets?.map((ticket) => ({
+      ...ticket,
+      analytics: ticketsAnalytics?.[ticket.id] || {
+        total: { quantity: 0, total: 0 },
+        app: { quantity: 0, total: 0 },
+        web: { quantity: 0, total: 0 },
+        cash: { quantity: 0, total: 0 },
+      },
+    })) || [];
 
   if (eventData.error || !eventData.data) {
     notFound();
@@ -121,7 +127,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
           tickets={ticketsWithAnalytics}
           eventId={eventId}
           eventName={event.name}
-          eventFlyer={event.flyer || '/placeholder.svg'}
+          eventFlyer={event.flyer || "/placeholder.svg"}
           showTabsOnly
         />
       </EventStickyHeader>
@@ -134,7 +140,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
           tickets={ticketsWithAnalytics}
           eventId={eventId}
           eventName={event.name}
-          eventFlyer={event.flyer || '/placeholder.svg'}
+          eventFlyer={event.flyer || "/placeholder.svg"}
           showContentOnly
         />
       </div>

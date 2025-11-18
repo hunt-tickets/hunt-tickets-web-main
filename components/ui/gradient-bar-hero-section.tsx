@@ -1,11 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Instagram } from 'lucide-react';
 import { FaWhatsapp, FaGooglePlay, FaApple, FaLinkedin } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
-import { GLSLHills } from '@/components/ui/glsl-hills';
 import { HoverButton } from '@/components/ui/hover-glow-button';
+
+// Dynamically import GLSLHills to reduce initial bundle size
+// This defers Three.js loading until the component is actually rendered
+const GLSLHills = dynamic(
+  () => import('@/components/ui/glsl-hills').then((mod) => ({ default: mod.GLSLHills })),
+  { ssr: false }
+);
 
 const WaitlistForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -41,8 +41,8 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
 
   // Log auth status only in development and when user is authenticated
-  if (process.env.NODE_ENV === 'development' && data?.claims) {
-    console.log('Auth user:', data.claims.email);
+  if (process.env.NODE_ENV === "development" && data?.claims) {
+    console.log("Auth user:", data.claims.email);
   }
 
   // const user = data?.claims;

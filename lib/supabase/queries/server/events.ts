@@ -107,18 +107,18 @@ export const getAllActiveEvents = async (
 
   const events: EventFull[] = (data || []).map(
     (event: Record<string, unknown>) => {
-      const eventDate = new Date(event.date as string);
-      const endDate = new Date(
-        (event.end_date as string) || (event.date as string)
-      );
+      // Ensure we have valid date strings with fallbacks
+      const dateString = (event.date as string) || new Date().toISOString();
+      const endDateString = (event.end_date as string) || dateString;
+
+      const eventDate = new Date(dateString);
+      const endDate = new Date(endDateString);
 
       return {
         id: event.id as string,
         name: (event.name as string) || "Evento sin nombre",
         flyer: (event.flyer as string) || "/placeholder.svg",
-        date: event.date
-          ? event.date as string
-          : new Date().toISOString(),
+        date: dateString,
         hour: eventDate.toLocaleTimeString("es-CO", {
           hour: "2-digit",
           minute: "2-digit",
@@ -230,19 +230,19 @@ export const getPopularEvents = async (
   // Map fields from the actual database schema including venue information
   const events: EventFull[] = (data || []).map(
     (event: Record<string, unknown>) => {
+      // Ensure we have valid date strings with fallbacks
+      const dateString = (event.date as string) || new Date().toISOString();
+      const endDateString = (event.end_date as string) || dateString;
+
       // Extract time from the date timestamps
-      const eventDate = new Date(event.date as string);
-      const endDate = new Date(
-        (event.end_date as string) || (event.date as string)
-      );
+      const eventDate = new Date(dateString);
+      const endDate = new Date(endDateString);
 
       return {
         id: event.id as string,
         name: (event.name as string) || "Evento sin nombre",
         flyer: (event.flyer as string) || "/placeholder.svg",
-        date: event.date
-          ? event.date as string
-          : new Date().toISOString(),
+        date: dateString,
         // Extract hour from the timestamp
         hour: eventDate.toLocaleTimeString("es-CO", {
           hour: "2-digit",
@@ -447,14 +447,18 @@ export const getEventById = async (
   }
 
   // Transform the data to match EventFull interface
-  const eventDate = new Date(data.date);
-  const endDate = new Date(data.end_date || data.date);
+  // Ensure we have valid date strings with fallbacks
+  const dateString = data.date || new Date().toISOString();
+  const endDateString = data.end_date || dateString;
+
+  const eventDate = new Date(dateString);
+  const endDate = new Date(endDateString);
 
   return {
     id: data.id,
     name: data.name || "Evento sin nombre",
     flyer: data.flyer || "/placeholder.svg",
-    date: data.date || new Date().toISOString(),
+    date: dateString,
     hour: eventDate.toLocaleTimeString("es-CO", {
       hour: "2-digit",
       minute: "2-digit",
@@ -612,14 +616,18 @@ export const getEventsByProducerId = async (
 
   // Transform the data to match EventFull interface
   return data.map((event) => {
-    const eventDate = new Date(event.date);
-    const endDate = new Date(event.end_date || event.date);
+    // Ensure we have valid date strings with fallbacks
+    const dateString = event.date || new Date().toISOString();
+    const endDateString = event.end_date || dateString;
+
+    const eventDate = new Date(dateString);
+    const endDate = new Date(endDateString);
 
     return {
       id: event.id,
       name: event.name || "Evento sin nombre",
       flyer: event.flyer || "/placeholder.svg",
-      date: event.date || new Date().toISOString(),
+      date: dateString,
       hour: eventDate.toLocaleTimeString("es-CO", {
         hour: "2-digit",
         minute: "2-digit",
