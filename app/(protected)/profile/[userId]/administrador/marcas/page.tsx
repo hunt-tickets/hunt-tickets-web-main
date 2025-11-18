@@ -48,7 +48,7 @@ export default async function MarcasPage({ params }: MarcasPageProps) {
     <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
       {/* Header */}
       <AdminHeader
-        title="MARCAS"
+        title="Marcas"
         subtitle="Gestión de productores, artistas, venues y patrocinadores"
       />
 
