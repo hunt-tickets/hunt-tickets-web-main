@@ -32,10 +32,10 @@ export function EventStickyHeader({
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden flex-shrink-0 p-2 -mr-2 rounded-lg hover:bg-white/5 transition-colors"
-            aria-label="Toggle menu"
+            className="lg:hidden flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 bg-zinc-100 border border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            aria-label="Abrir menú"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-5 w-5 text-zinc-900 dark:text-white" />
           </button>
         </div>
 
