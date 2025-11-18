@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, CheckCircle2, Clock, QrCode, BarChart3, List, ChevronDown, X } from "lucide-react";
+import { Search, CheckCircle2, Clock, QrCode, BarChart3, List, ChevronDown, X, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toggleQRScanStatus } from "@/lib/supabase/actions/toggle-scan";
 import { toast } from "sonner";
@@ -91,6 +91,50 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
     }
 
     setUpdatingQR(null);
+  };
+
+  // Handle download CSV
+  const handleDownloadCSV = () => {
+    const dataToExport = activeTab === "noqr" ? transactionsWithoutQR : filteredQRCodes;
+
+    if (dataToExport.length === 0) {
+      toast.error("No hay datos para descargar");
+      return;
+    }
+
+    let csvContent = "";
+
+    if (activeTab === "noqr") {
+      // CSV for transactions without QR
+      csvContent = "Nombre,Email,Entrada,Comprados,Generados,Faltantes,ID Pedido\n";
+      transactionsWithoutQR.forEach((tx) => {
+        csvContent += `"${tx.user_name}","${tx.user_email}","${tx.ticket_name}",${tx.quantity},${tx.actualQRs},${tx.missingQRs},"${tx.order_id || ''}"\n`;
+      });
+    } else {
+      // CSV for QR codes
+      csvContent = "Entrada,Usuario,Email,Estado,Escaneado por,Email escaneador,Pedido,Fuente,Fecha creación,Fecha actualización\n";
+      filteredQRCodes.forEach((qr) => {
+        const status = qr.scan ? "Escaneada" : "Pendiente";
+        const scanDate = qr.updated_at ? new Date(qr.updated_at).toLocaleString('es-CO') : '';
+        const createDate = new Date(qr.created_at).toLocaleString('es-CO');
+        csvContent += `"${qr.ticket_name}","${qr.user_name}","${qr.user_email}","${status}","${qr.scanner_name || ''}","${qr.scanner_email || ''}","${qr.order_id || ''}","${qr.source}","${createDate}","${scanDate}"\n`;
+      });
+    }
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const fileName = `accesos_${activeTab}_${new Date().toISOString().split('T')[0]}.csv`;
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success("Archivo descargado correctamente");
   };
 
   // Filter by tab
@@ -519,9 +563,21 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
             </div>
           </div>
 
-          {/* Results count */}
-          <div className="text-sm text-white/60">
-            {filteredQRCodes.length} entrada{filteredQRCodes.length !== 1 ? 's' : ''} encontrada{filteredQRCodes.length !== 1 ? 's' : ''}
+          {/* Results count and Download button */}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-white/60">
+              {activeTab === "noqr"
+                ? `${transactionsWithoutQR.length} transacción${transactionsWithoutQR.length !== 1 ? 'es' : ''} sin QR`
+                : `${filteredQRCodes.length} entrada${filteredQRCodes.length !== 1 ? 's' : ''} encontrada${filteredQRCodes.length !== 1 ? 's' : ''}`
+              }
+            </div>
+            <button
+              onClick={handleDownloadCSV}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/20 transition-all"
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">Descargar CSV</span>
+            </button>
           </div>
 
       {/* Content based on active tab */}
