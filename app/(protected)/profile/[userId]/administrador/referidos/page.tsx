@@ -40,7 +40,7 @@ export default async function ReferidosPage({ params }: ReferidosPageProps) {
     <div className="px-4 py-4 sm:px-6 sm:py-6 space-y-8">
       {/* Header */}
       <AdminHeader
-        title="PROGRAMA DE REFERIDOS"
+        title="Programa de Referidos"
         subtitle="Invita productores y gana comisiones por sus ventas"
       />
 
