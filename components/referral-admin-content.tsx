@@ -82,9 +82,10 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Referral Info Section - 2 Columns */}
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="space-y-6">
+        {/* Referral Info Section - 2 Columns */}
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Left Column - Referral Code */}
         <Card className="bg-white/[0.02] border-white/10">
           <CardContent className="p-4 sm:p-8 space-y-4 sm:space-y-6">
@@ -356,6 +357,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
