@@ -123,10 +123,8 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
   const [images, setImages] = useState<{
     banner: string | null;
-    logo: string | null;
   }>({
     banner: null,
-    logo: null,
   });
 
   const [walletConfig, setWalletConfig] = useState<{
@@ -161,7 +159,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
   const tabs = [
     { id: "information", label: "Información", icon: Settings },
-    { id: "images", label: "Imágenes", icon: ImageIcon },
     { id: "wallet", label: "Wallet", icon: Wallet },
     { id: "faqs", label: "FAQs", icon: HelpCircle },
   ];
@@ -174,14 +171,14 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, imageType: "banner" | "logo") => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, imageType: "banner") => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImages(prev => ({
           ...prev,
-          [imageType]: event.target?.result
+          [imageType]: (event.target?.result as string) || null
         }));
       };
       reader.readAsDataURL(file);
@@ -567,34 +564,18 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
             </CardContent>
           </Card>
 
-          {/* Save Button */}
-          <div className="flex justify-end">
-            <Button
-              onClick={() => handleSaveConfig("información")}
-              className="rounded-lg px-8 bg-white text-black hover:bg-white/90"
-              size="lg"
-              disabled={isSaving}
-            >
-              {isSaving ? "Guardando..." : "Guardar Cambios"}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Images Section */}
-      {activeTab === "images" && (
-        <Card className="bg-white/[0.02] border-white/10">
-          <CardHeader>
-            <CardTitle>Imágenes del Evento</CardTitle>
-            <CardDescription>Sube el banner y logo de tu evento</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Banner Image */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold flex items-center gap-2">
-                <ImageIcon className="h-4 w-4" />
-                Banner Principal
-              </Label>
+          {/* Banner Image */}
+          <Card className="bg-white/[0.02] border-white/10">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5 text-white/60" />
+                <div>
+                  <CardTitle>Banner Principal</CardTitle>
+                  <CardDescription>Imagen principal del evento</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
               <p className="text-xs text-white/50">Recomendado: 1920x600px, máximo 5MB</p>
 
               {images.banner ? (
@@ -628,59 +609,21 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   />
                 </label>
               )}
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Logo Image */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold flex items-center gap-2">
-                <ImageIcon className="h-4 w-4" />
-                Logo
-              </Label>
-              <p className="text-xs text-white/50">Recomendado: 500x500px, máximo 2MB</p>
-
-              {images.logo ? (
-                <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-white/10 bg-white/5">
-                  <img
-                    src={images.logo as string}
-                    alt="Logo preview"
-                    className="w-full h-full object-cover"
-                  />
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => setImages(prev => ({ ...prev, logo: null }))}
-                    className="absolute top-1 right-1 rounded-lg h-6 w-6 p-0"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
-                  <div className="flex flex-col items-center justify-center">
-                    <Upload className="h-6 w-6 text-white/40 mb-1" />
-                    <p className="text-xs text-white/60 text-center">Subir Logo</p>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, "logo")}
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </div>
-
-            {/* Save Button */}
-            <div className="flex justify-end pt-4 border-t border-white/10">
-              <Button
-                onClick={() => handleSaveConfig("imágenes")}
-                className="rounded-lg"
-              >
-                Guardar Imágenes
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Save Button */}
+          <div className="flex justify-end">
+            <Button
+              onClick={() => handleSaveConfig("información")}
+              className="rounded-lg px-8 bg-white text-black hover:bg-white/90"
+              size="lg"
+              disabled={isSaving}
+            >
+              {isSaving ? "Guardando..." : "Guardar Cambios"}
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Wallet Section */}
