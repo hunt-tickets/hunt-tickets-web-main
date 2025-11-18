@@ -84,48 +84,48 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
   return (
     <div className="space-y-6">
       {/* Referral Info Section - 2 Columns */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Left Column - Referral Code */}
         <Card className="bg-white/[0.02] border-white/10">
-          <CardContent className="p-8 space-y-6">
+          <CardContent className="p-4 sm:p-8 space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2">
               <Gift className="h-5 w-5 text-white/60" />
-              <span className="text-base font-semibold text-white">Tu Código de Referido</span>
+              <span className="text-sm sm:text-base font-semibold text-white">Tu Código de Referido</span>
             </div>
 
-            <div className="flex items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10">
-              <code className="text-3xl font-bold tracking-wider text-white">
+            <div className="flex items-center justify-center p-4 sm:p-6 rounded-2xl bg-white/5 border border-white/10">
+              <code className="text-xl sm:text-3xl font-bold tracking-wider text-white">
                 {referralCode}
               </code>
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center gap-2 px-5 py-4 rounded-xl bg-white/5 border border-white/10">
-                <span className="text-sm text-white/60 truncate font-mono">
+              <div className="flex items-center gap-2 px-3 sm:px-5 py-3 sm:py-4 rounded-xl bg-white/5 border border-white/10">
+                <span className="text-xs sm:text-sm text-white/60 truncate font-mono">
                   {referralLink}
                 </span>
               </div>
               <Button
                 onClick={handleCopyLink}
                 size="lg"
-                className="w-full gap-2 bg-white text-black hover:bg-white/90 rounded-xl h-12 font-semibold"
+                className="w-full gap-2 bg-white text-black hover:bg-white/90 rounded-xl h-11 sm:h-12 font-semibold text-sm sm:text-base"
               >
                 {copied ? (
                   <>
-                    <Check className="h-5 w-5" />
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5" />
                     Copiado
                   </>
                 ) : (
                   <>
-                    <Copy className="h-5 w-5" />
+                    <Copy className="h-4 w-4 sm:h-5 sm:w-5" />
                     Copiar Link
                   </>
                 )}
               </Button>
             </div>
 
-            <div className="pt-4">
-              <p className="text-sm text-white/60 leading-relaxed">
+            <div className="pt-2 sm:pt-4">
+              <p className="text-xs sm:text-sm text-white/60 leading-relaxed">
                 Comparte este enlace con productores de eventos para ganar el <span className="font-semibold text-white">5% de comisión</span> en todas sus ventas
               </p>
             </div>
@@ -134,7 +134,7 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
 
         {/* Right Column - Benefits */}
         <Card className="bg-gradient-to-br from-gray-50 via-white to-gray-100 border-0 shadow-lg">
-          <CardContent className="p-8">
+          <CardContent className="p-4 sm:p-8">
             <div className="flex items-center gap-2 mb-6">
               <div className="p-1.5 rounded-lg bg-black/5">
                 <Gift className="h-5 w-5 text-black/70" />
@@ -196,54 +196,54 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <Card className="bg-white/[0.02] border-white/5">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="h-4 w-4 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Total Referidos</span>
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
+              <span className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider">Total Referidos</span>
             </div>
-            <div className="text-2xl font-bold mb-1">{stats.totalReferrals}</div>
-            <p className="text-xs text-white/30">
+            <div className="text-xl sm:text-2xl font-bold mb-1">{stats.totalReferrals}</div>
+            <p className="text-[10px] sm:text-xs text-white/30">
               {stats.activeProducers} activos
             </p>
           </CardContent>
         </Card>
 
         <Card className="bg-white/[0.02] border-white/5">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="h-4 w-4 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Comisión Total</span>
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
+              <span className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider">Comisión Total</span>
             </div>
-            <div className="text-2xl font-bold mb-1">{formatCurrency(stats.totalEarnings)}</div>
-            <p className="text-xs text-green-400/60">
+            <div className="text-xl sm:text-2xl font-bold mb-1">{formatCurrency(stats.totalEarnings)}</div>
+            <p className="text-[10px] sm:text-xs text-green-400/60">
               +24% vs mes anterior
             </p>
           </CardContent>
         </Card>
 
         <Card className="bg-white/[0.02] border-white/5">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <DollarSign className="h-4 w-4 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Por Liquidar</span>
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+              <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
+              <span className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider">Por Liquidar</span>
             </div>
-            <div className="text-2xl font-bold mb-1">{formatCurrency(stats.pendingEarnings)}</div>
-            <p className="text-xs text-white/30">
+            <div className="text-xl sm:text-2xl font-bold mb-1">{formatCurrency(stats.pendingEarnings)}</div>
+            <p className="text-[10px] sm:text-xs text-white/30">
               Próximo pago: 15 Dic
             </p>
           </CardContent>
         </Card>
 
         <Card className="bg-white/[0.02] border-white/5">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Gift className="h-4 w-4 text-white/40" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">Tasa Comisión</span>
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+              <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/40" />
+              <span className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider">Tasa Comisión</span>
             </div>
-            <div className="text-2xl font-bold mb-1">5%</div>
-            <p className="text-xs text-white/30">
+            <div className="text-xl sm:text-2xl font-bold mb-1">5%</div>
+            <p className="text-[10px] sm:text-xs text-white/30">
               De cada evento
             </p>
           </CardContent>
@@ -252,10 +252,10 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
 
       {/* Referred Producers Table */}
       <Card className="bg-white/[0.02] border-white/5">
-        <CardContent className="p-6">
+        <CardContent className="p-4 sm:p-6">
           <div className="mb-4">
-            <h3 className="text-base font-semibold">Productores Referidos</h3>
-            <p className="text-sm text-white/40">
+            <h3 className="text-sm sm:text-base font-semibold">Productores Referidos</h3>
+            <p className="text-xs sm:text-sm text-white/40">
               {referredProducers.length} productor{referredProducers.length !== 1 ? "es" : ""} referido
               {referredProducers.length !== 1 ? "s" : ""}
             </p>
@@ -272,45 +272,87 @@ export function ReferralAdminContent({ userId }: ReferralAdminContentProps) {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableHead className="text-white/60">Productor</TableHead>
-                    <TableHead className="text-white/60">Fecha Registro</TableHead>
-                    <TableHead className="text-white/60">Estado</TableHead>
-                    <TableHead className="text-right text-white/60">Eventos</TableHead>
-                    <TableHead className="text-right text-white/60">Tus Ganancias</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {referredProducers.map((producer) => (
-                    <TableRow key={producer.id} className="border-white/5">
-                      <TableCell className="font-medium">{producer.name}</TableCell>
-                      <TableCell className="text-white/60">
-                        {new Date(producer.joinDate).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className="bg-green-500/10 text-green-400 border-green-500/20"
-                        >
-                          {producer.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">{producer.eventsCreated}</TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(producer.yourEarnings)}
-                      </TableCell>
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {referredProducers.map((producer) => (
+                  <div
+                    key={producer.id}
+                    className="p-4 rounded-lg bg-white/[0.02] border border-white/5"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{producer.name}</h4>
+                        <p className="text-xs text-white/40">
+                          {new Date(producer.joinDate).toLocaleDateString("es-ES", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className="bg-green-500/10 text-green-400 border-green-500/20 text-xs"
+                      >
+                        {producer.status}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-[10px] text-white/40 mb-1">Eventos</p>
+                        <p className="text-sm font-semibold">{producer.eventsCreated}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] text-white/40 mb-1">Tus Ganancias</p>
+                        <p className="text-sm font-semibold">{formatCurrency(producer.yourEarnings)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-white/5 hover:bg-transparent">
+                      <TableHead className="text-white/60">Productor</TableHead>
+                      <TableHead className="text-white/60">Fecha Registro</TableHead>
+                      <TableHead className="text-white/60">Estado</TableHead>
+                      <TableHead className="text-right text-white/60">Eventos</TableHead>
+                      <TableHead className="text-right text-white/60">Tus Ganancias</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {referredProducers.map((producer) => (
+                      <TableRow key={producer.id} className="border-white/5">
+                        <TableCell className="font-medium">{producer.name}</TableCell>
+                        <TableCell className="text-white/60">
+                          {new Date(producer.joinDate).toLocaleDateString("es-ES", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className="bg-green-500/10 text-green-400 border-green-500/20"
+                          >
+                            {producer.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">{producer.eventsCreated}</TableCell>
+                        <TableCell className="text-right font-semibold">
+                          {formatCurrency(producer.yourEarnings)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
