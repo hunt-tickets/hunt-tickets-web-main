@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEventTabs } from "@/contexts/event-tabs-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,12 +30,34 @@ import {
   MapPinned
 } from "lucide-react";
 
+interface EventData {
+  id: string;
+  name: string;
+  description?: string;
+  date?: string;
+  end_date?: string;
+  age?: number;
+  variable_fee?: number;
+  fixed_fee?: number;
+  flyer?: string;
+  flyer_apple?: string;
+  venue_id?: string;
+  venues?: {
+    id: string;
+    name: string;
+    address?: string;
+    city?: string;
+  };
+}
+
 interface EventConfigContentProps {
   showTabsOnly?: boolean;
   showContentOnly?: boolean;
+  eventData?: EventData;
+  eventId?: string;
 }
 
-export function EventConfigContent({ showTabsOnly = false, showContentOnly = false }: EventConfigContentProps = {}) {
+export function EventConfigContent({ showTabsOnly = false, showContentOnly = false, eventData, eventId }: EventConfigContentProps = {}) {
   const { configTab: activeTab, setConfigTab: setActiveTab } = useEventTabs();
   const [formData, setFormData] = useState({
     eventName: "",
@@ -45,9 +67,57 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     country: "",
     startDate: "",
     endDate: "",
+    age: 18,
     timezone: "America/Bogota",
     currency: "COP",
   });
+
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Initialize form data when eventData is loaded
+  useEffect(() => {
+    if (eventData) {
+      // Format dates for datetime-local input (YYYY-MM-DDTHH:mm)
+      const formatDateForInput = (dateString: string) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      };
+
+      setFormData({
+        eventName: eventData.name || "",
+        description: eventData.description || "",
+        location: eventData.venues?.address || "",
+        city: eventData.venues?.city || "",
+        country: "",
+        startDate: eventData.date ? formatDateForInput(eventData.date) : "",
+        endDate: eventData.end_date ? formatDateForInput(eventData.end_date) : "",
+        age: eventData.age || 18,
+        timezone: "America/Bogota",
+        currency: "COP",
+      });
+
+      // Initialize images if available
+      if (eventData.flyer) {
+        setImages((prev) => ({ ...prev, banner: eventData.flyer || null }));
+      }
+      if (eventData.flyer_apple) {
+        setWalletConfig((prev) => ({ ...prev, logo: eventData.flyer_apple || null }));
+      }
+
+      // Initialize Hunt costs
+      setHuntCosts({
+        commissionPercentage: (eventData.variable_fee || 0) * 100,
+        costPerTicket: eventData.fixed_fee || 0,
+        description: "Comisión de Hunt por venta de tickets",
+      });
+    }
+  }, [eventData]);
 
   const [paymentConfig, setPaymentConfig] = useState({
     mercadopagoKey: "",
@@ -59,7 +129,10 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     description: "Comisión de Hunt por venta de tickets",
   });
 
-  const [images, setImages] = useState({
+  const [images, setImages] = useState<{
+    banner: string | null;
+    logo: string | null;
+  }>({
     banner: null,
     logo: null,
   });
@@ -68,7 +141,14 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     mercadopago: false,
   });
 
-  const [walletConfig, setWalletConfig] = useState({
+  const [walletConfig, setWalletConfig] = useState<{
+    backgroundColor: string;
+    foregroundColor: string;
+    labelColor: string;
+    logo: string | null;
+    icon: string | null;
+    strip: string | null;
+  }>({
     backgroundColor: "#000000",
     foregroundColor: "#FFFFFF",
     labelColor: "#999999",
@@ -159,15 +239,37 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     }
   };
 
-  const handleSaveConfig = (section: string) => {
-    console.log(`Guardando configuración de ${section}`, {
-      formData,
-      paymentConfig,
-      huntCosts,
-      images,
-      walletConfig
-    });
-    // TODO: Implement API call to save configuration
+  const handleSaveConfig = async (section: string) => {
+    if (!eventId) return;
+
+    setIsSaving(true);
+
+    try {
+      if (section === "información") {
+        const { updateEventConfiguration } = await import("@/lib/actions/events");
+
+        const result = await updateEventConfiguration(eventId, {
+          name: formData.eventName,
+          description: formData.description,
+          date: formData.startDate,
+          end_date: formData.endDate,
+          age: formData.age,
+          variable_fee: huntCosts.commissionPercentage / 100,
+          fixed_fee: huntCosts.costPerTicket,
+        });
+
+        if (result.success) {
+          alert("Configuración guardada exitosamente");
+        } else {
+          alert(result.message || "Error al guardar la configuración");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving configuration:", error);
+      alert("Error al guardar la configuración");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -291,6 +393,27 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 />
                 <p className="text-xs text-white/40">
                   Esta descripción será visible para todos los usuarios
+                </p>
+              </div>
+
+              {/* Age Restriction */}
+              <div className="space-y-2">
+                <Label htmlFor="age" className="text-sm font-medium">
+                  Edad Mínima
+                </Label>
+                <Input
+                  id="age"
+                  name="age"
+                  type="number"
+                  min="0"
+                  max="99"
+                  value={formData.age}
+                  onChange={(e) => setFormData(prev => ({ ...prev, age: parseInt(e.target.value) || 0 }))}
+                  placeholder="18"
+                  className="rounded-lg bg-white/5 border-white/10 h-11"
+                />
+                <p className="text-xs text-white/40">
+                  Edad mínima requerida para asistir al evento
                 </p>
               </div>
             </CardContent>
@@ -477,8 +600,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
               onClick={() => handleSaveConfig("información")}
               className="rounded-lg px-8 bg-white text-black hover:bg-white/90"
               size="lg"
+              disabled={isSaving}
             >
-              Guardar Cambios
+              {isSaving ? "Guardando..." : "Guardar Cambios"}
             </Button>
           </div>
         </div>

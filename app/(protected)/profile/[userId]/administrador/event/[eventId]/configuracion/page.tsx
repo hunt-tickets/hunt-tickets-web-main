@@ -37,16 +37,41 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
     notFound();
   }
 
-  // Fetch event details
+  // Fetch event details with all configuration fields
   const { data: event, error } = await supabase
     .from("events")
-    .select("id, name, status")
+    .select(`
+      id,
+      name,
+      description,
+      date,
+      end_date,
+      status,
+      age,
+      variable_fee,
+      fixed_fee,
+      flyer,
+      flyer_apple,
+      venue_id,
+      venues!inner (
+        id,
+        name,
+        address,
+        city
+      )
+    `)
     .eq("id", eventId)
     .single();
 
   if (error || !event) {
     notFound();
   }
+
+  // Transform the event data to match EventData interface
+  const eventData = {
+    ...event,
+    venues: Array.isArray(event.venues) && event.venues.length > 0 ? event.venues[0] : undefined,
+  };
 
   return (
     <>
@@ -60,7 +85,7 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">
-        <EventConfigContent showContentOnly />
+        <EventConfigContent showContentOnly eventData={eventData} eventId={eventId} />
       </div>
     </>
   );

@@ -572,3 +572,54 @@ export async function addArtistToEvent(eventId: string, artistId: string) {
 
   return { success: true, message: "Artista agregado exitosamente" };
 }
+
+export async function updateEventConfiguration(eventId: string, formData: {
+  name?: string;
+  description?: string;
+  date?: string;
+  end_date?: string;
+  age?: number;
+  variable_fee?: number;
+  fixed_fee?: number;
+}) {
+  const supabase = await createClient();
+
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return { success: false, message: "No autenticado" };
+  }
+
+  // Build update object with only provided fields
+  const updateData: Partial<{
+    name: string;
+    description: string;
+    date: string;
+    end_date: string;
+    age: number;
+    variable_fee: number;
+    fixed_fee: number;
+  }> = {};
+
+  if (formData.name !== undefined) updateData.name = formData.name;
+  if (formData.description !== undefined) updateData.description = formData.description;
+  if (formData.date !== undefined) updateData.date = formData.date;
+  if (formData.end_date !== undefined) updateData.end_date = formData.end_date;
+  if (formData.age !== undefined) updateData.age = formData.age;
+  if (formData.variable_fee !== undefined) updateData.variable_fee = formData.variable_fee;
+  if (formData.fixed_fee !== undefined) updateData.fixed_fee = formData.fixed_fee;
+
+  const { error } = await supabase
+    .from("events")
+    .update(updateData)
+    .eq("id", eventId);
+
+  if (error) {
+    console.error("Error updating event configuration:", error);
+    return { success: false, message: "Error al actualizar la configuración" };
+  }
+
+  revalidatePath(`/profile/[userId]/administrador/event/${eventId}/configuracion`);
+
+  return { success: true, message: "Configuración actualizada exitosamente" };
+}
