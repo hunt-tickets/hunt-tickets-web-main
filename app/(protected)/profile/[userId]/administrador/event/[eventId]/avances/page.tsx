@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getEventAdvances } from "@/lib/supabase/actions/advances";
 import { getEventFinancialReport } from "@/lib/actions/events";
 import { EventAdvancesContent } from "@/components/event-advances-content";
-import { EventStickyHeader } from "@/components/event-sticky-header";
+import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
 
 interface AvancesPageProps {
   params: Promise<{
@@ -59,7 +59,7 @@ export default async function AvancesPage({ params }: AvancesPageProps) {
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeader
+      <EventStickyHeaderWrapper
         eventName={event.name}
         subtitle="Avances de Pago"
       />

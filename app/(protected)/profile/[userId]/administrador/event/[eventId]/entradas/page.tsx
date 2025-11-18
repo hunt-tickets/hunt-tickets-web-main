@@ -2,7 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventTickets, getTicketsSalesAnalytics, getTicketTypes } from "@/lib/supabase/actions/tickets";
 import { EventTicketsContent } from "@/components/event-tickets-content";
-import { EventStickyHeader } from "@/components/event-sticky-header";
+import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
 
 interface EntradasPageProps {
   params: Promise<{
@@ -59,7 +59,7 @@ export default async function EntradasPage({ params }: EntradasPageProps) {
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeader
+      <EventStickyHeaderWrapper
         eventName={event.name}
         subtitle="Gestión de Entradas"
       />

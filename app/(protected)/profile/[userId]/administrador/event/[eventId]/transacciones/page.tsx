@@ -2,7 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAllEventTransactions, getCompleteEventTransactions } from "@/lib/supabase/actions/tickets";
 import { EventTransactionsContent } from "@/components/event-transactions-content";
-import { EventStickyHeader } from "@/components/event-sticky-header";
+import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
 
 interface TransaccionesPageProps {
   params: Promise<{
@@ -58,7 +58,7 @@ export default async function TransaccionesPage({ params }: TransaccionesPagePro
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeader
+      <EventStickyHeaderWrapper
         eventName={event.name}
         subtitle="Gestión de Transacciones"
       />

@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Ticket, Settings, Users, ArrowLeft, Menu, X, TrendingUp, ScanLine, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { LayoutDashboard, Ticket, Settings, Users, ArrowLeft, TrendingUp, ScanLine, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -11,6 +10,8 @@ interface EventSidebarProps {
   userId: string;
   eventId: string;
   eventName: string;
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (open: boolean) => void;
 }
 
 const menuItems = [
@@ -58,27 +59,13 @@ const menuItems = [
   },
 ];
 
-export function EventSidebar({ userId, eventId, eventName }: EventSidebarProps) {
+export function EventSidebar({ userId, eventId, eventName, isMobileMenuOpen, setIsMobileMenuOpen }: EventSidebarProps) {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const baseEventPath = `/profile/${userId}/administrador/event/${eventId}`;
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-[60] p-2.5 rounded-full bg-[#202020] border border-[#303030] hover:bg-[#2a2a2a] transition-colors"
-        aria-label="Toggle menu"
-      >
-        {isMobileMenuOpen ? (
-          <X className="h-5 w-5" />
-        ) : (
-          <Menu className="h-5 w-5" />
-        )}
-      </button>
-
       {/* Overlay for mobile */}
       {isMobileMenuOpen && (
         <div

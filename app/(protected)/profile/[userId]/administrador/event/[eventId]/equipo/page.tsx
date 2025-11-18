@@ -2,7 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventProducers, getEventArtists, getAllProducers, getAllArtists } from "@/lib/supabase/actions/tickets";
 import { EventTeamContent } from "@/components/event-team-content";
-import { EventStickyHeader } from "@/components/event-sticky-header";
+import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
 
 interface EquipoPageProps {
   params: Promise<{
@@ -60,7 +60,7 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeader
+      <EventStickyHeaderWrapper
         eventName={event.name}
         subtitle="Gestión de Equipo"
       >
@@ -74,7 +74,7 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
           eventEndDate={event.end_date}
           showTabsOnly
         />
-      </EventStickyHeader>
+      </EventStickyHeaderWrapper>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">
