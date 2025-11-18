@@ -1,8 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import { getEventTickets, getTicketsSalesAnalytics, getTicketTypes } from "@/lib/supabase/actions/tickets";
 import { EventTicketsContent } from "@/components/event-tickets-content";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface EntradasPageProps {
   params: Promise<{
@@ -57,26 +57,24 @@ export default async function EntradasPage({ params }: EntradasPageProps) {
   const event = eventData.data;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
-          <p className="text-xs text-muted-foreground">Gestión de Entradas</p>
-        </div>
-        <Badge variant={event.status ? "default" : "secondary"}>
-          {event.status ? "Activo" : "Finalizado"}
-        </Badge>
-      </div>
-
-      {/* Tickets Content */}
-      <EventTicketsContent
-        eventId={eventId}
-        tickets={tickets || []}
-        ticketsAnalytics={ticketsAnalytics || undefined}
-        ticketTypes={ticketTypes || []}
-        variableFee={event.variable_fee || 0}
+    <>
+      {/* Sticky Header */}
+      <EventStickyHeader
+        eventName={event.name}
+        eventStatus={event.status}
+        subtitle="Gestión de Entradas"
       />
-    </div>
+
+      {/* Content */}
+      <div className="px-3 py-3 sm:px-6 sm:py-4">
+        <EventTicketsContent
+          eventId={eventId}
+          tickets={tickets || []}
+          ticketsAnalytics={ticketsAnalytics || undefined}
+          ticketTypes={ticketTypes || []}
+          variableFee={event.variable_fee || 0}
+        />
+      </div>
+    </>
   );
 }

@@ -1,8 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import { getEventAccessControl } from "@/lib/supabase/actions/access-control";
 import { EventAccessControlContent } from "@/components/event-access-control-content";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface AccesosPageProps {
   params: Promise<{
@@ -55,23 +55,21 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
   const event = eventData.data;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
-          <p className="text-xs text-muted-foreground">Control de Acceso</p>
-        </div>
-        <Badge variant={event.status ? "default" : "secondary"}>
-          {event.status ? "Activo" : "Finalizado"}
-        </Badge>
-      </div>
-
-      {/* Access Control Content */}
-      <EventAccessControlContent
-        qrCodes={accessData?.qrCodes || []}
-        transactionsWithoutQR={accessData?.transactionsMissingQR || []}
+    <>
+      {/* Sticky Header */}
+      <EventStickyHeader
+        eventName={event.name}
+        eventStatus={event.status}
+        subtitle="Control de Acceso"
       />
-    </div>
+
+      {/* Content */}
+      <div className="px-3 py-3 sm:px-6 sm:py-4">
+        <EventAccessControlContent
+          qrCodes={accessData?.qrCodes || []}
+          transactionsWithoutQR={accessData?.transactionsMissingQR || []}
+        />
+      </div>
+    </>
   );
 }

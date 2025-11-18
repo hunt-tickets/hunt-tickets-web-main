@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import { EventConfigContent } from "@/components/event-config-content";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface ConfiguracionPageProps {
   params: Promise<{
@@ -49,20 +49,18 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
-          <p className="text-xs text-muted-foreground">Configuración del Evento</p>
-        </div>
-        <Badge variant={event.status ? "default" : "secondary"}>
-          {event.status ? "Activo" : "Finalizado"}
-        </Badge>
-      </div>
+    <>
+      {/* Sticky Header */}
+      <EventStickyHeader
+        eventName={event.name}
+        eventStatus={event.status}
+        subtitle="Configuración del Evento"
+      />
 
-      {/* Config Content */}
-      <EventConfigContent />
-    </div>
+      {/* Content */}
+      <div className="px-3 py-3 sm:px-6 sm:py-4">
+        <EventConfigContent />
+      </div>
+    </>
   );
 }

@@ -1,9 +1,9 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import { getEventAdvances } from "@/lib/supabase/actions/advances";
 import { getEventFinancialReport } from "@/lib/actions/events";
 import { EventAdvancesContent } from "@/components/event-advances-content";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface AvancesPageProps {
   params: Promise<{
@@ -57,24 +57,22 @@ export default async function AvancesPage({ params }: AvancesPageProps) {
   const event = eventData.data;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
-          <p className="text-xs text-muted-foreground">Avances de Pago</p>
-        </div>
-        <Badge variant={event.status ? "default" : "secondary"}>
-          {event.status ? "Activo" : "Finalizado"}
-        </Badge>
-      </div>
-
-      {/* Advances Content */}
-      <EventAdvancesContent
-        eventId={eventId}
-        advances={advances || []}
-        financialReport={financialReport}
+    <>
+      {/* Sticky Header */}
+      <EventStickyHeader
+        eventName={event.name}
+        eventStatus={event.status}
+        subtitle="Avances de Pago"
       />
-    </div>
+
+      {/* Content */}
+      <div className="px-3 py-3 sm:px-6 sm:py-4">
+        <EventAdvancesContent
+          eventId={eventId}
+          advances={advances || []}
+          financialReport={financialReport}
+        />
+      </div>
+    </>
   );
 }
