@@ -6,6 +6,7 @@ import { Users, GripVertical, Edit2, Plus, X, Lock, UserCog, ShoppingCart, Music
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { Input } from "@/components/ui/input";
+import { useEventTabs } from "@/contexts/event-tabs-context";
 import {
   Dialog,
   DialogContent,
@@ -145,7 +146,7 @@ export function EventTeamContent({
   showTabsOnly = false,
   showContentOnly = false,
 }: EventTeamContentProps) {
-  const [activeTab, setActiveTab] = useState<"productores" | "vendedores" | "artistas">("productores");
+  const { teamTab: activeTab, setTeamTab: setActiveTab } = useEventTabs();
   const [schedule, setSchedule] = useState<ScheduleSlot[]>([]);
   const [draggedArtist, setDraggedArtist] = useState<Artist | null>(null);
   const [draggedSlot, setDraggedSlot] = useState<ScheduleSlot | null>(null);

@@ -6,6 +6,7 @@ import { Search, CheckCircle2, Clock, QrCode, BarChart3, List, ChevronDown, X } 
 import { Input } from "@/components/ui/input";
 import { toggleQRScanStatus } from "@/lib/supabase/actions/toggle-scan";
 import { toast } from "sonner";
+import { useEventTabs } from "@/contexts/event-tabs-context";
 
 interface QRCode {
   id: string;
@@ -51,7 +52,7 @@ interface EventAccessControlContentProps {
 }
 
 export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, showTabsOnly = false, showContentOnly = false }: EventAccessControlContentProps) {
-  const [mainTab, setMainTab] = useState<"analytics" | "list">("analytics");
+  const { accessControlTab: mainTab, setAccessControlTab: setMainTab } = useEventTabs();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "scanned" | "pending" | "noqr">("all");
   const [currentPage, setCurrentPage] = useState(1);

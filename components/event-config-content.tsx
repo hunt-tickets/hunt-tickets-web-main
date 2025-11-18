@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEventTabs } from "@/contexts/event-tabs-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +36,7 @@ interface EventConfigContentProps {
 }
 
 export function EventConfigContent({ showTabsOnly = false, showContentOnly = false }: EventConfigContentProps = {}) {
+  const { configTab: activeTab, setConfigTab: setActiveTab } = useEventTabs();
   const [formData, setFormData] = useState({
     eventName: "",
     description: "",
@@ -88,8 +90,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
   const [newAnswer, setNewAnswer] = useState("");
   const [draggedFaqIndex, setDraggedFaqIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-
-  const [activeTab, setActiveTab] = useState("information");
 
   const tabs = [
     { id: "information", label: "Información", icon: Settings },
@@ -227,7 +227,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
         return (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
               activeTab === tab.id
                 ? "bg-white/10 text-white border border-white/20"
