@@ -221,7 +221,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
 
   // Tabs section
   const tabsSection = (
-    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         return (

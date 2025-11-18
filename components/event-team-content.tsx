@@ -575,7 +575,7 @@ export function EventTeamContent({
 
   // Tabs section
   const tabsSection = (
-    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <button
         onClick={() => setActiveTab("productores")}
         className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
