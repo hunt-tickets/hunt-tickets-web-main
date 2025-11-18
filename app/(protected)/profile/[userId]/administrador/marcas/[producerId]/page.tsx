@@ -48,10 +48,12 @@ export default async function ProducerProfilePage({ params }: ProducerProfilePag
   }
 
   return (
-    <ProducerProfileContent
-      producer={producerData.data}
-      team={team || []}
-      userId={userId}
-    />
+    <div className="px-4 py-4 sm:px-6 sm:py-6">
+      <ProducerProfileContent
+        producer={producerData.data}
+        team={team || []}
+        userId={userId}
+      />
+    </div>
   );
 }
