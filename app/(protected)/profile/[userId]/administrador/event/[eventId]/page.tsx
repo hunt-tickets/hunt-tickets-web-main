@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { getEventFinancialReport } from "@/lib/actions/events";
 import { getCompleteEventTransactions, getEventTickets, getTicketsSalesAnalytics } from "@/lib/supabase/actions/tickets";
 import { EventDashboardTabs } from "@/components/event-dashboard-tabs";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface EventPageProps {
   params: Promise<{
@@ -105,32 +106,39 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold sm:text-2xl">{event.name}</h1>
-          <p className="text-xs text-muted-foreground">
-            {new Date(financialReport.timestamp).toLocaleString("es-CO", {
-              dateStyle: "short",
-              timeStyle: "short",
-            })}
-          </p>
-        </div>
-        <Badge variant={event.status ? "default" : "secondary"}>
-          {event.status ? "Activo" : "Finalizado"}
-        </Badge>
-      </div>
-
-      {/* Event Dashboard with Tabs */}
-      <EventDashboardTabs
-        financialReport={financialReport}
-        transactions={transactions || []}
-        tickets={ticketsWithAnalytics}
-        eventId={eventId}
+    <>
+      {/* Sticky Header with Tabs */}
+      <EventStickyHeader
         eventName={event.name}
-        eventFlyer={event.flyer || '/placeholder.svg'}
-      />
-    </div>
+        eventStatus={event.status}
+        subtitle={new Date(financialReport.timestamp).toLocaleString("es-CO", {
+          dateStyle: "short",
+          timeStyle: "short",
+        })}
+      >
+        <EventDashboardTabs
+          financialReport={financialReport}
+          transactions={transactions || []}
+          tickets={ticketsWithAnalytics}
+          eventId={eventId}
+          eventName={event.name}
+          eventFlyer={event.flyer || '/placeholder.svg'}
+          showTabsOnly
+        />
+      </EventStickyHeader>
+
+      {/* Content */}
+      <div className="px-3 py-3 sm:px-6 sm:py-4">
+        <EventDashboardTabs
+          financialReport={financialReport}
+          transactions={transactions || []}
+          tickets={ticketsWithAnalytics}
+          eventId={eventId}
+          eventName={event.name}
+          eventFlyer={event.flyer || '/placeholder.svg'}
+          showContentOnly
+        />
+      </div>
+    </>
   );
 }

@@ -89,6 +89,8 @@ interface EventSalesContentProps {
   transactions: Transaction[];
   eventName?: string;
   isAdmin?: boolean;
+  showTabsOnly?: boolean;
+  showContentOnly?: boolean;
 }
 
 export function EventSalesContent({
@@ -96,6 +98,8 @@ export function EventSalesContent({
   transactions,
   eventName = "",
   isAdmin = false,
+  showTabsOnly = false,
+  showContentOnly = false,
 }: EventSalesContentProps) {
   const [activeTab, setActiveTab] = useState<"sellers" | "transactions" | "links">("sellers");
 
@@ -118,46 +122,48 @@ export function EventSalesContent({
     },
   }));
 
-  return (
-    <div className="space-y-4">
-      {/* Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        <button
-          onClick={() => setActiveTab("sellers")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-            activeTab === "sellers"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <Users className="h-4 w-4" />
-          Vendedores
-        </button>
-        <button
-          onClick={() => setActiveTab("transactions")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-            activeTab === "transactions"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <ShoppingCart className="h-4 w-4" />
-          Transacciones
-        </button>
-        <button
-          onClick={() => setActiveTab("links")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-            activeTab === "links"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <Link className="h-4 w-4" />
-          Links
-        </button>
-      </div>
+  // Tabs section
+  const tabsSection = (
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+      <button
+        onClick={() => setActiveTab("sellers")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "sellers"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <Users className="h-4 w-4" />
+        Vendedores
+      </button>
+      <button
+        onClick={() => setActiveTab("transactions")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "transactions"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <ShoppingCart className="h-4 w-4" />
+        Transacciones
+      </button>
+      <button
+        onClick={() => setActiveTab("links")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "links"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <Link className="h-4 w-4" />
+        Links
+      </button>
+    </div>
+  );
 
-      {/* Tab Content */}
+  // Content section
+  const contentSection = (
+    <>
       {activeTab === "sellers" && (
         <EventSellersContent eventId={eventId} transactions={transactions} />
       )}
@@ -174,6 +180,23 @@ export function EventSalesContent({
       {activeTab === "links" && (
         <EventLinksContent eventId={eventId} />
       )}
+    </>
+  );
+
+  // Return based on mode
+  if (showTabsOnly) {
+    return tabsSection;
+  }
+
+  if (showContentOnly) {
+    return contentSection;
+  }
+
+  // Default: show both
+  return (
+    <div className="space-y-4">
+      {tabsSection}
+      {contentSection}
     </div>
   );
 }

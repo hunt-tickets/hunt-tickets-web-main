@@ -32,7 +32,7 @@ const EventLayout = async ({ children, params }: EventLayoutProps) => {
       <EventSidebar userId={userId} eventId={eventId} eventName={event.name} />
 
       {/* Main Content - with left margin to accommodate fixed sidebar */}
-      <main className="lg:ml-64 min-h-screen p-4 sm:p-6">
+      <main className="lg:ml-64 min-h-screen">
         {children}
       </main>
     </div>

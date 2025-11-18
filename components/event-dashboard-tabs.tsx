@@ -61,6 +61,8 @@ interface EventDashboardTabsProps {
   eventId: string;
   eventName: string;
   eventFlyer: string;
+  showTabsOnly?: boolean;
+  showContentOnly?: boolean;
 }
 
 export function EventDashboardTabs({
@@ -70,6 +72,8 @@ export function EventDashboardTabs({
   eventId,
   eventName,
   eventFlyer,
+  showTabsOnly = false,
+  showContentOnly = false,
 }: EventDashboardTabsProps) {
   const [activeTab, setActiveTab] = useState<"dashboard" | "borderaux" | "web">("dashboard");
   const [chartColor, setChartColor] = useState<string>("gray");
@@ -86,107 +90,120 @@ export function EventDashboardTabs({
     { name: "Rojo", value: "red", colors: ["#ef4444", "#f87171", "#dc2626", "#fca5a5", "#b91c1c"] },
   ];
 
-  return (
-    <div className="space-y-4">
-      {/* Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
-        <button
-          onClick={() => setActiveTab("dashboard")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-            activeTab === "dashboard"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <BarChart3 className="h-4 w-4" />
-          Dashboard
-        </button>
-        <button
-          onClick={() => setActiveTab("borderaux")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-            activeTab === "borderaux"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <FileSpreadsheet className="h-4 w-4" />
-          Borderaux
-        </button>
-        <button
-          onClick={() => setActiveTab("web")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-            activeTab === "web"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <Globe className="h-4 w-4" />
-          Web
-        </button>
-        </div>
-
-        {/* Color Selector */}
-        {activeTab === "dashboard" && (
-          <div className="relative group w-full sm:w-auto">
-            <select
-              value={chartColor}
-              onChange={(e) => setChartColor(e.target.value)}
-              className="appearance-none w-full sm:w-auto pl-3 pr-20 py-2 text-xs font-medium rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 focus:bg-white/10 focus:border-white/20 focus:outline-none transition-all cursor-pointer"
-            >
-              {colorOptions.map((option) => (
-                <option key={option.value} value={option.value} className="bg-zinc-900">
-                  {option.name}
-                </option>
-              ))}
-            </select>
-            {/* Color dots preview */}
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-0.5 pointer-events-none">
-              {colorOptions.find(c => c.value === chartColor)?.colors.slice(0, 5).map((color, index) => (
-                <div
-                  key={index}
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+  // Tabs section
+  const tabsSection = (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+      <button
+        onClick={() => setActiveTab("dashboard")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "dashboard"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <BarChart3 className="h-4 w-4" />
+        Dashboard
+      </button>
+      <button
+        onClick={() => setActiveTab("borderaux")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "borderaux"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <FileSpreadsheet className="h-4 w-4" />
+        Borderaux
+      </button>
+      <button
+        onClick={() => setActiveTab("web")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "web"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <Globe className="h-4 w-4" />
+        Web
+      </button>
       </div>
 
-      {/* Tab Content */}
+      {/* Color Selector */}
       {activeTab === "dashboard" && (
-        <div className="space-y-4">
-          <EventDashboard
-            financialReport={financialReport}
-            transactions={transactions}
-            tickets={tickets}
-            chartColor={chartColor}
-            colorPalette={colorOptions.find(c => c.value === chartColor)?.colors || colorOptions[0].colors}
-          />
+        <div className="relative group w-full sm:w-auto">
+          <select
+            value={chartColor}
+            onChange={(e) => setChartColor(e.target.value)}
+            className="appearance-none w-full sm:w-auto pl-3 pr-20 py-2 text-xs font-medium rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 focus:bg-white/10 focus:border-white/20 focus:outline-none transition-all cursor-pointer"
+          >
+            {colorOptions.map((option) => (
+              <option key={option.value} value={option.value} className="bg-zinc-900">
+                {option.name}
+              </option>
+            ))}
+          </select>
+          {/* Color dots preview */}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-0.5 pointer-events-none">
+            {colorOptions.find(c => c.value === chartColor)?.colors.slice(0, 5).map((color, index) => (
+              <div
+                key={index}
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: color }}
+              />
+            ))}
+          </div>
         </div>
+      )}
+    </div>
+  );
+
+  // Content section
+  const contentSection = (
+    <>
+      {activeTab === "dashboard" && (
+        <EventDashboard
+          financialReport={financialReport}
+          transactions={transactions}
+          tickets={tickets}
+          chartColor={chartColor}
+          colorPalette={colorOptions.find(c => c.value === chartColor)?.colors || colorOptions[0].colors}
+        />
       )}
 
       {activeTab === "borderaux" && (
-        <div className="space-y-4">
-          <EventBorderaux
-            financialReport={financialReport}
-            transactions={transactions}
-            tickets={tickets}
-          />
-        </div>
+        <EventBorderaux
+          financialReport={financialReport}
+          transactions={transactions}
+          tickets={tickets}
+        />
       )}
 
       {activeTab === "web" && (
-        <div className="space-y-4">
-          <EventWebAnalytics
-            eventId={eventId}
-            eventName={eventName}
-            eventFlyer={eventFlyer}
-            transactions={transactions}
-          />
-        </div>
+        <EventWebAnalytics
+          eventId={eventId}
+          eventName={eventName}
+          eventFlyer={eventFlyer}
+          transactions={transactions}
+        />
       )}
+    </>
+  );
+
+  // Return based on mode
+  if (showTabsOnly) {
+    return tabsSection;
+  }
+
+  if (showContentOnly) {
+    return contentSection;
+  }
+
+  // Default: show both
+  return (
+    <div className="space-y-4">
+      {tabsSection}
+      {contentSection}
     </div>
   );
 }
