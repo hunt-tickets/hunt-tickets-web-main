@@ -118,8 +118,8 @@ export function CreateEventDialog({
         textColor="inherit"
         hoverTextColor="inherit"
       >
-        <Plus className="h-4 w-4 flex-shrink-0" />
-        <span>Crear Evento</span>
+        <Plus className="h-4 w-4 sm:h-4 sm:w-4 flex-shrink-0" />
+        <span className="hidden sm:inline">Crear Evento</span>
       </HoverButton>
       <SheetContent
         side="right"

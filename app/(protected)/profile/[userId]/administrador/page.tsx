@@ -207,7 +207,7 @@ const AdministradorPage = async ({ params }: AdministradorPageProps) => {
     <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
       {/* Page Header */}
       <AdminHeader
-        title="ADMINISTRAR EVENTOS"
+        title="Mis Eventos"
         subtitle="Crea y gestiona tus eventos"
       />
 

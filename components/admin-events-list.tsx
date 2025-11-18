@@ -52,15 +52,15 @@ export function AdminEventsList({ events, userId, eventVenues = [] }: AdminEvent
   return (
     <>
       {/* Search Bar and Create Button */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      <div className="flex flex-row gap-3 mb-6">
         <div className="flex-1">
           <EnhancedSearchBar
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />
         </div>
-        <div className="flex sm:w-auto items-center justify-center sm:justify-start">
-          <CreateEventDialog eventVenues={eventVenues} />
+        <div className="flex items-center">
+          <CreateEventDialog eventVenues={eventVenues} className="sm:px-6 px-3 sm:rounded-full rounded-full" />
         </div>
       </div>
 
