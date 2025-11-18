@@ -89,11 +89,11 @@ export function EventDashboardTabs({
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
         <button
           onClick={() => setActiveTab("dashboard")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
             activeTab === "dashboard"
               ? "bg-white/10 text-white border border-white/20"
               : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
@@ -104,7 +104,7 @@ export function EventDashboardTabs({
         </button>
         <button
           onClick={() => setActiveTab("borderaux")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
             activeTab === "borderaux"
               ? "bg-white/10 text-white border border-white/20"
               : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
@@ -115,7 +115,7 @@ export function EventDashboardTabs({
         </button>
         <button
           onClick={() => setActiveTab("web")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
             activeTab === "web"
               ? "bg-white/10 text-white border border-white/20"
               : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
@@ -128,11 +128,11 @@ export function EventDashboardTabs({
 
         {/* Color Selector */}
         {activeTab === "dashboard" && (
-          <div className="relative group">
+          <div className="relative group w-full sm:w-auto">
             <select
               value={chartColor}
               onChange={(e) => setChartColor(e.target.value)}
-              className="appearance-none pl-3 pr-20 py-2 text-xs font-medium rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 focus:bg-white/10 focus:border-white/20 focus:outline-none transition-all cursor-pointer"
+              className="appearance-none w-full sm:w-auto pl-3 pr-20 py-2 text-xs font-medium rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 focus:bg-white/10 focus:border-white/20 focus:outline-none transition-all cursor-pointer"
             >
               {colorOptions.map((option) => (
                 <option key={option.value} value={option.value} className="bg-zinc-900">

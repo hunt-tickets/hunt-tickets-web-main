@@ -741,7 +741,7 @@ export function EventConfigContent() {
                   <Label className="text-base font-semibold">Colores</Label>
 
                   {/* All 3 colors in one row */}
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {/* Background Color */}
                     <div className="space-y-2">
                       <Label htmlFor="backgroundColor" className="text-xs text-white/60">
@@ -864,7 +864,7 @@ export function EventConfigContent() {
                   </div>
 
                   {/* Logo and Icon in same row */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Logo */}
                     <div className="space-y-3">
                       <div>

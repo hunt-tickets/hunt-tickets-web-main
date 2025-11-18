@@ -27,13 +27,15 @@ const EventLayout = async ({ children, params }: EventLayoutProps) => {
   }
 
   return (
-    <>
-      {/* Event Sidebar - replaces AdminSidebar */}
+    <div className="min-h-screen bg-background">
+      {/* Event Sidebar */}
       <EventSidebar userId={userId} eventId={eventId} eventName={event.name} />
 
-      {/* Content */}
-      {children}
-    </>
+      {/* Main Content - with left margin to accommodate fixed sidebar */}
+      <main className="lg:ml-64 min-h-screen p-4 sm:p-6">
+        {children}
+      </main>
+    </div>
   );
 };
 

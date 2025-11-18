@@ -1,10 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAllProducers, getAllArtists, getAllVenues } from "@/lib/supabase/actions/tickets";
-import { ProducersListContent } from "@/components/producers-list-content";
-import { ArtistsListContent } from "@/components/artists-list-content";
-import { VenuesListContent } from "@/components/venues-list-content";
-import { SponsorsListContent } from "@/components/sponsors-list-content";
+import { MarcasTabs } from "@/components/marcas-tabs";
 
 interface MarcasPageProps {
   params: Promise<{
@@ -47,7 +44,7 @@ export default async function MarcasPage({ params }: MarcasPageProps) {
   ]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -58,17 +55,13 @@ export default async function MarcasPage({ params }: MarcasPageProps) {
         </div>
       </div>
 
-      {/* Producers Content */}
-      <ProducersListContent producers={producers || []} userId={userId} />
-
-      {/* Artists Content */}
-      <ArtistsListContent artists={artists || []} />
-
-      {/* Venues Content */}
-      <VenuesListContent venues={venues || []} />
-
-      {/* Sponsors Content */}
-      <SponsorsListContent />
+      {/* Marcas Tabs */}
+      <MarcasTabs
+        producers={producers || []}
+        artists={artists || []}
+        venues={venues || []}
+        userId={userId}
+      />
     </div>
   );
 }

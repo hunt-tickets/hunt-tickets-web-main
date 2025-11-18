@@ -121,10 +121,10 @@ export function EventSalesContent({
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         <button
           onClick={() => setActiveTab("sellers")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
             activeTab === "sellers"
               ? "bg-white/10 text-white border border-white/20"
               : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
@@ -135,7 +135,7 @@ export function EventSalesContent({
         </button>
         <button
           onClick={() => setActiveTab("transactions")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
             activeTab === "transactions"
               ? "bg-white/10 text-white border border-white/20"
               : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
@@ -146,7 +146,7 @@ export function EventSalesContent({
         </button>
         <button
           onClick={() => setActiveTab("links")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
             activeTab === "links"
               ? "bg-white/10 text-white border border-white/20"
               : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
