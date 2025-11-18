@@ -1,14 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 /**
- * Especially important if using Fluid compute: Don't put this client in a
- * global variable. Always create a new client within each function when using
- * it.
+ * Creates a Supabase server client with per-request caching.
+ * Using React's cache() ensures only ONE client instance is created per request,
+ * preventing connection pool exhaustion while maintaining request isolation.
+ *
+ * CRITICAL OPTIMIZATION: Without cache(), every createClient() call creates a new
+ * database connection. With 50+ calls per page, this exhausts the pool at 3-4 concurrent users.
+ * With cache(), all calls within a single request reuse the same client = 1 connection per request.
  */
 
 // To access Supabase from Server Components, Server Actions, and Route Handlers, which run only on the server.
-export async function createClient() {
+export const createClient = cache(async () => {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -33,4 +38,4 @@ export async function createClient() {
       },
     }
   );
-}
+});
