@@ -37,7 +37,7 @@ export default async function ReferidosPage({ params }: ReferidosPageProps) {
   }
 
   return (
-    <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-8">
+    <div className="px-4 py-4 sm:px-6 sm:py-6 space-y-8">
       {/* Header */}
       <AdminHeader
         title="PROGRAMA DE REFERIDOS"
