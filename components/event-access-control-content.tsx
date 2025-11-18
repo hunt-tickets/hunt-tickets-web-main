@@ -269,7 +269,77 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
                   <BarChart3 className="h-4 w-4 text-white/60" />
                   Desglose por Tipo de Entrada
                 </h3>
-                <div className="overflow-x-auto">
+
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3">
+                  {ticketBreakdown.map((ticket) => (
+                    <div
+                      key={ticket.name}
+                      className="p-4 rounded-lg bg-white/[0.02] border border-white/5"
+                    >
+                      {/* Ticket Name */}
+                      <div className="text-sm font-semibold text-white/90 mb-3">
+                        {ticket.name}
+                      </div>
+
+                      {/* Stats Grid */}
+                      <div className="grid grid-cols-3 gap-3 mb-3">
+                        <div className="text-center">
+                          <div className="text-xs text-white/40 mb-1">Total</div>
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-white/10 text-white/80">
+                            {ticket.total}
+                          </span>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-white/40 mb-1">Escaneadas</div>
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-400">
+                            {ticket.scanned}
+                          </span>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-white/40 mb-1">Pendientes</div>
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-yellow-500/10 text-yellow-400">
+                            {ticket.pending}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Scan Rate */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-white/40">% Escaneo</span>
+                        <span className={`inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ${
+                          ticket.scanRate >= 80
+                            ? 'bg-green-500/20 text-green-400'
+                            : ticket.scanRate >= 50
+                            ? 'bg-yellow-500/20 text-yellow-400'
+                            : 'bg-red-500/20 text-red-400'
+                        }`}>
+                          {ticket.scanRate.toFixed(1)}%
+                        </span>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            ticket.scanRate >= 80
+                              ? 'bg-green-500'
+                              : ticket.scanRate >= 50
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500'
+                          }`}
+                          style={{ width: `${ticket.scanRate}%` }}
+                        />
+                      </div>
+                      <div className="mt-1 text-xs text-white/40 text-center">
+                        {ticket.scanned} de {ticket.total}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-white/5">
