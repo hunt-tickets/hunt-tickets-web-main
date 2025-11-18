@@ -79,6 +79,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [requireScannerName, setRequireScannerName] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [confirmationDialog, setConfirmationDialog] = useState<{ qrId: string; currentStatus: boolean } | null>(null);
   const itemsPerPage = 50;
 
   // Detect mobile on mount
@@ -91,8 +92,12 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Handle toggle scan status
-  const handleToggleScan = async (qrId: string, currentStatus: boolean) => {
+  // Handle confirmation of toggle scan
+  const handleConfirmToggleScan = async () => {
+    if (!confirmationDialog) return;
+
+    const { qrId, currentStatus } = confirmationDialog;
+    setConfirmationDialog(null);
     setUpdatingQR(qrId);
 
     // Optimistic update
@@ -121,6 +126,11 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
     }
 
     setUpdatingQR(null);
+  };
+
+  // Handle toggle scan status - show confirmation first
+  const handleToggleScan = (qrId: string, currentStatus: boolean) => {
+    setConfirmationDialog({ qrId, currentStatus });
   };
 
   // Handle download CSV
@@ -959,12 +969,43 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
     </Dialog>
   );
 
+  // Confirmation Dialog
+  const confirmationDialogComponent = (
+    <Dialog open={!!confirmationDialog} onOpenChange={(open) => !open && setConfirmationDialog(null)}>
+      <DialogContent className="sm:max-w-md bg-[#1a1a1a] border-white/10">
+        <DialogHeader>
+          <DialogTitle className="text-white">Confirmar acción</DialogTitle>
+          <DialogDescription className="text-white/60">
+            {confirmationDialog?.currentStatus
+              ? "¿Estás seguro de que deseas marcar esta entrada como pendiente?"
+              : "¿Estás seguro de que deseas marcar esta entrada como escaneada?"}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex gap-3 justify-end mt-4">
+          <button
+            onClick={() => setConfirmationDialog(null)}
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleConfirmToggleScan}
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-white text-black hover:bg-white/90 transition-colors"
+          >
+            Confirmar
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   // Return based on mode
   if (showTabsOnly) {
     return (
       <>
         {tabsSection}
         {scannerModal}
+        {confirmationDialogComponent}
       </>
     );
   }
@@ -974,6 +1015,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
       <>
         {contentSection}
         {scannerModal}
+        {confirmationDialogComponent}
       </>
     );
   }
@@ -986,6 +1028,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
         {contentSection}
       </div>
       {scannerModal}
+      {confirmationDialogComponent}
     </>
   );
 }
