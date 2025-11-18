@@ -69,7 +69,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-screen w-64 bg-[#202020] border-r border-[#2a2a2a] z-40 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
+          "fixed top-0 left-0 h-screen w-64 bg-[#202020] border-r border-[#2a2a2a] z-50 transition-transform duration-300 lg:translate-x-0 flex-shrink-0",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
