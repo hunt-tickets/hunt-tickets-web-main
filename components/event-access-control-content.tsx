@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, CheckCircle2, Clock, QrCode, BarChart3, List, ChevronDown, X, Download, Copy, ExternalLink, Smartphone } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -71,7 +78,18 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
   const [updatingQR, setUpdatingQR] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [requireScannerName, setRequireScannerName] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const itemsPerPage = 50;
+
+  // Detect mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handle toggle scan status
   const handleToggleScan = async (qrId: string, currentStatus: boolean) => {
@@ -818,8 +836,116 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
     </div>
   );
 
-  // Scanner Modal (always rendered)
-  const scannerModal = (
+  // Modal Content (shared between Dialog and Drawer)
+  const modalContent = (
+    <div className="space-y-6 py-4 px-4">
+      {/* Event Code Section */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-white/80">Código del Evento</Label>
+        <div className="flex items-center gap-2">
+          <div className="flex-1 px-4 py-3 rounded-lg bg-white/5 border border-white/10 font-mono text-sm text-white">
+            {eventId || "No disponible"}
+          </div>
+          <button
+            onClick={handleCopyEventCode}
+            className="p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+            disabled={!eventId}
+          >
+            <Copy className="h-4 w-4 text-white" />
+          </button>
+        </div>
+        <p className="text-xs text-white/40">
+          Comparte este código con el personal de taquilla para que puedan escanear entradas
+        </p>
+      </div>
+
+      {/* Scanner Name Requirement */}
+      <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
+        <div className="flex-1 pr-4">
+          <Label htmlFor="scanner-name" className="text-sm font-medium text-white">
+            Nombre obligatorio del scanner
+          </Label>
+          <p className="text-xs text-white/40 mt-1">
+            Requiere que el personal ingrese su nombre al escanear
+          </p>
+        </div>
+        <Switch
+          id="scanner-name"
+          checked={requireScannerName}
+          onCheckedChange={setRequireScannerName}
+        />
+      </div>
+
+      {/* Download Apps Section */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-white/80">Descargar App de Escaneo</Label>
+        <div className="space-y-2">
+          <a
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+          >
+            <div className="p-2 rounded-lg bg-black">
+              <Smartphone className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-medium text-white">App Store</div>
+              <div className="text-xs text-white/40">Descargar para iOS</div>
+            </div>
+            <ExternalLink className="h-4 w-4 text-white/40" />
+          </a>
+          <a
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+          >
+            <div className="p-2 rounded-lg bg-[#3DDC84]">
+              <Smartphone className="h-5 w-5 text-black" />
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-medium text-white">Google Play</div>
+              <div className="text-xs text-white/40">Descargar para Android</div>
+            </div>
+            <ExternalLink className="h-4 w-4 text-white/40" />
+          </a>
+        </div>
+      </div>
+
+      {/* Web Scanner Link */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-white/80">Escáner Web</Label>
+        <a
+          href={`/scan/${eventId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+        >
+          <div className="p-2 rounded-lg bg-white/10">
+            <QrCode className="h-5 w-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-medium text-white">Abrir escáner web</div>
+            <div className="text-xs text-white/40">Escanear desde el navegador</div>
+          </div>
+          <ExternalLink className="h-4 w-4 text-white/40" />
+        </a>
+      </div>
+    </div>
+  );
+
+  // Scanner Modal (Drawer on mobile, Dialog on desktop)
+  const scannerModal = isMobile ? (
+    <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <DrawerContent className="bg-[#1a1a1a] border-white/10">
+        <DrawerHeader className="text-left">
+          <DrawerTitle className="text-white">Información de Escaneo</DrawerTitle>
+          <DrawerDescription className="text-white/60">
+            Configura el acceso para el personal de taquilla
+          </DrawerDescription>
+        </DrawerHeader>
+        {modalContent}
+        <div className="pb-8" />
+      </DrawerContent>
+    </Drawer>
+  ) : (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <DialogContent className="sm:max-w-md bg-[#1a1a1a] border-white/10">
         <DialogHeader>
@@ -828,98 +954,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, even
             Configura el acceso para el personal de taquilla
           </DialogDescription>
         </DialogHeader>
-
-        <div className="space-y-6 py-4">
-          {/* Event Code Section */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium text-white/80">Código del Evento</Label>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 px-4 py-3 rounded-lg bg-white/5 border border-white/10 font-mono text-sm text-white">
-                {eventId || "No disponible"}
-              </div>
-              <button
-                onClick={handleCopyEventCode}
-                className="p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-                disabled={!eventId}
-              >
-                <Copy className="h-4 w-4 text-white" />
-              </button>
-            </div>
-            <p className="text-xs text-white/40">
-              Comparte este código con el personal de taquilla para que puedan escanear entradas
-            </p>
-          </div>
-
-          {/* Scanner Name Requirement */}
-          <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-            <div className="flex-1 pr-4">
-              <Label htmlFor="scanner-name" className="text-sm font-medium text-white">
-                Nombre obligatorio del scanner
-              </Label>
-              <p className="text-xs text-white/40 mt-1">
-                Requiere que el personal ingrese su nombre al escanear
-              </p>
-            </div>
-            <Switch
-              id="scanner-name"
-              checked={requireScannerName}
-              onCheckedChange={setRequireScannerName}
-            />
-          </div>
-
-          {/* Download Apps Section */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium text-white/80">Descargar App de Escaneo</Label>
-            <div className="space-y-2">
-              <a
-                href="#"
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-              >
-                <div className="p-2 rounded-lg bg-black">
-                  <Smartphone className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-white">App Store</div>
-                  <div className="text-xs text-white/40">Descargar para iOS</div>
-                </div>
-                <ExternalLink className="h-4 w-4 text-white/40" />
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-              >
-                <div className="p-2 rounded-lg bg-[#3DDC84]">
-                  <Smartphone className="h-5 w-5 text-black" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-white">Google Play</div>
-                  <div className="text-xs text-white/40">Descargar para Android</div>
-                </div>
-                <ExternalLink className="h-4 w-4 text-white/40" />
-              </a>
-            </div>
-          </div>
-
-          {/* Web Scanner Link */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium text-white/80">Escáner Web</Label>
-            <a
-              href={`/scan/${eventId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-            >
-              <div className="p-2 rounded-lg bg-white/10">
-                <QrCode className="h-5 w-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-white">Abrir escáner web</div>
-                <div className="text-xs text-white/40">Escanear desde el navegador</div>
-              </div>
-              <ExternalLink className="h-4 w-4 text-white/40" />
-            </a>
-          </div>
-        </div>
+        {modalContent}
       </DialogContent>
     </Dialog>
   );
