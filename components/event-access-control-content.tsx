@@ -224,19 +224,19 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
       {mainTab === "analytics" && (
         <div className="space-y-4">
           {/* Statistics KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-xs text-white/40 mb-1">Total QR Codes</div>
-          <div className="text-2xl font-bold">{stats.total}</div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="p-3 sm:p-4 rounded-xl border border-white/5 bg-white/[0.01]">
+          <div className="text-[10px] sm:text-xs text-white/40 mb-1">Total</div>
+          <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
         </div>
-        <div className="p-4 rounded-xl border border-green-500/20 bg-green-500/5">
-          <div className="text-xs text-green-400/60 mb-1">Escaneadas</div>
-          <div className="text-2xl font-bold text-white">{stats.scanned}</div>
-          <div className="text-xs text-green-400/40 mt-1">{stats.scanRate}% del total</div>
+        <div className="p-3 sm:p-4 rounded-xl border border-green-500/20 bg-green-500/5">
+          <div className="text-[10px] sm:text-xs text-green-400/60 mb-1">Escaneadas</div>
+          <div className="text-lg sm:text-2xl font-bold text-white">{stats.scanned}</div>
+          <div className="text-[9px] sm:text-xs text-green-400/40 mt-0.5 sm:mt-1">{stats.scanRate}%</div>
         </div>
-        <div className="p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
-          <div className="text-xs text-yellow-400/60 mb-1">Pendientes</div>
-          <div className="text-2xl font-bold text-white">{stats.pending}</div>
+        <div className="p-3 sm:p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
+          <div className="text-[10px] sm:text-xs text-yellow-400/60 mb-1">Pendientes</div>
+          <div className="text-lg sm:text-2xl font-bold text-white">{stats.pending}</div>
         </div>
       </div>
 
