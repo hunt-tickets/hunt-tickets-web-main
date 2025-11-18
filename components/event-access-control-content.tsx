@@ -234,28 +234,38 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
 
   // Tabs section
   const tabsSection = (
-    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <button
+          onClick={() => setMainTab("analytics")}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+            mainTab === "analytics"
+              ? "bg-white/10 text-white border border-white/20"
+              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+          }`}
+        >
+          <BarChart3 className="h-4 w-4" />
+          Analítica
+        </button>
+        <button
+          onClick={() => setMainTab("list")}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+            mainTab === "list"
+              ? "bg-white/10 text-white border border-white/20"
+              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+          }`}
+        >
+          <List className="h-4 w-4" />
+          Lista
+        </button>
+      </div>
+
+      {/* Scan button */}
       <button
-        onClick={() => setMainTab("analytics")}
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-          mainTab === "analytics"
-            ? "bg-white/10 text-white border border-white/20"
-            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-        }`}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-black hover:bg-white/90 transition-all flex-shrink-0"
+        aria-label="Escanear"
       >
-        <BarChart3 className="h-4 w-4" />
-        Analítica
-      </button>
-      <button
-        onClick={() => setMainTab("list")}
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-          mainTab === "list"
-            ? "bg-white/10 text-white border border-white/20"
-            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-        }`}
-      >
-        <List className="h-4 w-4" />
-        Lista
+        <QrCode className="h-5 w-5" />
       </button>
     </div>
   );
