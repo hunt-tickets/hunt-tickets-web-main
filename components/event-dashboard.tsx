@@ -13,18 +13,14 @@ interface Transaction {
   id: string;
   quantity: number;
   total: number;
+  price: number;
   status: string;
   created_at: string;
-  source: string;
-  tickets: {
-    name: string;
-    price: number;
-  };
-  user: {
-    name: string | null;
-    lastName: string | null;
-    email: string | null;
-  } | null;
+  type: string;
+  ticket_name: string;
+  user_fullname: string;
+  user_email: string;
+  cash?: boolean;
 }
 
 interface Ticket {
@@ -40,9 +36,11 @@ interface EventDashboardProps {
   financialReport: any;
   transactions: Transaction[];
   tickets: Ticket[];
+  chartColor?: string;
+  colorPalette?: string[];
 }
 
-export function EventDashboard({ financialReport, transactions, tickets }: EventDashboardProps) {
+export function EventDashboard({ financialReport, transactions, tickets, colorPalette = [] }: EventDashboardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
@@ -114,7 +112,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
       </div>
 
       {/* Daily Sales Chart */}
-      <DailySalesChart transactions={transactions} />
+      <DailySalesChart transactions={transactions} colorPalette={colorPalette} />
 
       {/* Charts Section */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -122,11 +120,13 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
           app={financialReport.tickets_sold.app}
           web={financialReport.tickets_sold.web}
           cash={financialReport.tickets_sold.cash}
+          colorPalette={colorPalette}
         />
         <RevenueByChannelChart
           appTotal={financialReport.app_total}
           webTotal={financialReport.web_total}
           cashTotal={financialReport.cash_total}
+          colorPalette={colorPalette}
         />
       </div>
 
@@ -134,6 +134,7 @@ export function EventDashboard({ financialReport, transactions, tickets }: Event
         visits={totalVisits}
         addedToCart={totalAddedToCart}
         completed={totalCompleted}
+        colorPalette={colorPalette}
       />
 
       {/* Sales Breakdown */}

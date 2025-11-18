@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Ticket, Receipt, Settings, Users, ArrowLeft, Menu, X, TrendingUp, ScanLine } from "lucide-react";
+import { LayoutDashboard, Ticket, Settings, Users, ArrowLeft, Menu, X, TrendingUp, ScanLine, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -33,10 +33,10 @@ const menuItems = [
     description: "Gestiona tipos de entrada",
   },
   {
-    title: "Transacciones",
-    icon: Receipt,
-    href: "/transacciones",
-    description: "Historial de ventas",
+    title: "Ventas",
+    icon: ShoppingCart,
+    href: "/ventas",
+    description: "Vendedores y transacciones",
   },
   {
     title: "Control de Acceso",

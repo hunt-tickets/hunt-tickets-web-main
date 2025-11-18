@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getAllTransactions } from "@/lib/supabase/actions/tickets";
-import { AllTransactionsContent } from "@/components/all-transactions-content";
+import { getCompleteEventTransactions } from "@/lib/supabase/actions/tickets";
+import { EventTransactionsContent } from "@/components/event-transactions-content";
 
 interface TransaccionesContabilidadPageProps {
   params: Promise<{
@@ -29,8 +29,40 @@ export default async function TransaccionesContabilidadPage({ params }: Transacc
     notFound();
   }
 
-  // Fetch all transactions
-  const transactions = await getAllTransactions();
+  // Fetch all complete transactions (from all events)
+  // We'll need to get all transactions across all events
+  const { data: allEvents } = await supabase
+    .from("events")
+    .select("id");
+
+  const eventIds = allEvents?.map(e => e.id) || [];
+
+  // Fetch transactions for all events
+  const allTransactionsPromises = eventIds.map(eventId =>
+    getCompleteEventTransactions(eventId)
+  );
+
+  const allTransactionsArrays = await Promise.all(allTransactionsPromises);
+  const allTransactions = allTransactionsArrays.flat();
+
+  // Transform transactions to the format expected by EventTransactionsContent
+  const simpleTransactions = allTransactions.map((t) => ({
+    id: t.id,
+    quantity: t.quantity,
+    total: t.total,
+    status: t.status,
+    created_at: t.created_at,
+    source: t.type,
+    tickets: {
+      name: t.ticket_name,
+      price: t.price,
+    },
+    user: {
+      name: t.user_fullname?.split(' ')[0] || null,
+      lastName: t.user_fullname?.split(' ').slice(1).join(' ') || null,
+      email: t.user_email,
+    },
+  }));
 
   return (
     <div className="space-y-4">
@@ -43,7 +75,13 @@ export default async function TransaccionesContabilidadPage({ params }: Transacc
       </div>
 
       {/* Transactions Content */}
-      <AllTransactionsContent transactions={transactions || []} />
+      <EventTransactionsContent
+        eventName="Todas las transacciones"
+        transactions={simpleTransactions}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        completeTransactions={allTransactions as any}
+        isAdmin={profile?.admin || false}
+      />
     </div>
   );
 }

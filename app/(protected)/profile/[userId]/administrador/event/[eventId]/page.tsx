@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getEventFinancialReport } from "@/lib/actions/events";
-import { getAllEventTransactions, getEventTickets, getTicketsSalesAnalytics } from "@/lib/supabase/actions/tickets";
-import { EventDashboard } from "@/components/event-dashboard";
+import { getCompleteEventTransactions, getEventTickets, getTicketsSalesAnalytics } from "@/lib/supabase/actions/tickets";
+import { EventDashboardTabs } from "@/components/event-dashboard-tabs";
 
 interface EventPageProps {
   params: Promise<{
@@ -45,11 +45,11 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   const [eventData, financialReport, transactions, tickets, ticketsAnalytics] = await Promise.all([
     supabase
       .from("events")
-      .select("id, name, status")
+      .select("id, name, status, flyer")
       .eq("id", eventId)
       .single(),
     getEventFinancialReport(eventId),
-    getAllEventTransactions(eventId),
+    getCompleteEventTransactions(eventId),
     getEventTickets(eventId),
     getTicketsSalesAnalytics(eventId),
   ]);
@@ -122,11 +122,14 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
         </Badge>
       </div>
 
-      {/* Event Dashboard */}
-      <EventDashboard
+      {/* Event Dashboard with Tabs */}
+      <EventDashboardTabs
         financialReport={financialReport}
         transactions={transactions || []}
         tickets={ticketsWithAnalytics}
+        eventId={eventId}
+        eventName={event.name}
+        eventFlyer={event.flyer || '/placeholder.svg'}
       />
     </div>
   );

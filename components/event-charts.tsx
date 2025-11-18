@@ -7,14 +7,33 @@ interface SalesDistributionChartProps {
   app: number;
   web: number;
   cash: number;
+  colorPalette?: string[];
 }
 
-export function SalesDistributionChart({ app, web, cash }: SalesDistributionChartProps) {
+export function SalesDistributionChart({ app, web, cash, colorPalette = [] }: SalesDistributionChartProps) {
   const data = [
-    { name: 'App', value: app, itemStyle: { color: '#8b5cf6' } },
-    { name: 'Web', value: web, itemStyle: { color: '#06b6d4' } },
-    { name: 'Efectivo', value: cash, itemStyle: { color: '#10b981' } },
+    { name: 'App', value: app },
+    { name: 'Web', value: web },
+    { name: 'Efectivo', value: cash },
   ].filter(item => item.value > 0);
+
+  // Create pattern canvas only on client side
+  const createPatternCanvas = () => {
+    if (typeof window === 'undefined') return undefined;
+    const canvas = document.createElement('canvas');
+    canvas.width = 6;
+    canvas.height = 6;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.fillRect(0, 0, 6, 6);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.beginPath();
+      ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return canvas;
+  };
 
   const option = {
     backgroundColor: 'transparent',
@@ -37,32 +56,18 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
         padAngle: 3,
         itemStyle: {
           borderRadius: 10,
-          borderColor: '#404040',
+          borderColor: '#707070',
           borderWidth: 2,
           color: {
             type: 'pattern',
-            image: (() => {
-              const canvas = document.createElement('canvas');
-              canvas.width = 6;
-              canvas.height = 6;
-              const ctx = canvas.getContext('2d');
-              if (ctx) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
-                ctx.fillRect(0, 0, 6, 6);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
-                ctx.beginPath();
-                ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
-                ctx.fill();
-              }
-              return canvas;
-            })(),
+            image: createPatternCanvas(),
             repeat: 'repeat'
           }
         },
         label: {
           show: true,
           formatter: '{b} {d}%',
-          color: '#888',
+          color: '#ccc',
           fontSize: 12
         },
         emphasis: {
@@ -73,7 +78,7 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
             color: '#fff'
           },
           scale: false,
-          itemStyle: {
+          itemStyle: colorPalette.length === 0 ? {
             color: {
               type: 'pattern',
               image: (() => {
@@ -82,9 +87,9 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
                 canvas.height = 6;
                 const ctx = canvas.getContext('2d');
                 if (ctx) {
-                  ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
                   ctx.fillRect(0, 0, 6, 6);
-                  ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
                   ctx.beginPath();
                   ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
                   ctx.fill();
@@ -93,11 +98,21 @@ export function SalesDistributionChart({ app, web, cash }: SalesDistributionChar
               })(),
               repeat: 'repeat'
             },
-            borderColor: '#404040',
+            borderColor: '#707070',
+            shadowBlur: 0
+          } : {
+            borderColor: 'rgba(255, 255, 255, 0.3)',
             shadowBlur: 0
           }
         },
-        data: data.map(item => ({ ...item, itemStyle: undefined }))
+        data: colorPalette.length === 0
+          ? data.map(item => ({ ...item, itemStyle: undefined }))
+          : data.map((item, index) => ({
+              ...item,
+              itemStyle: {
+                color: colorPalette[index % colorPalette.length]
+              }
+            }))
       }
     ]
   };
@@ -120,9 +135,10 @@ interface RevenueByChannelChartProps {
   appTotal: number;
   webTotal: number;
   cashTotal: number;
+  colorPalette?: string[];
 }
 
-export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: RevenueByChannelChartProps) {
+export function RevenueByChannelChart({ appTotal, webTotal, cashTotal, colorPalette = [] }: RevenueByChannelChartProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -133,9 +149,9 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
   };
 
   const data = [
-    { name: 'App', value: appTotal, color: '#8b5cf6' },
-    { name: 'Web', value: webTotal, color: '#06b6d4' },
-    { name: 'Efectivo', value: cashTotal, color: '#10b981' },
+    { name: 'App', value: appTotal },
+    { name: 'Web', value: webTotal },
+    { name: 'Efectivo', value: cashTotal },
   ].filter(item => item.value > 0);
 
   const option = {
@@ -168,22 +184,22 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
       data: data.map(d => d.name),
       axisLine: {
         lineStyle: {
-          color: '#303030'
+          color: '#707070'
         }
       },
       axisLabel: {
-        color: '#888'
+        color: '#ccc'
       }
     },
     yAxis: {
       type: 'value',
       axisLine: {
         lineStyle: {
-          color: '#303030'
+          color: '#707070'
         }
       },
       axisLabel: {
-        color: '#888',
+        color: '#ccc',
         formatter: (value: number) => {
           if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
           if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
@@ -192,7 +208,7 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
       },
       splitLine: {
         lineStyle: {
-          color: '#303030',
+          color: '#707070',
           type: 'dashed'
         }
       }
@@ -200,18 +216,31 @@ export function RevenueByChannelChart({ appTotal, webTotal, cashTotal }: Revenue
     series: [
       {
         type: 'bar',
-        data: data.map(d => ({ value: d.value })),
-        itemStyle: {
-          color: 'rgba(255, 255, 255, 0.18)',
-          borderColor: 'rgba(255, 255, 255, 0.2)',
+        data: colorPalette.length === 0
+          ? data.map(d => ({ value: d.value }))
+          : data.map((d, index) => ({
+              value: d.value,
+              itemStyle: {
+                color: colorPalette[index % colorPalette.length],
+                borderColor: colorPalette[(index + 1) % colorPalette.length] || colorPalette[index % colorPalette.length],
+                borderWidth: 1,
+                borderRadius: [6, 6, 0, 0]
+              }
+            })),
+        itemStyle: colorPalette.length === 0 ? {
+          color: 'rgba(255, 255, 255, 0.35)',
+          borderColor: 'rgba(255, 255, 255, 0.45)',
           borderWidth: 1,
           borderRadius: [6, 6, 0, 0]
-        },
+        } : undefined,
         emphasis: {
-          itemStyle: {
-            color: 'rgba(255, 255, 255, 0.28)',
-            borderColor: 'rgba(255, 255, 255, 0.3)',
+          itemStyle: colorPalette.length === 0 ? {
+            color: 'rgba(255, 255, 255, 0.45)',
+            borderColor: 'rgba(255, 255, 255, 0.55)',
             shadowBlur: 0
+          } : {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.3)'
           }
         }
       }
@@ -236,13 +265,15 @@ interface SalesFunnelChartProps {
   visits: number;
   addedToCart: number;
   completed: number;
+  colorPalette?: string[];
 }
 
-export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnelChartProps) {
+export function SalesFunnelChart({ visits, addedToCart, completed, colorPalette = [] }: SalesFunnelChartProps) {
+  const useGrayScale = colorPalette.length === 0;
   const stages = [
-    { name: 'Visitas', value: visits, color: '#3b82f6' },
-    { name: 'Carrito', value: addedToCart, color: '#8b5cf6' },
-    { name: 'Completado', value: completed, color: '#10b981' }
+    { name: 'Visitas', value: visits, color: useGrayScale ? '#3b82f6' : colorPalette[0] },
+    { name: 'Carrito', value: addedToCart, color: useGrayScale ? '#8b5cf6' : colorPalette[1] },
+    { name: 'Completado', value: completed, color: useGrayScale ? '#10b981' : colorPalette[2] }
   ];
 
   const conversionRates = [
@@ -285,11 +316,11 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
                   {/* Smooth funnel section */}
                   <path
                     d={`M ${x1} ${y} L ${x2} ${y} Q ${x2 + (nextX2 - x2) * 0.3} ${y + 40}, ${nextX2} ${nextY} L ${nextX1} ${nextY} Q ${x1 - (nextX1 - x1) * 0.3} ${y + 40}, ${x1} ${y} Z`}
-                    fill={stage.color}
-                    fillOpacity="0.8"
-                    stroke={stage.color}
+                    fill="rgba(255, 255, 255, 0.35)"
+                    fillOpacity="1"
+                    stroke="rgba(255, 255, 255, 0.45)"
                     strokeWidth="1"
-                    strokeOpacity="0.3"
+                    strokeOpacity="1"
                     className="hover:fill-opacity-100 transition-opacity"
                   />
 
@@ -309,7 +340,7 @@ export function SalesFunnelChart({ visits, addedToCart, completed }: SalesFunnel
                     x={svgWidth / 2}
                     y={y + 45}
                     textAnchor="middle"
-                    fill="#888"
+                    fill="#ccc"
                     fontSize="12"
                     className="pointer-events-none"
                   >
@@ -535,7 +566,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
         padAngle: 3,
         itemStyle: {
           borderRadius: 10,
-          borderColor: '#404040',
+          borderColor: '#707070',
           borderWidth: 2,
           color: {
             type: 'pattern',
@@ -545,9 +576,9 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
               canvas.height = 6;
               const ctx = canvas.getContext('2d');
               if (ctx) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
                 ctx.fillRect(0, 0, 6, 6);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
                 ctx.beginPath();
                 ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
                 ctx.fill();
@@ -578,7 +609,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
               lineHeight: 14
             },
             percent: {
-              color: '#888',
+              color: '#ccc',
               fontSize: 9,
               lineHeight: 12
             }
@@ -595,9 +626,9 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
                 canvas.height = 6;
                 const ctx = canvas.getContext('2d');
                 if (ctx) {
-                  ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
                   ctx.fillRect(0, 0, 6, 6);
-                  ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
                   ctx.beginPath();
                   ctx.arc(3, 3, 0.3, 0, Math.PI * 2);
                   ctx.fill();
@@ -606,7 +637,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
               })(),
               repeat: 'repeat'
             },
-            borderColor: '#404040',
+            borderColor: '#707070',
             shadowBlur: 0
           },
           label: {
@@ -618,7 +649,7 @@ export function ChannelSalesChart({ app, web, cash }: ChannelSalesChartProps) {
           length: 10,
           length2: 10,
           lineStyle: {
-            color: '#303030'
+            color: '#707070'
           }
         },
         data: data.map(item => ({ name: item.name, value: item.value }))
@@ -643,9 +674,10 @@ interface DailySalesChartProps {
     total: number;
     quantity: number;
   }>;
+  colorPalette?: string[];
 }
 
-export function DailySalesChart({ transactions }: DailySalesChartProps) {
+export function DailySalesChart({ transactions, colorPalette = [] }: DailySalesChartProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -679,6 +711,11 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
     return `${day}/${month}`;
   });
   const revenues = sortedDates.map(date => dailySales[date].revenue);
+
+  const useGrayScale = colorPalette.length === 0;
+  const barColor = useGrayScale ? 'rgba(255, 255, 255, 0.35)' : colorPalette[0];
+  const barBorderColor = useGrayScale ? 'rgba(255, 255, 255, 0.45)' : colorPalette[1] || colorPalette[0];
+  const barEmphasisColor = useGrayScale ? 'rgba(255, 255, 255, 0.45)' : colorPalette[2] || colorPalette[1] || colorPalette[0];
 
   const option = {
     backgroundColor: 'transparent',
@@ -714,11 +751,11 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
       data: dates,
       axisLine: {
         lineStyle: {
-          color: '#303030'
+          color: '#707070'
         }
       },
       axisLabel: {
-        color: '#888',
+        color: '#ccc',
         fontSize: 11,
         rotate: dates.length > 15 ? 45 : 0
       }
@@ -727,11 +764,11 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
       type: 'value',
       axisLine: {
         lineStyle: {
-          color: '#303030'
+          color: '#707070'
         }
       },
       axisLabel: {
-        color: '#888',
+        color: '#ccc',
         formatter: (value: number) => {
           if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
           if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
@@ -740,7 +777,7 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
       },
       splitLine: {
         lineStyle: {
-          color: '#303030',
+          color: '#707070',
           type: 'dashed'
         }
       }
@@ -751,15 +788,15 @@ export function DailySalesChart({ transactions }: DailySalesChartProps) {
         type: 'bar',
         data: revenues,
         itemStyle: {
-          color: 'rgba(255, 255, 255, 0.18)',
-          borderColor: 'rgba(255, 255, 255, 0.2)',
+          color: barColor,
+          borderColor: barBorderColor,
           borderWidth: 1,
           borderRadius: [6, 6, 0, 0]
         },
         emphasis: {
           itemStyle: {
-            color: 'rgba(255, 255, 255, 0.28)',
-            borderColor: 'rgba(255, 255, 255, 0.3)'
+            color: barEmphasisColor,
+            borderColor: barBorderColor
           }
         }
       }

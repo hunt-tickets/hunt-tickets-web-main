@@ -265,6 +265,15 @@ export async function getCompleteEventTransactions(eventId: string) {
     isAdmin = profile?.admin === true;
   }
 
+  // Get event name
+  const { data: event } = await supabase
+    .from('events')
+    .select('name')
+    .eq('id', eventId)
+    .single();
+
+  const eventName = event?.name || 'Evento sin nombre';
+
   // Helper function to fetch all transactions with complete data
   async function fetchCompleteTransactions(tableName: string, source: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -437,6 +446,7 @@ export async function getCompleteEventTransactions(eventId: string) {
       user_fullname: tx.user ? formatName(tx.user.name, tx.user.lastName) : '',
       user_email: tx.user?.email || '',
       ticket_name: ticketName,
+      event_name: eventName,
       quantity: tx.quantity,
       price: tx.price,
       variable_fee: tx.variable_fee,

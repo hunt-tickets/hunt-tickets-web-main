@@ -2,7 +2,7 @@
 
 import { useState, Fragment } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, GripVertical, Edit2, Plus, X, Lock } from "lucide-react";
+import { Users, GripVertical, Edit2, Plus, X, Lock, UserCog, ShoppingCart, Music } from "lucide-react";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { Input } from "@/components/ui/input";
@@ -141,6 +141,7 @@ export function EventTeamContent({
   eventStartDate,
   eventEndDate,
 }: EventTeamContentProps) {
+  const [activeTab, setActiveTab] = useState<"productores" | "vendedores" | "artistas">("productores");
   const [schedule, setSchedule] = useState<ScheduleSlot[]>([]);
   const [draggedArtist, setDraggedArtist] = useState<Artist | null>(null);
   const [draggedSlot, setDraggedSlot] = useState<ScheduleSlot | null>(null);
@@ -568,8 +569,46 @@ export function EventTeamContent({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setActiveTab("productores")}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+            activeTab === "productores"
+              ? "bg-white/10 text-white border border-white/20"
+              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+          }`}
+        >
+          <UserCog className="h-4 w-4" />
+          Productores
+        </button>
+        <button
+          onClick={() => setActiveTab("vendedores")}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+            activeTab === "vendedores"
+              ? "bg-white/10 text-white border border-white/20"
+              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+          }`}
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Vendedores
+        </button>
+        <button
+          onClick={() => setActiveTab("artistas")}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+            activeTab === "artistas"
+              ? "bg-white/10 text-white border border-white/20"
+              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+          }`}
+        >
+          <Music className="h-4 w-4" />
+          Artistas
+        </button>
+      </div>
+
       {/* Producers Section */}
+      {activeTab === "productores" && (
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -636,8 +675,10 @@ export function EventTeamContent({
           </div>
         )}
       </div>
+      )}
 
       {/* Sellers Section */}
+      {activeTab === "vendedores" && (
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -704,8 +745,10 @@ export function EventTeamContent({
           </div>
         )}
       </div>
+      )}
 
       {/* Artists Section */}
+      {activeTab === "artistas" && (
       <div>
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Artistas, Performers, Speakers, DJs, Conferencistas</h3>
@@ -1136,6 +1179,7 @@ export function EventTeamContent({
             </div>
         </div>
       </div>
+      )}
 
       {/* Edit Slot Dialog */}
       <Dialog open={!!editingSlot} onOpenChange={(open) => !open && setEditingSlot(null)}>

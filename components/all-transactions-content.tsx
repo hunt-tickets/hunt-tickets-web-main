@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Receipt, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,29 @@ export function AllTransactionsContent({ transactions }: AllTransactionsContentP
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "qr-discrepancies">("all");
   const itemsPerPage = 50;
+  const savedScrollPosition = useRef<number>(0);
+
+  // Save scroll position when opening transaction details
+  useEffect(() => {
+    if (selectedTransaction) {
+      // Save current scroll position when opening the sidebar
+      savedScrollPosition.current = window.scrollY;
+      // Prevent body scrolling when sidebar is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = '';
+      // Restore scroll position when closing the sidebar
+      if (savedScrollPosition.current > 0) {
+        window.scrollTo(0, savedScrollPosition.current);
+      }
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedTransaction]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {

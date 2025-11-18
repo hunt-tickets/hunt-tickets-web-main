@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Receipt, Download, MoreVertical, Mail, Edit } from "lucide-react";
+import { Receipt, Download, MoreVertical, Mail, Edit, ShoppingCart, Smartphone, Globe, Banknote } from "lucide-react";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -42,6 +42,7 @@ interface CompleteTransaction {
   user_fullname: string;
   user_email: string;
   ticket_name: string;
+  event_name: string;
   quantity: number;
   price: number;
   variable_fee: number;
@@ -156,7 +157,7 @@ export function EventTransactionsContent({
       'Diferencia Total',
     ] : [];
 
-    const headers = [...baseHeaders, ...adminHeaders];
+    const headers = [...baseHeaders, ...adminHeaders, 'Nombre del Evento'];
 
     const rows = completeTransactions.map(t => {
       const baseRow = [
@@ -205,7 +206,7 @@ export function EventTransactionsContent({
           : 'N/A',
       ] : [];
 
-      return [...baseRow, ...adminRow];
+      return [...baseRow, ...adminRow, t.event_name || 'N/A'];
     });
 
     // Add BOM for proper UTF-8 encoding in Excel
@@ -231,40 +232,76 @@ export function EventTransactionsContent({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-4">
+      {/* Stats Summary */}
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
+        <Card className="bg-white/[0.02] border-white/10">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <ShoppingCart className="h-3.5 w-3.5 text-white/40" />
+              <span className="text-xs text-white/40 uppercase tracking-wider">
+                Total Transacciones
+              </span>
+            </div>
+            <div className="text-2xl font-bold mb-1">{transactions.length.toLocaleString('es-CO')}</div>
+            <p className="text-xs text-white/30">Todas las ventas</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/[0.02] border-white/10">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Smartphone className="h-3.5 w-3.5 text-white/40" />
+              <span className="text-xs text-white/40 uppercase tracking-wider">
+                Por App
+              </span>
+            </div>
+            <div className="text-2xl font-bold mb-1">{transactions.filter(t => t.source === 'app').length.toLocaleString('es-CO')}</div>
+            <p className="text-xs text-white/30">Aplicación móvil</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/[0.02] border-white/10">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Globe className="h-3.5 w-3.5 text-white/40" />
+              <span className="text-xs text-white/40 uppercase tracking-wider">
+                Por Web
+              </span>
+            </div>
+            <div className="text-2xl font-bold mb-1">{transactions.filter(t => t.source === 'web').length.toLocaleString('es-CO')}</div>
+            <p className="text-xs text-white/30">Sitio web</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/[0.02] border-white/10">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Banknote className="h-3.5 w-3.5 text-white/40" />
+              <span className="text-xs text-white/40 uppercase tracking-wider">
+                En Efectivo
+              </span>
+            </div>
+            <div className="text-2xl font-bold mb-1">{transactions.filter(t => t.source === 'cash').length.toLocaleString('es-CO')}</div>
+            <p className="text-xs text-white/30">Ventas en efectivo</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Transacciones del Evento</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-base font-semibold">Transacciones del Evento</h3>
+          <p className="text-xs text-white/40 mt-1">
             {transactions.length.toLocaleString('es-CO')} transaccion{transactions.length !== 1 ? 'es' : ''} registrada{transactions.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={handleDownloadCSV}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-full transition-all bg-white/90 hover:bg-white text-black border border-white/80"
         >
-          <Download className="h-4 w-4" />
-          Descargar
+          Descargar CSV
+          <Download className="h-3.5 w-3.5" />
         </button>
-      </div>
-
-      {/* Stats Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-xs text-white/40 mb-1">Total Transacciones</div>
-          <div className="text-2xl font-bold">{transactions.length.toLocaleString('es-CO')}</div>
-        </div>
-        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-xs text-white/40 mb-1">Por App</div>
-          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'app').length.toLocaleString('es-CO')}</div>
-        </div>
-        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-xs text-white/40 mb-1">Por Web</div>
-          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'web').length.toLocaleString('es-CO')}</div>
-        </div>
-        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-xs text-white/40 mb-1">En Efectivo</div>
-          <div className="text-2xl font-bold">{transactions.filter(t => t.source === 'cash').length.toLocaleString('es-CO')}</div>
-        </div>
       </div>
 
       {/* Transactions Table */}

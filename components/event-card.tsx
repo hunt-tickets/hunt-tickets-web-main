@@ -10,6 +10,7 @@ interface EventCardProps {
   location: string;
   image: string;
   href?: string; // Optional custom URL (defaults to /eventos/{id})
+  onClick?: () => void; // Optional callback when card is clicked
 }
 
 export function EventCard({
@@ -19,6 +20,7 @@ export function EventCard({
   location,
   image,
   href,
+  onClick,
 }: EventCardProps) {
   // Parse date and convert from UTC to browser's timezone
   // Handle multiple formats: "2025-11-15 20:00:00+00", "2025-11-15T20:00:00Z", or "2025-11-15"
@@ -49,7 +51,11 @@ export function EventCard({
   const month = localDate.toLocaleDateString('es-ES', { month: 'short' });
 
   return (
-    <Link href={href || `/eventos/${id}`} className="block">
+    <Link
+      href={href || `/eventos/${id}`}
+      className="block"
+      onClick={onClick}
+    >
       <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden group cursor-pointer bg-white/8 border border-white/10 hover:border-white/20 backdrop-blur-sm">
         {/* Event image with hover effect */}
         <Image

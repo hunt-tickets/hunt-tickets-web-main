@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Filter } from "lucide-react";
 import { EnhancedSearchBar } from "@/components/enhanced-search-bar";
 import { EventCard } from "@/components/event-card";
@@ -18,8 +18,28 @@ interface AdminEventsListProps {
   eventVenues?: VenueOption[];
 }
 
+const SCROLL_POSITION_KEY = 'admin-events-list-scroll';
+
 export function AdminEventsList({ events, userId, eventVenues = [] }: AdminEventsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Restore scroll position when component mounts
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem(SCROLL_POSITION_KEY);
+    if (savedScrollPosition) {
+      // Use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+        // Clear the saved position after restoring
+        sessionStorage.removeItem(SCROLL_POSITION_KEY);
+      }, 0);
+    }
+  }, []);
+
+  // Save scroll position before navigating
+  const handleEventClick = () => {
+    sessionStorage.setItem(SCROLL_POSITION_KEY, window.scrollY.toString());
+  };
 
   // Efficient client-side filtering using useMemo
   const filteredEvents = useMemo(() => {
@@ -56,6 +76,7 @@ export function AdminEventsList({ events, userId, eventVenues = [] }: AdminEvent
               location={`${event.venue_name}, ${event.venue_city}`}
               image={event.flyer}
               href={`/profile/${userId}/administrador/event/${event.id}`}
+              onClick={handleEventClick}
             />
           ))}
         </div>
