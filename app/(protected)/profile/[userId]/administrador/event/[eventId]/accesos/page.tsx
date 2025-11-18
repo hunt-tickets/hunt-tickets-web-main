@@ -2,7 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventAccessControl } from "@/lib/supabase/actions/access-control";
 import { EventAccessControlContent } from "@/components/event-access-control-content";
-import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface AccesosPageProps {
   params: Promise<{
@@ -57,7 +57,7 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeaderWrapper
+      <EventStickyHeader
         eventName={event.name}
         subtitle="Control de Acceso"
       >
@@ -66,7 +66,7 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
           transactionsWithoutQR={accessData?.transactionsMissingQR || []}
           showTabsOnly
         />
-      </EventStickyHeaderWrapper>
+      </EventStickyHeader>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">

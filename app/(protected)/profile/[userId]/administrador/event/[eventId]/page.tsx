@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { getEventFinancialReport } from "@/lib/actions/events";
 import { getCompleteEventTransactions, getEventTickets, getTicketsSalesAnalytics } from "@/lib/supabase/actions/tickets";
 import { EventDashboardTabs } from "@/components/event-dashboard-tabs";
-import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface EventPageProps {
   params: Promise<{
@@ -108,7 +108,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
   return (
     <>
       {/* Sticky Header with Tabs */}
-      <EventStickyHeaderWrapper
+      <EventStickyHeader
         eventName={event.name}
         subtitle={new Date(financialReport.timestamp).toLocaleString("es-CO", {
           dateStyle: "short",
@@ -124,7 +124,7 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
           eventFlyer={event.flyer || '/placeholder.svg'}
           showTabsOnly
         />
-      </EventStickyHeaderWrapper>
+      </EventStickyHeader>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">

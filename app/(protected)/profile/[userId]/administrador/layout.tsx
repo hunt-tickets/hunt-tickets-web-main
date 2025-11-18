@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { AdminSidebar } from "@/components/admin-sidebar";
+import { AdminLayoutWrapper } from "@/components/admin-layout-wrapper";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,15 +20,17 @@ const AdministradorLayout = async ({ children, params }: AdministradorLayoutProp
   const { userId } = await params;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Sidebar */}
-      <AdminSidebar userId={userId} />
+    <AdminLayoutWrapper>
+      <div className="min-h-screen bg-background">
+        {/* Sidebar */}
+        <AdminSidebar userId={userId} />
 
-      {/* Main Content - with left margin to accommodate fixed sidebar */}
-      <main className="lg:ml-64 min-h-screen">
-        {children}
-      </main>
-    </div>
+        {/* Main Content - with left margin to accommodate fixed sidebar */}
+        <main className="lg:ml-64 min-h-screen">
+          {children}
+        </main>
+      </div>
+    </AdminLayoutWrapper>
   );
 };
 

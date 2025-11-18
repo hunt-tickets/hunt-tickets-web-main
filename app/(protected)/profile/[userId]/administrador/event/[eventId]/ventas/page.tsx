@@ -2,7 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCompleteEventTransactions } from "@/lib/supabase/actions/tickets";
 import { EventSalesContent } from "@/components/event-sales-content";
-import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface VentasPageProps {
   params: Promise<{
@@ -57,7 +57,7 @@ export default async function VentasPage({ params }: VentasPageProps) {
   return (
     <>
       {/* Sticky Header with Tabs */}
-      <EventStickyHeaderWrapper
+      <EventStickyHeader
         eventName={event.name}
         subtitle="Gestión de ventas"
       >
@@ -68,7 +68,7 @@ export default async function VentasPage({ params }: VentasPageProps) {
           isAdmin={profile?.admin || false}
           showTabsOnly
         />
-      </EventStickyHeaderWrapper>
+      </EventStickyHeader>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">

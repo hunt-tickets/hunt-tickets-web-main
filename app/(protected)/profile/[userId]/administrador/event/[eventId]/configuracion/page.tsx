@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { EventConfigContent } from "@/components/event-config-content";
-import { EventStickyHeaderWrapper } from "@/components/event-sticky-header-wrapper";
+import { EventStickyHeader } from "@/components/event-sticky-header";
 
 interface ConfiguracionPageProps {
   params: Promise<{
@@ -51,12 +51,12 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
   return (
     <>
       {/* Sticky Header */}
-      <EventStickyHeaderWrapper
+      <EventStickyHeader
         eventName={event.name}
         subtitle="Configuración del Evento"
       >
         <EventConfigContent showTabsOnly />
-      </EventStickyHeaderWrapper>
+      </EventStickyHeader>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">

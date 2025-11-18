@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Settings, ArrowLeft, Menu, X, UserCircle, Tag, Gift } from "lucide-react";
-import { useState } from "react";
+import { Calendar, Settings, ArrowLeft, UserCircle, Tag, Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAdminMenu } from "@/contexts/admin-menu-context";
 
 interface AdminSidebarProps {
   userId: string;
@@ -54,23 +54,10 @@ const adminMenuItems = [
 
 export function AdminSidebar({ userId }: AdminSidebarProps) {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isMobileMenuOpen, setIsMobileMenuOpen } = useAdminMenu();
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-full bg-[#202020] border border-[#303030] hover:bg-[#2a2a2a] transition-colors"
-        aria-label="Toggle menu"
-      >
-        {isMobileMenuOpen ? (
-          <X className="h-5 w-5" />
-        ) : (
-          <Menu className="h-5 w-5" />
-        )}
-      </button>
-
       {/* Overlay for mobile */}
       {isMobileMenuOpen && (
         <div
