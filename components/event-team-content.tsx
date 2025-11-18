@@ -68,6 +68,8 @@ interface EventTeamContentProps {
   allSellers?: AllProducer[];
   eventStartDate: string;
   eventEndDate: string;
+  showTabsOnly?: boolean;
+  showContentOnly?: boolean;
 }
 
 interface ScheduleSlot {
@@ -140,6 +142,8 @@ export function EventTeamContent({
   allSellers = [],
   eventStartDate,
   eventEndDate,
+  showTabsOnly = false,
+  showContentOnly = false,
 }: EventTeamContentProps) {
   const [activeTab, setActiveTab] = useState<"productores" | "vendedores" | "artistas">("productores");
   const [schedule, setSchedule] = useState<ScheduleSlot[]>([]);
@@ -568,44 +572,48 @@ export function EventTeamContent({
     );
   };
 
-  return (
+  // Tabs section
+  const tabsSection = (
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+      <button
+        onClick={() => setActiveTab("productores")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "productores"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <UserCog className="h-4 w-4" />
+        Productores
+      </button>
+      <button
+        onClick={() => setActiveTab("vendedores")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "vendedores"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <ShoppingCart className="h-4 w-4" />
+        Vendedores
+      </button>
+      <button
+        onClick={() => setActiveTab("artistas")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          activeTab === "artistas"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <Music className="h-4 w-4" />
+        Artistas
+      </button>
+    </div>
+  );
+
+  // Content section
+  const contentSection = (
     <div className="space-y-4">
-      {/* Tabs */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setActiveTab("productores")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-            activeTab === "productores"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <UserCog className="h-4 w-4" />
-          Productores
-        </button>
-        <button
-          onClick={() => setActiveTab("vendedores")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-            activeTab === "vendedores"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <ShoppingCart className="h-4 w-4" />
-          Vendedores
-        </button>
-        <button
-          onClick={() => setActiveTab("artistas")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-            activeTab === "artistas"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <Music className="h-4 w-4" />
-          Artistas
-        </button>
-      </div>
 
       {/* Producers Section */}
       {activeTab === "productores" && (
@@ -1296,6 +1304,23 @@ export function EventTeamContent({
           </div>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+
+  // Return based on mode
+  if (showTabsOnly) {
+    return tabsSection;
+  }
+
+  if (showContentOnly) {
+    return contentSection;
+  }
+
+  // Default: show both
+  return (
+    <div className="space-y-4">
+      {tabsSection}
+      {contentSection}
     </div>
   );
 }

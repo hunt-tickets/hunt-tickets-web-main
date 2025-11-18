@@ -55,11 +55,13 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
         eventName={event.name}
         eventStatus={event.status}
         subtitle="Configuración del Evento"
-      />
+      >
+        <EventConfigContent showTabsOnly />
+      </EventStickyHeader>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">
-        <EventConfigContent />
+        <EventConfigContent showContentOnly />
       </div>
     </>
   );

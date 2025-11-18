@@ -46,9 +46,11 @@ interface TransactionWithoutQR {
 interface EventAccessControlContentProps {
   qrCodes: QRCode[];
   transactionsWithoutQR: TransactionWithoutQR[];
+  showTabsOnly?: boolean;
+  showContentOnly?: boolean;
 }
 
-export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: EventAccessControlContentProps) {
+export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, showTabsOnly = false, showContentOnly = false }: EventAccessControlContentProps) {
   const [mainTab, setMainTab] = useState<"analytics" | "list">("analytics");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "scanned" | "pending" | "noqr">("all");
@@ -188,33 +190,37 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
     return result.sort((a, b) => b.total - a.total);
   }, [localQRCodes]);
 
-  return (
+  // Tabs section
+  const tabsSection = (
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+      <button
+        onClick={() => setMainTab("analytics")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          mainTab === "analytics"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <BarChart3 className="h-4 w-4" />
+        Analítica
+      </button>
+      <button
+        onClick={() => setMainTab("list")}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
+          mainTab === "list"
+            ? "bg-white/10 text-white border border-white/20"
+            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+        }`}
+      >
+        <List className="h-4 w-4" />
+        Lista
+      </button>
+    </div>
+  );
+
+  // Content section
+  const contentSection = (
     <div className="space-y-4">
-      {/* Main Tabs */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setMainTab("analytics")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-            mainTab === "analytics"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <BarChart3 className="h-4 w-4" />
-          Analítica
-        </button>
-        <button
-          onClick={() => setMainTab("list")}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all ${
-            mainTab === "list"
-              ? "bg-white/10 text-white border border-white/20"
-              : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-          }`}
-        >
-          <List className="h-4 w-4" />
-          Lista
-        </button>
-      </div>
 
       {/* Analytics Tab Content */}
       {mainTab === "analytics" && (
@@ -692,6 +698,23 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR }: Ev
       )}
         </div>
       )}
+    </div>
+  );
+
+  // Return based on mode
+  if (showTabsOnly) {
+    return tabsSection;
+  }
+
+  if (showContentOnly) {
+    return contentSection;
+  }
+
+  // Default: show both
+  return (
+    <div className="space-y-4">
+      {tabsSection}
+      {contentSection}
     </div>
   );
 }

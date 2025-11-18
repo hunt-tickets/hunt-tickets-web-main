@@ -29,7 +29,12 @@ import {
   MapPinned
 } from "lucide-react";
 
-export function EventConfigContent() {
+interface EventConfigContentProps {
+  showTabsOnly?: boolean;
+  showContentOnly?: boolean;
+}
+
+export function EventConfigContent({ showTabsOnly = false, showContentOnly = false }: EventConfigContentProps = {}) {
   const [formData, setFormData] = useState({
     eventName: "",
     description: "",
@@ -214,28 +219,32 @@ export function EventConfigContent() {
     setDragOverIndex(null);
   };
 
-  return (
+  // Tabs section
+  const tabsSection = (
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+              activeTab === tab.id
+                ? "bg-white/10 text-white border border-white/20"
+                : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+            }`}
+          >
+            <Icon className="h-4 w-4" />
+            {tab.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // Content section
+  const contentSection = (
     <div className="space-y-4">
-      {/* Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                activeTab === tab.id
-                  ? "bg-white/10 text-white border border-white/20"
-                  : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
 
       {/* Information Section */}
       {activeTab === "information" && (
@@ -1416,6 +1425,23 @@ export function EventConfigContent() {
           </Card>
         </div>
       )}
+    </div>
+  );
+
+  // Return based on mode
+  if (showTabsOnly) {
+    return tabsSection;
+  }
+
+  if (showContentOnly) {
+    return contentSection;
+  }
+
+  // Default: show both
+  return (
+    <div className="space-y-4">
+      {tabsSection}
+      {contentSection}
     </div>
   );
 }

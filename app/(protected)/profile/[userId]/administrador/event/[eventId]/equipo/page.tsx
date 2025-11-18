@@ -64,7 +64,18 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
         eventName={event.name}
         eventStatus={event.status}
         subtitle="Gestión de Equipo"
-      />
+      >
+        <EventTeamContent
+          eventId={eventId}
+          producers={producers || []}
+          artists={artists || []}
+          allProducers={allProducers || []}
+          allArtists={allArtists || []}
+          eventStartDate={event.date}
+          eventEndDate={event.end_date}
+          showTabsOnly
+        />
+      </EventStickyHeader>
 
       {/* Content */}
       <div className="px-3 py-3 sm:px-6 sm:py-4">
@@ -76,6 +87,7 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
           allArtists={allArtists || []}
           eventStartDate={event.date}
           eventEndDate={event.end_date}
+          showContentOnly
         />
       </div>
     </>
