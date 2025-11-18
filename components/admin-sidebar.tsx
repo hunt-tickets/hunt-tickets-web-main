@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, Settings, ArrowLeft, Menu, X, UserCircle, Calculator, Shield, Tag, Gift } from "lucide-react";
+import { Calendar, Settings, ArrowLeft, Menu, X, UserCircle, Tag, Gift } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -37,31 +37,10 @@ const primaryMenuItems = [
 
 const adminMenuItems = [
   {
-    title: "Contabilidad",
-    icon: Calculator,
-    href: "/administrador/contabilidad",
-    description: "Gestión contable y financiera",
-    exact: false,
-  },
-  {
-    title: "Seguridad",
-    icon: Shield,
-    href: "/administrador/seguridad",
-    description: "QR codes huérfanos y seguridad",
-    exact: true,
-  },
-  {
     title: "Usuarios",
     icon: UserCircle,
     href: "/administrador/usuarios",
     description: "Listado completo de usuarios",
-    exact: true,
-  },
-  {
-    title: "Administrar Perfiles",
-    icon: Users,
-    href: "/administrador/perfiles",
-    description: "Gestiona usuarios y perfiles",
     exact: true,
   },
   {
@@ -129,7 +108,7 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
               } else {
                 // For non-exact matches (like /administrador which should also match /administrador/event/[id])
                 if (item.href === "/administrador") {
-                  isActive = pathname.includes("/administrador") && !pathname.includes("/perfiles") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios") && !pathname.includes("/contabilidad") && !pathname.includes("/seguridad") && !pathname.includes("/marcas") && !pathname.includes("/referidos");
+                  isActive = pathname.includes("/administrador") && !pathname.includes("/configuracion") && !pathname.includes("/usuarios") && !pathname.includes("/marcas") && !pathname.includes("/referidos");
                 } else {
                   isActive = pathname.includes(item.href);
                 }
