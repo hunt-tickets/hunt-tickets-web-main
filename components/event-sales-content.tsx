@@ -1,10 +1,10 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { ShoppingCart, Users, Link } from "lucide-react";
 import { EventTransactionsContent } from "@/components/event-transactions-content";
 import { EventSellersContent } from "@/components/event-sellers-content";
 import { EventLinksContent } from "@/components/event-links-content";
+import { useEventTabs } from "@/contexts/event-tabs-context";
 
 interface Transaction {
   id: string;
@@ -101,19 +101,7 @@ export function EventSalesContent({
   showTabsOnly = false,
   showContentOnly = false,
 }: EventSalesContentProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  // Get active tab from URL or default to "sellers"
-  const activeTab = (searchParams.get("salesTab") as "sellers" | "transactions" | "links") || "sellers";
-
-  // Function to update tab in URL
-  const setActiveTab = (tab: "sellers" | "transactions" | "links") => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("salesTab", tab);
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const { salesTab: activeTab, setSalesTab: setActiveTab } = useEventTabs();
 
   // Transform transactions for EventTransactionsContent
   const simpleTransactions = transactions.map((t) => ({

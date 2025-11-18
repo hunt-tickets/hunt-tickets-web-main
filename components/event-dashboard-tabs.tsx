@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { BarChart3, FileSpreadsheet, Globe } from "lucide-react";
 import { EventDashboard } from "@/components/event-dashboard";
 import { EventBorderaux } from "@/components/event-borderaux";
 import { EventWebAnalytics } from "@/components/event-web-analytics";
+import { useEventTabs } from "@/contexts/event-tabs-context";
 
 interface Transaction {
   id: string;
@@ -76,20 +75,7 @@ export function EventDashboardTabs({
   showTabsOnly = false,
   showContentOnly = false,
 }: EventDashboardTabsProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  // Get active tab from URL or default to "dashboard"
-  const activeTab = (searchParams.get("tab") as "dashboard" | "borderaux" | "web") || "dashboard";
-  const [chartColor, setChartColor] = useState<string>("gray");
-
-  // Function to update tab in URL
-  const setActiveTab = (tab: "dashboard" | "borderaux" | "web") => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", tab);
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const { dashboardTab: activeTab, setDashboardTab: setActiveTab, chartColor, setChartColor } = useEventTabs();
 
   const colorOptions = [
     { name: "Sin color", value: "gray", colors: ["#71717a", "#737373", "#78716c", "#6b7280", "#64748b"] },

@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { EventSidebar } from "@/components/event-sidebar";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { EventLayoutWrapper } from "@/components/event-layout-wrapper";
 
 interface EventLayoutProps {
   children: ReactNode;
@@ -27,15 +28,17 @@ const EventLayout = async ({ children, params }: EventLayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Event Sidebar */}
-      <EventSidebar userId={userId} eventId={eventId} eventName={event.name} />
+    <EventLayoutWrapper>
+      <div className="min-h-screen bg-background">
+        {/* Event Sidebar */}
+        <EventSidebar userId={userId} eventId={eventId} eventName={event.name} />
 
-      {/* Main Content - with left margin to accommodate fixed sidebar */}
-      <main className="lg:ml-64 min-h-screen">
-        {children}
-      </main>
-    </div>
+        {/* Main Content - with left margin to accommodate fixed sidebar */}
+        <main className="lg:ml-64 min-h-screen">
+          {children}
+        </main>
+      </div>
+    </EventLayoutWrapper>
   );
 };
 
