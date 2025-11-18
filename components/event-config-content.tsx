@@ -570,20 +570,20 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
               <div className="flex items-center gap-2">
                 <ImageIcon className="h-5 w-5 text-white/60" />
                 <div>
-                  <CardTitle>Banner Principal</CardTitle>
-                  <CardDescription>Imagen principal del evento</CardDescription>
+                  <CardTitle>Flyer del Evento</CardTitle>
+                  <CardDescription>Imagen principal del evento (formato póster vertical)</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-xs text-white/50">Recomendado: 1920x600px, máximo 5MB</p>
+              <p className="text-xs text-white/50">Recomendado: 900x1200px (ratio 3:4), máximo 5MB</p>
 
               {images.banner ? (
-                <div className="relative rounded-lg overflow-hidden border border-white/10 bg-white/5">
+                <div className="relative aspect-[3/4] max-w-xs rounded-lg overflow-hidden border border-white/10 bg-white/5">
                   <img
                     src={images.banner as string}
-                    alt="Banner preview"
-                    className="w-full h-48 object-cover"
+                    alt="Flyer preview"
+                    className="w-full h-full object-cover"
                   />
                   <Button
                     variant="destructive"
@@ -596,10 +596,11 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   </Button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <label className="flex flex-col items-center justify-center aspect-[3/4] max-w-xs border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
+                  <div className="flex flex-col items-center justify-center">
                     <Upload className="h-8 w-8 text-white/40 mb-2" />
-                    <p className="text-sm text-white/60">Haz clic o arrastra una imagen</p>
+                    <p className="text-sm text-white/60 text-center px-4">Haz clic o arrastra una imagen</p>
+                    <p className="text-xs text-white/40 mt-1">Formato vertical 3:4</p>
                   </div>
                   <input
                     type="file"
