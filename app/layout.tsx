@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { PageLoader } from "@/components/page-loader";
+import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import "./globals.css";
 
@@ -63,6 +64,7 @@ export default function RootLayout({
           <ConditionalLayout>
             {children}
           </ConditionalLayout>
+          <Analytics />
         </ThemeProvider>
 
         {/* Chatbase Widget */}
