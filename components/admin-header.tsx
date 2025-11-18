@@ -22,7 +22,7 @@ export function AdminHeader({
       {/* Header */}
       <div className="flex items-start gap-3 mb-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {title}
           </h1>
           {subtitle && (
