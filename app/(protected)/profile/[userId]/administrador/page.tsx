@@ -203,7 +203,7 @@ const AdministradorPage = async ({ params }: AdministradorPageProps) => {
   const userEvents: EventFull[] = sortedEvents.map((item) => item.eventData);
 
   return (
-    <div className="space-y-6">
+    <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
       {/* Page Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>

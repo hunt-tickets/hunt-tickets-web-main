@@ -33,7 +33,7 @@ const ConfiguracionPage = async ({ params }: ConfiguracionPageProps) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-4">
       {/* Page Header */}
       <div>
         <h1 className="text-xl font-bold sm:text-2xl">CONFIGURACIÓN</h1>

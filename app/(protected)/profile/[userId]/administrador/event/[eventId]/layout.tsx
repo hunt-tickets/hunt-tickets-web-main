@@ -27,7 +27,7 @@ const EventLayout = async ({ children, params }: EventLayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background -m-6">
+    <div className="min-h-screen bg-background">
       {/* Event Sidebar */}
       <EventSidebar userId={userId} eventId={eventId} eventName={event.name} />
 

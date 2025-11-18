@@ -51,7 +51,7 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
 
   if (error) {
     return (
-      <div className="space-y-6">
+      <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
             USUARIOS
@@ -74,7 +74,7 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
   const usersWithPhone = users?.filter(u => u.phone).length || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
       {/* Page Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
