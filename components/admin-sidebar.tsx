@@ -107,10 +107,10 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
                   href={fullHref}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm relative",
+                    "flex items-center gap-3 px-4 py-2 rounded-full transition-all text-sm font-medium",
                     isActive
-                      ? "bg-primary/10 text-white border-l-2 border-primary"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                      ? "bg-white/10 text-white border border-white/20"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
                   )}
                 >
                   <Icon className="h-4 w-4 flex-shrink-0" />
@@ -148,10 +148,10 @@ export function AdminSidebar({ userId }: AdminSidebarProps) {
                   href={fullHref}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm relative",
+                    "flex items-center gap-3 px-4 py-2 rounded-full transition-all text-sm font-medium",
                     isActive
-                      ? "bg-primary/10 text-white border-l-2 border-primary"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                      ? "bg-white/10 text-white border border-white/20"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
                   )}
                 >
                   <Icon className="h-4 w-4 flex-shrink-0" />
