@@ -263,15 +263,14 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
 
           {/* Breakdown by Ticket Type */}
           {ticketBreakdown.length > 0 && (
-            <Card className="bg-white/[0.02] border-white/5">
-              <CardContent className="p-6">
+            <>
+              {/* Mobile View - Outside Card */}
+              <div className="md:hidden">
                 <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
                   <BarChart3 className="h-4 w-4 text-white/60" />
                   Desglose por Tipo de Entrada
                 </h3>
-
-                {/* Mobile Card View */}
-                <div className="md:hidden space-y-4">
+                <div className="space-y-4">
                   {ticketBreakdown.map((ticket) => (
                     <div
                       key={ticket.name}
@@ -328,81 +327,89 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
                     </div>
                   ))}
                 </div>
+              </div>
 
-                {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-white/5">
-                        <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Entrada</th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Total</th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Escaneadas</th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Pendientes</th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">% Escaneo</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Progreso</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {ticketBreakdown.map((ticket) => (
-                        <tr
-                          key={ticket.name}
-                          className="hover:bg-white/[0.02] transition-colors"
-                        >
-                          <td className="px-4 py-3 text-sm font-medium text-white/90">
-                            {ticket.name}
-                          </td>
-                          <td className="px-4 py-3 text-sm text-center">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-white/10 text-white/80">
-                              {ticket.total}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-center">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-400">
-                              {ticket.scanned}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-center">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-yellow-500/10 text-yellow-400">
-                              {ticket.pending}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-center">
-                            <span className={`inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ${
-                              ticket.scanRate >= 80
-                                ? 'bg-green-500/20 text-green-400'
-                                : ticket.scanRate >= 50
-                                ? 'bg-yellow-500/20 text-yellow-400'
-                                : 'bg-red-500/20 text-red-400'
-                            }`}>
-                              {ticket.scanRate.toFixed(1)}%
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="w-full">
-                              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full rounded-full transition-all duration-500 ${
-                                    ticket.scanRate >= 80
-                                      ? 'bg-green-500'
-                                      : ticket.scanRate >= 50
-                                      ? 'bg-yellow-500'
-                                      : 'bg-red-500'
-                                  }`}
-                                  style={{ width: `${ticket.scanRate}%` }}
-                                />
-                              </div>
-                              <div className="flex justify-between mt-1 text-xs text-white/40">
-                                <span>{ticket.scanned} de {ticket.total}</span>
-                              </div>
-                            </div>
-                          </td>
+              {/* Desktop View - Inside Card */}
+              <Card className="hidden md:block bg-white/[0.02] border-white/5">
+                <CardContent className="p-6">
+                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4 text-white/60" />
+                    Desglose por Tipo de Entrada
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-white/5">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Entrada</th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Total</th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Escaneadas</th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">Pendientes</th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-white/40 uppercase tracking-wider">% Escaneo</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">Progreso</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {ticketBreakdown.map((ticket) => (
+                          <tr
+                            key={ticket.name}
+                            className="hover:bg-white/[0.02] transition-colors"
+                          >
+                            <td className="px-4 py-3 text-sm font-medium text-white/90">
+                              {ticket.name}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-center">
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-white/10 text-white/80">
+                                {ticket.total}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-center">
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-400">
+                                {ticket.scanned}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-center">
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-yellow-500/10 text-yellow-400">
+                                {ticket.pending}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-center">
+                              <span className={`inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ${
+                                ticket.scanRate >= 80
+                                  ? 'bg-green-500/20 text-green-400'
+                                  : ticket.scanRate >= 50
+                                  ? 'bg-yellow-500/20 text-yellow-400'
+                                  : 'bg-red-500/20 text-red-400'
+                              }`}>
+                                {ticket.scanRate.toFixed(1)}%
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="w-full">
+                                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full transition-all duration-500 ${
+                                      ticket.scanRate >= 80
+                                        ? 'bg-green-500'
+                                        : ticket.scanRate >= 50
+                                        ? 'bg-yellow-500'
+                                        : 'bg-red-500'
+                                    }`}
+                                    style={{ width: `${ticket.scanRate}%` }}
+                                  />
+                                </div>
+                                <div className="flex justify-between mt-1 text-xs text-white/40">
+                                  <span>{ticket.scanned} de {ticket.total}</span>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
           )}
 
           {/* Transactions without QR - Analytics View */}
