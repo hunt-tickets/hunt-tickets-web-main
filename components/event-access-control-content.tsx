@@ -234,8 +234,8 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
 
   // Tabs section
   const tabsSection = (
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex items-center gap-3">
+      <div className="flex gap-2 flex-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <button
           onClick={() => setMainTab("analytics")}
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
