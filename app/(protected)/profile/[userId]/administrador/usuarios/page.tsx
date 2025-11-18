@@ -10,6 +10,7 @@ import {
 import { UserCircle, Users, Shield } from "lucide-react";
 import { UsersTable } from "@/components/users-table";
 import { AnalyticsCharts } from "@/components/analytics-charts";
+import { AdminHeader } from "@/components/admin-header";
 
 interface UsuariosPageProps {
   params: Promise<{
@@ -52,14 +53,10 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
   if (error) {
     return (
       <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
-            USUARIOS
-          </h1>
-          <p className="text-[#404040] mt-1 text-sm sm:text-base">
-            Listado completo de usuarios del sistema
-          </p>
-        </div>
+        <AdminHeader
+          title="USUARIOS"
+          subtitle="Listado completo de usuarios del sistema"
+        />
         <Card className="bg-background/50 backdrop-blur-sm border-[#303030]">
           <CardContent className="py-12 text-center">
             <p className="text-red-500">{error}</p>
@@ -76,14 +73,10 @@ const UsuariosPage = async ({ params }: UsuariosPageProps) => {
   return (
     <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
-          USUARIOS
-        </h1>
-        <p className="text-[#404040] mt-1 text-sm sm:text-base">
-          Listado completo de usuarios del sistema
-        </p>
-      </div>
+      <AdminHeader
+        title="USUARIOS"
+        subtitle="Listado completo de usuarios del sistema"
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

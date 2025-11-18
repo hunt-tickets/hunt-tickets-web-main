@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ConfiguracionTabs } from "@/components/configuracion-tabs";
+import { AdminHeader } from "@/components/admin-header";
 
 interface ConfiguracionPageProps {
   params: Promise<{
@@ -35,12 +36,10 @@ const ConfiguracionPage = async ({ params }: ConfiguracionPageProps) => {
   return (
     <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-4">
       {/* Page Header */}
-      <div>
-        <h1 className="text-xl font-bold sm:text-2xl">CONFIGURACIÓN</h1>
-        <p className="text-xs text-muted-foreground">
-          Administra la configuración del sistema
-        </p>
-      </div>
+      <AdminHeader
+        title="CONFIGURACIÓN"
+        subtitle="Administra la configuración del sistema"
+      />
 
       {/* Configuration Tabs */}
       <ConfiguracionTabs />

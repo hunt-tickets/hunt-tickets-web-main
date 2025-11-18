@@ -8,6 +8,7 @@ import { Calendar } from "lucide-react";
 import { getVenues } from "@/lib/supabase/queries/server/venues";
 import { AdminEventsList } from "@/components/admin-events-list";
 import { CreateEventDialog } from "@/components/create-event-dialog";
+import { AdminHeader } from "@/components/admin-header";
 import type { EventFull } from "@/lib/supabase/types";
 import { Metadata } from "next";
 
@@ -205,14 +206,10 @@ const AdministradorPage = async ({ params }: AdministradorPageProps) => {
   return (
     <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ fontFamily: 'LOT, sans-serif' }}>
-          ADMINISTRAR EVENTOS
-        </h1>
-        <p className="text-gray-400 mt-1 text-sm sm:text-base">
-          Crea y gestiona tus eventos
-        </p>
-      </div>
+      <AdminHeader
+        title="ADMINISTRAR EVENTOS"
+        subtitle="Crea y gestiona tus eventos"
+      />
 
 
       {/* User Events */}

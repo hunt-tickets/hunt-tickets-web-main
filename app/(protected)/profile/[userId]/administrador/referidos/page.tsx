@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ReferralAdminContent } from "@/components/referral-admin-content";
+import { AdminHeader } from "@/components/admin-header";
 
 interface ReferidosPageProps {
   params: Promise<{
@@ -38,14 +39,10 @@ export default async function ReferidosPage({ params }: ReferidosPageProps) {
   return (
     <div className="px-3 py-3 sm:px-6 sm:py-6 space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold sm:text-2xl">Programa de Referidos</h1>
-          <p className="text-xs text-muted-foreground">
-            Invita productores y gana comisiones por sus ventas
-          </p>
-        </div>
-      </div>
+      <AdminHeader
+        title="PROGRAMA DE REFERIDOS"
+        subtitle="Invita productores y gana comisiones por sus ventas"
+      />
 
       {/* Content */}
       <ReferralAdminContent userId={userId} />
