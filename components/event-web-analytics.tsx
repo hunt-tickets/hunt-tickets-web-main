@@ -179,7 +179,7 @@ export function EventWebAnalytics({
       </Card>
 
       {/* Analytics Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {/* Total Visits */}
         <Card className="bg-white/[0.02] border-white/10">
           <CardContent className="p-5">
