@@ -10,15 +10,11 @@ import { Button } from "@/components/ui/button";
 import {
   Settings,
   Image as ImageIcon,
-  CreditCard,
   MapPin,
   Calendar,
   Upload,
   Trash2,
-  Eye,
-  EyeOff,
   DollarSign,
-  Percent,
   Wallet,
   HelpCircle,
   Plus,
@@ -119,10 +115,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     }
   }, [eventData]);
 
-  const [paymentConfig, setPaymentConfig] = useState({
-    mercadopagoKey: "",
-  });
-
   const [huntCosts, setHuntCosts] = useState({
     commissionPercentage: 8,
     costPerTicket: 500,
@@ -135,10 +127,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
   }>({
     banner: null,
     logo: null,
-  });
-
-  const [showKeys, setShowKeys] = useState({
-    mercadopago: false,
   });
 
   const [walletConfig, setWalletConfig] = useState<{
@@ -174,7 +162,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
   const tabs = [
     { id: "information", label: "Información", icon: Settings },
     { id: "images", label: "Imágenes", icon: ImageIcon },
-    { id: "payment", label: "Pagos", icon: CreditCard },
     { id: "wallet", label: "Wallet", icon: Wallet },
     { id: "faqs", label: "FAQs", icon: HelpCircle },
   ];
@@ -184,22 +171,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }));
-  };
-
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPaymentConfig(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleHuntCostsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setHuntCosts(prev => ({
-      ...prev,
-      [name]: isNaN(Number(value)) ? value : Number(value)
     }));
   };
 
@@ -710,152 +681,6 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
             </div>
           </CardContent>
         </Card>
-      )}
-
-      {/* Payment Section */}
-      {activeTab === "payment" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Left Column - Mercado Pago */}
-          <Card className="bg-white/[0.02] border-white/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
-                Mercado Pago
-              </CardTitle>
-              <CardDescription>Conecta tu cuenta de Mercado Pago</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="mercadopagoKey" className="text-sm">Access Token</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="mercadopagoKey"
-                    name="mercadopagoKey"
-                    type={showKeys.mercadopago ? "text" : "password"}
-                    value={paymentConfig.mercadopagoKey}
-                    onChange={handlePaymentChange}
-                    placeholder="APP_USR-..."
-                    className="flex-1 h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowKeys(prev => ({ ...prev, mercadopago: !prev.mercadopago }))}
-                    className="rounded-lg h-11 px-3"
-                  >
-                    {showKeys.mercadopago ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-                <p className="text-xs text-white/60">
-                  Para obtener tu Access Token, visita tu cuenta de Mercado Pago en Configuración → Credenciales → Producción
-                </p>
-              </div>
-
-              <Button
-                onClick={() => handleSaveConfig("mercado-pago")}
-                className="w-full rounded-lg"
-              >
-                Guardar Mercado Pago
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Right Column - Hunt Costs */}
-          <Card className="bg-white/[0.02] border-white/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                Costos de Hunt
-              </CardTitle>
-              <CardDescription>Comisión y costos por ticket</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Commission Percentage */}
-              <div className="space-y-2">
-                <Label htmlFor="commissionPercentage" className="text-sm flex items-center gap-2">
-                  <Percent className="h-4 w-4" />
-                  Porcentaje de Comisión
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="commissionPercentage"
-                    name="commissionPercentage"
-                    type="number"
-                    value={huntCosts.commissionPercentage}
-                    onChange={handleHuntCostsChange}
-                    placeholder="8"
-                    className="flex-1 h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                  />
-                  <span className="flex items-center px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white/60">
-                    %
-                  </span>
-                </div>
-              </div>
-
-              {/* Cost Per Ticket */}
-              <div className="space-y-2">
-                <Label htmlFor="costPerTicket" className="text-sm flex items-center gap-2">
-                  <DollarSign className="h-4 w-4" />
-                  Costo por Ticket
-                </Label>
-                <div className="flex gap-2">
-                  <span className="flex items-center px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white/60 h-11">
-                    $
-                  </span>
-                  <Input
-                    id="costPerTicket"
-                    name="costPerTicket"
-                    type="number"
-                    value={huntCosts.costPerTicket}
-                    onChange={handleHuntCostsChange}
-                    placeholder="500"
-                    className="flex-1 h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors"
-                    min="0"
-                    step="100"
-                  />
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm">Descripción</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  value={huntCosts.description}
-                  onChange={handleHuntCostsChange}
-                  placeholder="Descripción de los costos"
-                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:border-white/20 focus:outline-none transition-colors min-h-[80px] resize-none"
-                />
-              </div>
-
-              {/* Summary */}
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/60">Comisión:</span>
-                  <span className="text-white font-medium">{huntCosts.commissionPercentage}%</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/60">Costo por ticket:</span>
-                  <span className="text-white font-medium">${huntCosts.costPerTicket.toLocaleString()}</span>
-                </div>
-              </div>
-
-              <Button
-                onClick={() => handleSaveConfig("costos-hunt")}
-                className="w-full rounded-lg"
-              >
-                Guardar Costos
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
       )}
 
       {/* Wallet Section */}
@@ -1451,22 +1276,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   <h3 className="text-lg font-semibold mb-2 text-white">
                     No hay preguntas frecuentes
                   </h3>
-                  <p className="text-sm text-white/40 max-w-md mx-auto mb-6">
+                  <p className="text-sm text-white/40 max-w-md mx-auto">
                     Crea preguntas frecuentes para ayudar a tus asistentes a resolver sus dudas rápidamente
                   </p>
-                  <Button
-                    onClick={() => {
-                      setIsAddingFaq(true);
-                      setEditingFaq(null);
-                      setNewQuestion("");
-                      setNewAnswer("");
-                    }}
-                    variant="outline"
-                    className="rounded-full border-white/10 hover:bg-white/5"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Crear Primera Pregunta
-                  </Button>
                 </div>
               ) : faqs.length > 0 ? (
                 <div className="space-y-0">
