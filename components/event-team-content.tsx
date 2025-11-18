@@ -2,7 +2,7 @@
 
 import { useState, Fragment } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, GripVertical, Edit2, Plus, X, Lock, UserCog, ShoppingCart, Music } from "lucide-react";
+import { Users, GripVertical, Edit2, Plus, X, Lock, UserCog, Music } from "lucide-react";
 import { AddProducerDialog } from "@/components/add-producer-dialog";
 import { AddArtistDialog } from "@/components/add-artist-dialog";
 import { Input } from "@/components/ui/input";
@@ -63,10 +63,8 @@ interface EventTeamContentProps {
   eventId: string;
   producers: Producer[];
   artists: Artist[];
-  sellers?: Producer[];
   allProducers: AllProducer[];
   allArtists: AllArtist[];
-  allSellers?: AllProducer[];
   eventStartDate: string;
   eventEndDate: string;
   showTabsOnly?: boolean;
@@ -137,10 +135,8 @@ export function EventTeamContent({
   eventId,
   producers,
   artists,
-  sellers = [],
   allProducers,
   allArtists,
-  allSellers = [],
   eventStartDate,
   eventEndDate,
   showTabsOnly = false,
@@ -588,17 +584,6 @@ export function EventTeamContent({
         Productores
       </button>
       <button
-        onClick={() => setActiveTab("vendedores")}
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-          activeTab === "vendedores"
-            ? "bg-white/10 text-white border border-white/20"
-            : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-        }`}
-      >
-        <ShoppingCart className="h-4 w-4" />
-        Vendedores
-      </button>
-      <button
         onClick={() => setActiveTab("artistas")}
         className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
           activeTab === "artistas"
@@ -675,76 +660,6 @@ export function EventTeamContent({
                       </h4>
                       <p className="text-sm text-white/40 font-medium">
                         Productor
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
-      )}
-
-      {/* Sellers Section */}
-      {activeTab === "vendedores" && (
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-semibold">Vendedores</h3>
-            <p className="text-sm text-muted-foreground">
-              {sellers.length} vendedor{sellers.length !== 1 ? 'es' : ''} asignado{sellers.length !== 1 ? 's' : ''}
-            </p>
-          </div>
-          <AddProducerDialog
-            eventId={eventId}
-            availableProducers={allSellers.filter(
-              ap => !sellers.some(s => s.producer.id === ap.id)
-            )}
-          />
-        </div>
-
-        {sellers.length === 0 ? (
-          <Card className="bg-white/[0.02] border-white/5">
-            <CardContent className="py-12 text-center">
-              <Users className="h-10 w-10 text-white/40 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-1 text-white">
-                No hay vendedores asignados
-              </h3>
-              <p className="text-sm text-white/40">
-                Asigna vendedores al evento para gestionar las ventas
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {sellers.map((item) => {
-              const seller = item.producer;
-              const displayName = seller.name || 'Sin nombre';
-
-              return (
-                <Card key={item.id} className="group relative overflow-hidden rounded-2xl bg-white/[0.02] backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
-                  <CardContent className="relative pt-8 pb-6">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="mb-4">
-                        {seller.logo ? (
-                          <img
-                            src={seller.logo}
-                            alt={displayName}
-                            className="w-20 h-20 rounded-xl object-cover ring-2 ring-white/10 group-hover:ring-white/15 transition-all duration-300"
-                          />
-                        ) : (
-                          <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center ring-2 ring-white/10 group-hover:ring-white/15 transition-all duration-300">
-                            <Users className="h-10 w-10 text-primary" />
-                          </div>
-                        )}
-                      </div>
-
-                      <h4 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors duration-300">
-                        {displayName}
-                      </h4>
-                      <p className="text-sm text-white/40 font-medium">
-                        Vendedor
                       </p>
                     </div>
                   </CardContent>
