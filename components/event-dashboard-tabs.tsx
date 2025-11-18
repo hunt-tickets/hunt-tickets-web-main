@@ -127,7 +127,7 @@ export function EventDashboardTabs({
         }`}
       >
         <FileSpreadsheet className="h-4 w-4" />
-        Borderaux
+        Cierre
       </button>
       <button
         onClick={() => setActiveTab("web")}
