@@ -374,7 +374,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   value={formData.eventName}
                   onChange={handleInputChange}
                   placeholder="ej. Festival de Música 2024"
-                  className="rounded-lg bg-white/5 border-white/10 h-11"
+                  className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                 />
               </div>
 
@@ -389,7 +389,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder="Describe tu evento, artistas, atracciones y todo lo que los asistentes deben saber..."
-                  className="rounded-lg bg-white/5 border-white/10 min-h-[140px] resize-none"
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors min-h-[140px] resize-none"
                 />
                 <p className="text-xs text-white/40">
                   Esta descripción será visible para todos los usuarios
@@ -401,17 +401,19 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                 <Label htmlFor="age" className="text-sm font-medium">
                   Edad Mínima
                 </Label>
-                <Input
+                <select
                   id="age"
                   name="age"
-                  type="number"
-                  min="0"
-                  max="99"
                   value={formData.age}
-                  onChange={(e) => setFormData(prev => ({ ...prev, age: parseInt(e.target.value) || 0 }))}
-                  placeholder="18"
-                  className="rounded-lg bg-white/5 border-white/10 h-11"
-                />
+                  onChange={(e) => setFormData(prev => ({ ...prev, age: parseInt(e.target.value) }))}
+                  className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
+                >
+                  <option value="0">Para todo público</option>
+                  <option value="12">12+</option>
+                  <option value="18">18+</option>
+                  <option value="21">21+</option>
+                  <option value="25">25+</option>
+                </select>
                 <p className="text-xs text-white/40">
                   Edad mínima requerida para asistir al evento
                 </p>
@@ -443,7 +445,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   value={formData.location}
                   onChange={handleInputChange}
                   placeholder="ej. Av. Principal 123, Auditorio Nacional"
-                  className="rounded-lg bg-white/5 border-white/10 h-11"
+                  className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                 />
               </div>
 
@@ -459,7 +461,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     value={formData.city}
                     onChange={handleInputChange}
                     placeholder="ej. Bogotá"
-                    className="rounded-lg bg-white/5 border-white/10 h-11"
+                    className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
@@ -472,7 +474,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     value={formData.country}
                     onChange={handleInputChange}
                     placeholder="ej. Colombia"
-                    className="rounded-lg bg-white/5 border-white/10 h-11"
+                    className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -503,7 +505,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     type="datetime-local"
                     value={formData.startDate}
                     onChange={handleInputChange}
-                    className="rounded-lg bg-white/5 border-white/10 h-11"
+                    className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
@@ -516,7 +518,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     type="datetime-local"
                     value={formData.endDate}
                     onChange={handleInputChange}
-                    className="rounded-lg bg-white/5 border-white/10 h-11"
+                    className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -733,13 +735,13 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     value={paymentConfig.mercadopagoKey}
                     onChange={handlePaymentChange}
                     placeholder="APP_USR-..."
-                    className="rounded-lg bg-white/5 border-white/10 flex-1"
+                    className="flex-1 h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                   />
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowKeys(prev => ({ ...prev, mercadopago: !prev.mercadopago }))}
-                    className="rounded-lg"
+                    className="rounded-lg h-11 px-3"
                   >
                     {showKeys.mercadopago ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
@@ -785,7 +787,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     value={huntCosts.commissionPercentage}
                     onChange={handleHuntCostsChange}
                     placeholder="8"
-                    className="rounded-lg bg-white/5 border-white/10 flex-1"
+                    className="flex-1 h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                     min="0"
                     max="100"
                     step="0.1"
@@ -803,7 +805,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   Costo por Ticket
                 </Label>
                 <div className="flex gap-2">
-                  <span className="flex items-center px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white/60">
+                  <span className="flex items-center px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white/60 h-11">
                     $
                   </span>
                   <Input
@@ -813,7 +815,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     value={huntCosts.costPerTicket}
                     onChange={handleHuntCostsChange}
                     placeholder="500"
-                    className="rounded-lg bg-white/5 border-white/10 flex-1"
+                    className="flex-1 h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                     min="0"
                     step="100"
                   />
@@ -829,7 +831,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                   value={huntCosts.description}
                   onChange={handleHuntCostsChange}
                   placeholder="Descripción de los costos"
-                  className="rounded-lg bg-white/5 border-white/10 min-h-[80px] text-sm"
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors min-h-[80px] resize-none"
                 />
               </div>
 
@@ -1377,7 +1379,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                           }
                         }}
                         placeholder="Ej: ¿Cómo puedo obtener mi ticket?"
-                        className="rounded-lg bg-white/5 border-white/10 focus:border-white/20 transition-colors h-11"
+                        className="w-full h-11 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1395,7 +1397,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                           }
                         }}
                         placeholder="Escribe una respuesta clara y concisa..."
-                        className="rounded-lg bg-white/5 border-white/10 focus:border-white/20 transition-colors min-h-[120px] resize-none"
+                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:border-white/20 focus:outline-none transition-colors min-h-[120px] resize-none"
                       />
                     </div>
                   </div>
