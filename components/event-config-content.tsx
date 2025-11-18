@@ -864,227 +864,91 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
               <div className="space-y-3">
                 <Label className="text-base font-semibold">Vista Previa</Label>
                 <div className="sticky top-6">
-                  {/* Apple Wallet Pass Container */}
+                  {/* Apple Wallet Pass Preview - Simple */}
                   <div className="max-w-[375px] mx-auto">
                     <div
-                      className="relative rounded-[10px] overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.15),0_0_1px_rgba(0,0,0,0.1)]"
-                      style={{
-                        backgroundColor: walletConfig.backgroundColor,
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif'
-                      }}
+                      className="relative rounded-xl overflow-hidden shadow-xl border border-white/10"
+                      style={{ backgroundColor: walletConfig.backgroundColor }}
                     >
                       {/* Strip Image Area */}
-                      {walletConfig.strip && (
-                        <div className="w-full h-[123px] overflow-hidden relative">
+                      {walletConfig.strip ? (
+                        <div className="w-full h-32 overflow-hidden relative">
                           <img
                             src={walletConfig.strip as string}
                             alt="Strip"
                             className="w-full h-full object-cover"
                           />
                         </div>
+                      ) : (
+                        <div className="w-full h-32 bg-gradient-to-br from-white/5 to-white/10" />
                       )}
 
-                      {/* Pass Content */}
-                      <div className="px-[16px] py-[12px]">
-                        {/* Logo and Icon Row */}
-                        <div className="flex items-center justify-between mb-[12px]">
-                          <div className="flex-1 min-w-0">
-                            {walletConfig.logo ? (
-                              <img
-                                src={walletConfig.logo as string}
-                                alt="Logo"
-                                className="max-h-[50px] max-w-[160px] object-contain object-left"
-                              />
-                            ) : (
-                              <div
-                                className="text-[13px] font-semibold"
-                                style={{ color: walletConfig.foregroundColor }}
-                              >
-                                Logo del Evento
-                              </div>
-                            )}
-                          </div>
-                          {walletConfig.icon && (
+                      {/* Content */}
+                      <div className="p-6">
+                        {/* Logo */}
+                        <div className="mb-6">
+                          {walletConfig.logo ? (
                             <img
-                              src={walletConfig.icon as string}
-                              alt="Icon"
-                              className="w-[29px] h-[29px] object-contain ml-[12px] flex-shrink-0"
+                              src={walletConfig.logo as string}
+                              alt="Logo"
+                              className="max-h-12 max-w-[200px] object-contain"
                             />
+                          ) : (
+                            <div
+                              className="text-sm font-semibold"
+                              style={{ color: walletConfig.foregroundColor }}
+                            >
+                              Logo del Evento
+                            </div>
                           )}
                         </div>
 
-                        {/* Header Fields (thin strip) */}
-                        <div className="flex items-center gap-[16px] mb-[12px] pb-[8px]" style={{ borderBottom: `0.5px solid ${walletConfig.foregroundColor}33` }}>
-                          <div className="flex-1">
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[2px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              PUERTA
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              A
-                            </div>
-                          </div>
-                          <div className="flex-1">
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[2px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              SECCIÓN
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              102
-                            </div>
-                          </div>
-                          <div className="flex-1">
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[2px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              FILA
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              12
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Primary Field */}
-                        <div className="mb-[12px]">
+                        {/* Event Name */}
+                        <div className="mb-6">
                           <div
-                            className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[3px]"
+                            className="text-xs uppercase tracking-wider mb-1 opacity-60"
                             style={{ color: walletConfig.labelColor }}
                           >
                             EVENTO
                           </div>
                           <div
-                            className="text-[24px] font-semibold leading-[28px] tracking-[-0.3px]"
+                            className="text-2xl font-bold"
                             style={{ color: walletConfig.foregroundColor }}
                           >
-                            Festival de Música 2025
+                            Nombre del Evento
                           </div>
                         </div>
 
-                        {/* Secondary Fields */}
-                        <div className="grid grid-cols-2 gap-x-[16px] gap-y-[10px] mb-[12px]">
-                          <div>
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[3px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              FECHA
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              Sáb, 15 Feb
-                            </div>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[3px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              HORA
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              8:00 PM
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Auxiliary Fields */}
-                        <div className="grid grid-cols-2 gap-x-[16px] gap-y-[10px] mb-[16px]">
-                          <div>
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[3px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              UBICACIÓN
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              Estadio Nacional
-                            </div>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[9px] font-medium uppercase tracking-[0.5px] mb-[3px]"
-                              style={{ color: walletConfig.labelColor }}
-                            >
-                              ASIENTO
-                            </div>
-                            <div
-                              className="text-[13px] font-medium"
-                              style={{ color: walletConfig.foregroundColor }}
-                            >
-                              15
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Barcode/QR Code */}
-                        <div className="flex flex-col items-center pt-[8px]">
-                          <div className="bg-white rounded-[4px] p-[12px] mb-[8px]">
-                            <svg width="200" height="200" viewBox="0 0 200 200">
-                              <rect width="200" height="200" fill="white"/>
-                              {/* QR Code - Positioning squares */}
-                              <rect x="20" y="20" width="50" height="50" fill="black"/>
-                              <rect x="30" y="30" width="30" height="30" fill="white"/>
-                              <rect x="40" y="40" width="10" height="10" fill="black"/>
-
-                              <rect x="130" y="20" width="50" height="50" fill="black"/>
-                              <rect x="140" y="30" width="30" height="30" fill="white"/>
-                              <rect x="150" y="40" width="10" height="10" fill="black"/>
-
-                              <rect x="20" y="130" width="50" height="50" fill="black"/>
-                              <rect x="30" y="140" width="30" height="30" fill="white"/>
-                              <rect x="40" y="150" width="10" height="10" fill="black"/>
-
-                              {/* QR Data pattern */}
-                              {Array.from({ length: 200 }).map((_, i) => {
-                                const x = 20 + (i % 16) * 10;
-                                const y = 80 + Math.floor(i / 16) * 10;
-                                const inCorner =
-                                  (x < 80 && y < 80) ||
-                                  (x > 120 && y < 80) ||
-                                  (x < 80 && y > 120);
-                                if (inCorner || y > 180) return null;
+                        {/* QR Code */}
+                        <div className="flex justify-center pt-4 pb-2">
+                          <div className="bg-white rounded-lg p-4">
+                            <svg width="120" height="120" viewBox="0 0 120 120">
+                              <rect width="120" height="120" fill="white"/>
+                              <rect x="10" y="10" width="30" height="30" fill="black"/>
+                              <rect x="15" y="15" width="20" height="20" fill="white"/>
+                              <rect x="20" y="20" width="10" height="10" fill="black"/>
+                              <rect x="80" y="10" width="30" height="30" fill="black"/>
+                              <rect x="85" y="15" width="20" height="20" fill="white"/>
+                              <rect x="90" y="20" width="10" height="10" fill="black"/>
+                              <rect x="10" y="80" width="30" height="30" fill="black"/>
+                              <rect x="15" y="85" width="20" height="20" fill="white"/>
+                              <rect x="20" y="90" width="10" height="10" fill="black"/>
+                              {Array.from({ length: 80 }).map((_, i) => {
+                                const x = 10 + (i % 10) * 10;
+                                const y = 50 + Math.floor(i / 10) * 10;
                                 return Math.random() > 0.5 ? (
                                   <rect key={i} x={x} y={y} width="8" height="8" fill="black"/>
                                 ) : null;
                               })}
                             </svg>
                           </div>
-                          <div
-                            className="text-[11px] font-medium opacity-60 tracking-[0.2px]"
-                            style={{ color: walletConfig.foregroundColor }}
-                          >
-                            HT2025001234567890
-                          </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Helper text */}
-                    <p className="text-[11px] text-white/40 text-center mt-3 px-4">
-                      Vista previa de Apple Wallet (Event Ticket)
+                    <p className="text-xs text-white/40 text-center mt-4">
+                      Vista previa simplificada • Los detalles se generarán automáticamente
                     </p>
                   </div>
                 </div>
