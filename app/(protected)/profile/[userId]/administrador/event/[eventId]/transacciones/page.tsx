@@ -60,7 +60,6 @@ export default async function TransaccionesPage({ params }: TransaccionesPagePro
       {/* Sticky Header */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Gestión de Transacciones"
       />
 

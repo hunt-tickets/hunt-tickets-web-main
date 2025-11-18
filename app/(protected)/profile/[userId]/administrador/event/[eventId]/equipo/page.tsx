@@ -62,7 +62,6 @@ export default async function EquipoPage({ params }: EquipoPageProps) {
       {/* Sticky Header */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Gestión de Equipo"
       >
         <EventTeamContent

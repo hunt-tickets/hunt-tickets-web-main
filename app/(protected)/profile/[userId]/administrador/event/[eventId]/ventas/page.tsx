@@ -59,7 +59,6 @@ export default async function VentasPage({ params }: VentasPageProps) {
       {/* Sticky Header with Tabs */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Gestión de ventas"
       >
         <EventSalesContent

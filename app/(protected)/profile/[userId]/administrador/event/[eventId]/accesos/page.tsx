@@ -59,7 +59,6 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
       {/* Sticky Header */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Control de Acceso"
       >
         <EventAccessControlContent

@@ -61,7 +61,6 @@ export default async function EntradasPage({ params }: EntradasPageProps) {
       {/* Sticky Header */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Gestión de Entradas"
       />
 

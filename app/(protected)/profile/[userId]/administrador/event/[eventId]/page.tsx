@@ -110,7 +110,6 @@ export default async function EventFinancialPage({ params }: EventPageProps) {
       {/* Sticky Header with Tabs */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle={new Date(financialReport.timestamp).toLocaleString("es-CO", {
           dateStyle: "short",
           timeStyle: "short",

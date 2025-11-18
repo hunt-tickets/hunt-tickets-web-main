@@ -61,7 +61,6 @@ export default async function AvancesPage({ params }: AvancesPageProps) {
       {/* Sticky Header */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Avances de Pago"
       />
 

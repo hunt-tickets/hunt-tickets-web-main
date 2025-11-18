@@ -53,7 +53,6 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
       {/* Sticky Header */}
       <EventStickyHeader
         eventName={event.name}
-        eventStatus={event.status}
         subtitle="Configuración del Evento"
       >
         <EventConfigContent showTabsOnly />
