@@ -226,17 +226,17 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
           {/* Statistics KPIs */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="p-3 sm:p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-[10px] sm:text-xs text-white/40 mb-1">Total</div>
-          <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+          <div className="text-xs sm:text-xs text-white/40 mb-1">Total</div>
+          <div className="text-xl sm:text-2xl font-bold">{stats.total}</div>
         </div>
         <div className="p-3 sm:p-4 rounded-xl border border-green-500/20 bg-green-500/5">
-          <div className="text-[10px] sm:text-xs text-green-400/60 mb-1">Escaneadas</div>
-          <div className="text-lg sm:text-2xl font-bold text-white">{stats.scanned}</div>
-          <div className="text-[9px] sm:text-xs text-green-400/40 mt-0.5 sm:mt-1">{stats.scanRate}%</div>
+          <div className="text-xs sm:text-xs text-green-400/60 mb-1">Escaneadas</div>
+          <div className="text-xl sm:text-2xl font-bold text-white">{stats.scanned}</div>
+          <div className="text-[10px] sm:text-xs text-green-400/40 mt-0.5 sm:mt-1">{stats.scanRate}%</div>
         </div>
         <div className="p-3 sm:p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
-          <div className="text-[10px] sm:text-xs text-yellow-400/60 mb-1">Pendientes</div>
-          <div className="text-lg sm:text-2xl font-bold text-white">{stats.pending}</div>
+          <div className="text-xs sm:text-xs text-yellow-400/60 mb-1">Pendientes</div>
+          <div className="text-xl sm:text-2xl font-bold text-white">{stats.pending}</div>
         </div>
       </div>
 
@@ -276,40 +276,13 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
                       key={ticket.name}
                       className="relative overflow-hidden rounded-xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/10 p-4"
                     >
-                      {/* Header with Ticket Name and Percentage */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <div className="text-base font-semibold text-white mb-1">
-                            {ticket.name}
-                          </div>
-                          <div className="text-xs text-white/40">
-                            {ticket.scanned} de {ticket.total} escaneadas
-                          </div>
-                        </div>
-                        <div className={`flex items-center justify-center w-14 h-14 rounded-xl font-bold text-sm ${
-                          ticket.scanRate >= 80
-                            ? 'bg-green-500/20 text-green-400'
-                            : ticket.scanRate >= 50
-                            ? 'bg-yellow-500/20 text-yellow-400'
-                            : 'bg-red-500/20 text-red-400'
-                        }`}>
-                          {ticket.scanRate.toFixed(0)}%
-                        </div>
-                      </div>
-
-                      {/* Progress Bar */}
+                      {/* Header with Ticket Name */}
                       <div className="mb-3">
-                        <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all duration-500 ${
-                              ticket.scanRate >= 80
-                                ? 'bg-gradient-to-r from-green-500 to-green-400'
-                                : ticket.scanRate >= 50
-                                ? 'bg-gradient-to-r from-yellow-500 to-yellow-400'
-                                : 'bg-gradient-to-r from-red-500 to-red-400'
-                            }`}
-                            style={{ width: `${ticket.scanRate}%` }}
-                          />
+                        <div className="text-base font-semibold text-white mb-1">
+                          {ticket.name}
+                        </div>
+                        <div className="text-xs text-white/40">
+                          {ticket.scanned} de {ticket.total} escaneadas
                         </div>
                       </div>
 
