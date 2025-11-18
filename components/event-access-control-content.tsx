@@ -148,9 +148,6 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
     setCurrentPage(1);
   };
 
-  // Calculate missing QR codes (not quantity, but actual missing QRs)
-  const totalTicketsWithoutQR = transactionsWithoutQR.reduce((sum, t) => sum + t.missingQRs, 0);
-
   // Calculate breakdown by ticket type
   const ticketBreakdown = useMemo(() => {
     const breakdown = new Map<string, {
@@ -227,7 +224,7 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
       {mainTab === "analytics" && (
         <div className="space-y-4">
           {/* Statistics KPIs */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
           <div className="text-xs text-white/40 mb-1">Total QR Codes</div>
           <div className="text-2xl font-bold">{stats.total}</div>
@@ -240,15 +237,6 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
         <div className="p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
           <div className="text-xs text-yellow-400/60 mb-1">Pendientes</div>
           <div className="text-2xl font-bold text-white">{stats.pending}</div>
-        </div>
-        <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/5">
-          <div className="text-xs text-red-400/60 mb-1">Sin QR</div>
-          <div className="text-2xl font-bold text-white">{totalTicketsWithoutQR}</div>
-          <div className="text-xs text-red-400/40 mt-1">{transactionsWithoutQR.length} transacciones</div>
-        </div>
-        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-          <div className="text-xs text-white/40 mb-1">Total General</div>
-          <div className="text-2xl font-bold">{stats.total + totalTicketsWithoutQR}</div>
         </div>
       </div>
 
