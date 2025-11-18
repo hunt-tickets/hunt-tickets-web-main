@@ -64,6 +64,7 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
         <EventAccessControlContent
           qrCodes={accessData?.qrCodes || []}
           transactionsWithoutQR={accessData?.transactionsMissingQR || []}
+          eventId={eventId}
           showTabsOnly
         />
       </EventStickyHeader>
@@ -73,6 +74,7 @@ export default async function AccesosPage({ params }: AccesosPageProps) {
         <EventAccessControlContent
           qrCodes={accessData?.qrCodes || []}
           transactionsWithoutQR={accessData?.transactionsMissingQR || []}
+          eventId={eventId}
           showContentOnly
         />
       </div>
