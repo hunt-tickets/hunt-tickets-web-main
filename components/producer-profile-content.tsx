@@ -104,9 +104,10 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
   ] as const;
 
   return (
-    <div className="space-y-6">
-      {/* Header with producer info */}
-      <div className="flex items-start justify-between gap-3 sm:gap-4">
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="space-y-6">
+        {/* Header with producer info */}
+        <div className="flex items-start justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           {/* Producer Logo */}
           <div className="flex-shrink-0">
@@ -174,7 +175,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
         {activeTab === "dashboard" && (
           <div className="space-y-6">
             {/* Monthly Sales Chart */}
-            <Card className="bg-white/[0.02] border-white/10">
+            <Card className="bg-white/[0.02] border-white/10 min-w-0">
               <CardContent className="pt-6">
                 <div className="mb-6 flex flex-col sm:flex-row items-start justify-between gap-4">
                   <div>
@@ -326,7 +327,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
             {/* Age and Gender Distribution */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Age Distribution */}
-              <Card className="bg-white/[0.02] border-white/10">
+              <Card className="bg-white/[0.02] border-white/10 min-w-0">
                 <CardContent className="pt-6">
                   <div className="mb-4">
                     <h3 className="text-base sm:text-lg font-semibold text-white mb-1">Distribución por Edad</h3>
@@ -427,7 +428,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
               </Card>
 
               {/* Gender Distribution */}
-              <Card className="bg-white/[0.02] border-white/10">
+              <Card className="bg-white/[0.02] border-white/10 min-w-0">
                 <CardContent className="pt-6">
                   <div className="mb-4">
                     <h3 className="text-base sm:text-lg font-semibold text-white mb-1">Distribución por Género</h3>
@@ -605,7 +606,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
                   .slice(0, 2);
 
                 return (
-                  <Card key={member.id} className="bg-white/[0.02] border-white/10">
+                  <Card key={member.id} className="bg-white/[0.02] border-white/10 min-w-0">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -844,7 +845,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
         )}
 
         {activeTab === "configuracion" && (
-          <Card className="bg-white/[0.02] border-white/5 p-6">
+          <Card className="bg-white/[0.02] border-white/5 p-6 min-w-0">
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Settings className="h-12 w-12 text-white/40 mb-4" />
               <h3 className="text-lg font-semibold text-white mb-2">Configuración</h3>
@@ -854,6 +855,7 @@ export function ProducerProfileContent({ producer, team, userId }: ProducerProfi
             </div>
           </Card>
         )}
+      </div>
       </div>
     </div>
   );
