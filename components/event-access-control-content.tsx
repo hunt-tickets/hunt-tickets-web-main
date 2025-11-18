@@ -495,8 +495,8 @@ export function EventAccessControlContent({ qrCodes, transactionsWithoutQR, show
               )}
             </div>
 
-            {/* Filter Select - Right side */}
-            <div className="relative sm:min-w-fit">
+            {/* Filter Select - Right side - Hidden on mobile */}
+            <div className="relative sm:min-w-fit hidden sm:block">
               <select
                 value={activeTab}
                 onChange={(e) => handleTabChange(e.target.value as "all" | "scanned" | "pending" | "noqr")}
