@@ -38,6 +38,7 @@ interface EventData {
   flyer?: string;
   flyer_apple?: string;
   venue_id?: string;
+  faqs?: Array<{ id: string; question: string; answer: string }>;
   venues?: {
     id: string;
     name: string;
@@ -104,6 +105,11 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
       }
       if (eventData.flyer_apple) {
         setWalletConfig((prev) => ({ ...prev, logo: eventData.flyer_apple || null }));
+      }
+
+      // Initialize FAQs if available
+      if (eventData.faqs && Array.isArray(eventData.faqs)) {
+        setFaqs(eventData.faqs);
       }
 
       // Initialize Hunt costs
@@ -207,6 +213,24 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     }
   };
 
+  const saveFaqs = async (updatedFaqs: FAQ[]) => {
+    if (!eventId) return;
+
+    try {
+      const { updateEventConfiguration } = await import("@/lib/actions/events");
+
+      const result = await updateEventConfiguration(eventId, {
+        faqs: updatedFaqs,
+      });
+
+      if (!result.success) {
+        console.error("Error al guardar FAQs:", result.message);
+      }
+    } catch (error) {
+      console.error("Error saving FAQs:", error);
+    }
+  };
+
   const handleSaveConfig = async (section: string) => {
     if (!eventId) return;
 
@@ -280,6 +304,7 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
     newFaqs.splice(dropIndex, 0, draggedItem);
 
     setFaqs(newFaqs);
+    saveFaqs(newFaqs); // Save to database
     setDraggedFaqIndex(null);
     setDragOverIndex(null);
   };
@@ -1051,15 +1076,19 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                     <Button
                       onClick={() => {
                         if (editingFaq) {
-                          setFaqs(faqs.map(faq => faq.id === editingFaq.id ? editingFaq : faq));
+                          const updatedFaqs = faqs.map(faq => faq.id === editingFaq.id ? editingFaq : faq);
+                          setFaqs(updatedFaqs);
+                          saveFaqs(updatedFaqs); // Save to database
                           setEditingFaq(null);
                         } else {
                           if (newQuestion.trim() && newAnswer.trim()) {
-                            setFaqs([...faqs, {
+                            const updatedFaqs = [...faqs, {
                               id: Date.now().toString(),
                               question: newQuestion,
                               answer: newAnswer
-                            }]);
+                            }];
+                            setFaqs(updatedFaqs);
+                            saveFaqs(updatedFaqs); // Save to database
                             setNewQuestion("");
                             setNewAnswer("");
                             setIsAddingFaq(false);
@@ -1152,7 +1181,9 @@ export function EventConfigContent({ showTabsOnly = false, showContentOnly = fal
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (window.confirm("¿Estás seguro de eliminar esta pregunta?")) {
-                                  setFaqs(faqs.filter(f => f.id !== faq.id));
+                                  const updatedFaqs = faqs.filter(f => f.id !== faq.id);
+                                  setFaqs(updatedFaqs);
+                                  saveFaqs(updatedFaqs); // Save to database
                                 }
                               }}
                               className="h-9 w-9 p-0 rounded-lg hover:bg-red-500/20 hover:text-red-400"

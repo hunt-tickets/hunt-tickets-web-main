@@ -581,6 +581,7 @@ export async function updateEventConfiguration(eventId: string, formData: {
   age?: number;
   variable_fee?: number;
   fixed_fee?: number;
+  faqs?: Array<{ id: string; question: string; answer: string }>;
 }) {
   const supabase = await createClient();
 
@@ -599,6 +600,7 @@ export async function updateEventConfiguration(eventId: string, formData: {
     age: number;
     variable_fee: number;
     fixed_fee: number;
+    faqs: Array<{ id: string; question: string; answer: string }>;
   }> = {};
 
   if (formData.name !== undefined) updateData.name = formData.name;
@@ -608,6 +610,7 @@ export async function updateEventConfiguration(eventId: string, formData: {
   if (formData.age !== undefined) updateData.age = formData.age;
   if (formData.variable_fee !== undefined) updateData.variable_fee = formData.variable_fee;
   if (formData.fixed_fee !== undefined) updateData.fixed_fee = formData.fixed_fee;
+  if (formData.faqs !== undefined) updateData.faqs = formData.faqs;
 
   const { error } = await supabase
     .from("events")

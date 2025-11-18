@@ -53,6 +53,7 @@ export default async function ConfiguracionPage({ params }: ConfiguracionPagePro
       flyer,
       flyer_apple,
       venue_id,
+      faqs,
       venues!inner (
         id,
         name,
